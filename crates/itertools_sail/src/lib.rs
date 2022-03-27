@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-pub trait ItertoolsMy: Iterator {
+pub trait ItertoolsSail: Iterator {
     fn counts(self) -> HashMap<Self::Item, usize>
     where
         Self: Sized,
@@ -14,4 +14,4 @@ pub trait ItertoolsMy: Iterator {
     }
 }
 
-impl<T: ?Sized> ItertoolsMy for T where T: Iterator {}
+impl<T: ?Sized> ItertoolsSail for T where T: Iterator {}

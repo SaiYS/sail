@@ -1,5 +1,5 @@
 [package]
-name = "itertools_my"
+name = "itertools_sail"
 version = "0.1.0"
 edition = "2018"
 license = "MIT"

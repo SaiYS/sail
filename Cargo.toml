@@ -10,7 +10,7 @@ members = ["crates/*"]
 
 [dependencies]
 graph = { path = "crates/graph" }
-itertools_my = { path = "crates/itertools_my" }
+itertools_sail = { path = "crates/itertools_sail" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 union_find = { path = "crates/union_find" }
