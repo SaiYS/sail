@@ -116,9 +116,3 @@ impl SieveOfAtkin {
         &self.primes
     }
 }
-
-#[test]
-fn dbg() {
-    let sieve = SieveOfAtkin::new(100);
-    dbg!(&sieve);
-}
