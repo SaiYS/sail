@@ -49,9 +49,3 @@ impl SieveOfEratosthenes {
         &self.primes
     }
 }
-
-#[test]
-fn dbg() {
-    let s = SieveOfEratosthenes::new(100000);
-    dbg!(&s);
-}
