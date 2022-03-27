@@ -1,4 +1,4 @@
-const INITIAL_WHEEL: &[usize] = &[1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59];
+const WHEEL: &[usize] = &[1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59];
 const CANDEDATE_A: &[usize] = &[1, 13, 17, 29, 37, 41, 49, 53];
 const CANDIDATE_B: &[usize] = &[7, 19, 31, 43];
 const CANDIDATE_C: &[usize] = &[11, 23, 47, 59];
@@ -67,7 +67,7 @@ impl SieveOfAtkin {
         }
 
         'a: for w in 0.. {
-            for &x in INITIAL_WHEEL {
+            for &x in WHEEL {
                 let n = 60 * w + x;
                 if n < 7 {
                     continue;
@@ -78,7 +78,7 @@ impl SieveOfAtkin {
 
                 if is_prime[n] {
                     'b: for w in 0.. {
-                        for &x in INITIAL_WHEEL {
+                        for &x in WHEEL {
                             let c = n * n * (60 * w + x);
                             if c > limit {
                                 break 'b;
