@@ -9,11 +9,12 @@ members = ["crates/*"]
 
 
 [dependencies]
+counts = { path = "crates/counts" }
 graph = { path = "crates/graph" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
+union_find = { path = "crates/union_find" }
 vis = { path = "crates/vis" }
-counts = { path = "crates/counts" }
 
 [dev-dependencies]
 num = "=0.2.1"

@@ -17,7 +17,7 @@ impl UnionFind {
         self.size[root]
     }
 
-    fn find_root(&mut self, id: usize) -> usize {
+    pub fn find_root(&mut self, id: usize) -> usize {
         if let Some(parent) = self.root[id] {
             let res = self.find_root(parent);
             self.root[id] = Some(res);
@@ -51,32 +51,3 @@ impl UnionFind {
     }
 }
 
-#[test]
-fn feature() {
-    let n = 5;
-    let mut uf = UnionFind::new(n);
-    dbg!(&uf);
-
-    uf.unite(0, 1);
-    assert!(uf.is_joint(0, 1));
-    assert!(!uf.is_joint(1, 2));
-    assert!(!uf.is_joint(2, 0));
-    dbg!(&uf);
-
-    uf.unite(1, 2);
-    assert!(uf.is_joint(0, 1));
-    assert!(uf.is_joint(1, 2));
-    assert!(uf.is_joint(2, 0));
-    assert!(!uf.is_joint(0, 3));
-    assert!(!uf.is_joint(1, 3));
-    assert!(!uf.is_joint(2, 3));
-    dbg!(&uf);
-
-    uf.unite(3, 4);
-    dbg!(&uf);
-
-    uf.unite(1, 4);
-    dbg!(&uf);
-    uf.unite(2, 2);
-    dbg!(&uf);
-}
