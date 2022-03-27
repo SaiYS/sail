@@ -7,10 +7,7 @@ fn main() {
     todo!("You can solve it!")
 }
 
-use sail::{
-    vis, DirectedListGraph, MillerRabin, ModInt1000000007, ModInt998244353, UndirectedListGraph,
-    Visualize,
-};
+use sail::*;
 
 use im_rc::{ordmap, ordset, OrdMap, OrdSet};
 use itertools::{iproduct, izip, Itertools as _};
