@@ -1,10 +1,15 @@
 pub mod factorize;
 pub mod miller_rabin;
+pub mod sieve_of_atkin;
+pub mod sieve_of_eratosthenes;
 pub mod trial_division;
 
 #[cfg(test)]
 mod tests {
-    use crate::{miller_rabin::MillerRabin, trial_division::TrialDivision};
+    use crate::{
+        miller_rabin::MillerRabin, sieve_of_atkin::SieveOfAtkin,
+        sieve_of_eratosthenes::SieveOfEratosthenes, trial_division::TrialDivision,
+    };
     use rand::{thread_rng, Rng};
 
     #[test]
@@ -52,5 +57,36 @@ mod tests {
                 TrialDivision::is_prime(r)
             );
         }
+    }
+
+    #[test]
+    fn assert_miller_rabin_and_sieve_of_eratosthenes() {
+        let n = 1000000;
+        let sieve = SieveOfEratosthenes::new(n);
+        let mut rng = thread_rng();
+
+        for i in 0..=n {
+            assert_eq!(sieve.is_prime(i), MillerRabin::is_prime(i, 20, &mut rng));
+        }
+    }
+
+    #[test]
+    fn assert_miller_rabin_and_sieve_of_atkin() {
+        let n = 1000000;
+        let sieve = SieveOfAtkin::new(n);
+        let mut rng = thread_rng();
+
+        for i in 0..=n {
+            assert_eq!(sieve.is_prime(i), MillerRabin::is_prime(i, 20, &mut rng));
+        }
+    }
+
+    #[test]
+    fn assert_atkin_and_eratosthenes() {
+        let n = 1000000;
+        let atkin = SieveOfAtkin::new(n);
+        let eratosthenes = SieveOfEratosthenes::new(n);
+
+        assert_eq!(atkin.primes(), eratosthenes.primes());
     }
 }
