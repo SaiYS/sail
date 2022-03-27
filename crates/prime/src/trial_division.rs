@@ -16,9 +16,9 @@ macro_rules! impl_trial_division_for_uint {
                     } else {
                         (6..)
                             .step_by(6)
-                            .map(|x| [x - 1, x + 1])
+                            .map(|x| vec![x - 1, x + 1])
                             .flatten()
-                            .take_while(|x| x * x <= self)
+                            .take_while(|&x| x * x <= self)
                             .all(|x| self % x != 0)
                     }
                 }

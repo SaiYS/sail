@@ -9,10 +9,11 @@ members = ["crates/*"]
 
 
 [dependencies]
-__graph = { package = "graph", path = "crates/graph" }
-__modint = { package = "modint", path = "crates/modint" }
-__prime = { package = "prime", path = "crates/prime" }
-__vis = { package = "vis", path = "crates/vis" }
+graph = { path = "crates/graph" }
+modint = { path = "crates/modint" }
+prime = { path = "crates/prime" }
+vis = { path = "crates/vis" }
+counts = { path = "crates/counts" }
 
 [dev-dependencies]
 num = "=0.2.1"
