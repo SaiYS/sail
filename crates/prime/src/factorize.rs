@@ -3,8 +3,8 @@ pub struct Factorized<T> {
 }
 
 impl<T> Factorized<T> {
-    pub fn factors(&self) -> &[(T, usize)] {
-        &self.factors
+    pub fn factors(self) -> Vec<(T, usize)> {
+        self.factors
     }
 }
 
@@ -40,7 +40,10 @@ macro_rules! impl_factorize_for_uint {
                     let mut factors = vec![];
                     let mut x = self.clone();
                     let mut d = 2;
-                    while x > 1 {
+                    loop {
+                        if d * d > x {
+                            break;
+                        }
                         let mut c = 0usize;
                         while x % d == 0 {
                             x /= d;
@@ -52,6 +55,10 @@ macro_rules! impl_factorize_for_uint {
                         d += 1;
                     }
 
+                    if x > 1 {
+                        factors.push((x, 1));
+                    }
+
                     Ok(Factorized { factors })
                 }
             }
@@ -61,3 +68,10 @@ macro_rules! impl_factorize_for_uint {
 }
 
 impl_factorize_for_uint!(usize, u8, u16, u32, u64, u128);
+
+#[test]
+fn factorize() {
+    let n = 17u64;
+    let factors = n.factorize().ok().unwrap().factors();
+    assert_eq!(factors, vec![(17, 1)]);
+}
