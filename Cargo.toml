@@ -9,8 +9,8 @@ members = ["crates/*"]
 
 
 [dependencies]
-counts = { path = "crates/counts" }
 graph = { path = "crates/graph" }
+itertools_my = { path = "crates/itertools_my" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 union_find = { path = "crates/union_find" }

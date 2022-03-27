@@ -1,5 +1,5 @@
-pub use counts::counts;
 pub use graph::list_graph::{DirectedListGraph, UndirectedListGraph};
+pub use itertools_my::ItertoolsMy as _;
 pub use modint::{ModInt1000000007, ModInt998244353};
 pub use prime::{
     miller_rabin::MillerRabin, sieve_of_atkin::SieveOfAtkin,
