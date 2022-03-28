@@ -13,6 +13,14 @@ pub trait AbelianGroup: Clone {
     // commutativity: x + y == y + x
 }
 
+impl<T: Add<Output = T>> Add<Self> for Addictive<T> {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self(self.0 + rhs.0)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Addictive<T>(T);
 
@@ -35,7 +43,7 @@ where
     }
 
     fn add(x: Self, y: Self) -> Self {
-        Self(x.get() + y.get())
+        x + y
     }
 
     fn inv(self) -> Self {
