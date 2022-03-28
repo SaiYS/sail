@@ -9,10 +9,12 @@ members = ["crates/*"]
 
 
 [dependencies]
+fenwick_tree = { path = "crates/fenwick_tree" }
 graph = { path = "crates/graph" }
 itertools_sail = { path = "crates/itertools_sail" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
+segment_tree = { path = "crates/segment_tree" }
 union_find = { path = "crates/union_find" }
 vis = { path = "crates/vis" }
 
