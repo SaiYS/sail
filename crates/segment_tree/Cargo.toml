@@ -9,3 +9,4 @@ license = "MIT"
 [dependencies]
 num-traits = "=0.2.11"
 itertools = "=0.9.0"
+util = { path = "../util" }

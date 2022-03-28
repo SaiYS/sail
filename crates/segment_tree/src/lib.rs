@@ -94,16 +94,8 @@ where
     }
 
     pub fn range<R: RangeBounds<usize>>(&self, range: R) -> M::T {
-        let from = match range.start_bound() {
-            std::ops::Bound::Included(start) => *start,
-            std::ops::Bound::Excluded(_) => unimplemented!(),
-            std::ops::Bound::Unbounded => 0,
-        };
-        let to = match range.end_bound() {
-            std::ops::Bound::Included(end) => *end + 1,
-            std::ops::Bound::Excluded(end) => *end,
-            std::ops::Bound::Unbounded => self.leaf_len(),
-        };
+        let (from, to) = util::expand_range_bound(range, 0, self.leaf_len());
+        debug_assert!(from < to);
 
         self.range_inner(from, to, 0, self.leaf_len(), 0).get()
     }

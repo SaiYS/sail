@@ -1,5 +1,5 @@
 pub mod abelian_group;
-use std::ops::{Index, IndexMut};
+use std::ops::{Index, IndexMut, RangeBounds};
 
 use abelian_group::AbelianGroup;
 
@@ -58,9 +58,15 @@ impl<A: AbelianGroup> FenwickTree<A> {
         }
     }
 
-    pub fn range_sum(&self, from: usize, to: usize) -> A::T {
+    pub fn range_sum<R: RangeBounds<usize>>(&self, range: R) -> A::T {
+        let (from, to) = util::expand_range_bound(range, 0, self.len());
         debug_assert!(from < to);
-        A::add(self.prefix_sum_inner(to), self.prefix_sum_inner(from).inv()).get()
+
+        if from == 0 {
+            self.prefix_sum(to)
+        } else {
+            A::add(self.prefix_sum_inner(to), self.prefix_sum_inner(from).inv()).get()
+        }
     }
 
     pub fn add(&mut self, mut i: usize, value: A::T) {
@@ -89,4 +95,3 @@ fn lowest_bit(x: usize) -> Option<usize> {
         Some(1 << s)
     }
 }
-
