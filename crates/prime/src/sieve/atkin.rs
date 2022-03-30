@@ -132,3 +132,11 @@ impl PrimeSieve for SieveOfAtkin {
         self.primes()
     }
 }
+
+#[test]
+fn dbg() {
+    let atkin = SieveOfAtkin::new(1000);
+    assert_eq!(atkin.factorize(4).unwrap().factors(), vec![(2, 2)]);
+    assert_eq!(atkin.factorize(17).unwrap().factors(), vec![(17, 1)]);
+    assert_eq!(atkin.factorize(20014).unwrap().factors(), vec![(2, 1), (10007, 1)]);
+}

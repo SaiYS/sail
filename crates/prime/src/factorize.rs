@@ -1,5 +1,6 @@
+#[derive(Debug, Clone)]
 pub struct Factorized<T> {
-    factors: Vec<(T, usize)>,
+    pub(crate) factors: Vec<(T, usize)>,
 }
 
 impl<T> Factorized<T> {
@@ -18,6 +19,7 @@ impl<T> IntoIterator for Factorized<T> {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 pub enum FactorizationError {
     Zero,
     One,
