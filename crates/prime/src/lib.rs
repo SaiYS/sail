@@ -1,14 +1,13 @@
 pub mod factorize;
 pub mod miller_rabin;
-pub mod sieve_of_atkin;
-pub mod sieve_of_eratosthenes;
+pub mod sieve;
 pub mod trial_division;
 
 #[cfg(test)]
 mod tests {
     use crate::{
-        miller_rabin::MillerRabin, sieve_of_atkin::SieveOfAtkin,
-        sieve_of_eratosthenes::SieveOfEratosthenes, trial_division::TrialDivision,
+        miller_rabin::MillerRabin, sieve::atkin::SieveOfAtkin,
+        sieve::eratosthenes::SieveOfEratosthenes, trial_division::TrialDivision,
     };
     use rand::{thread_rng, Rng};
 

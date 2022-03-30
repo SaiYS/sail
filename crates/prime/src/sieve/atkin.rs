@@ -1,3 +1,5 @@
+use super::PrimeSieve;
+
 const WHEEL: &[usize] = &[1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59];
 const CANDEDATE_A: &[usize] = &[1, 13, 17, 29, 37, 41, 49, 53];
 const CANDIDATE_B: &[usize] = &[7, 19, 31, 43];
@@ -5,7 +7,7 @@ const CANDIDATE_C: &[usize] = &[11, 23, 47, 59];
 
 #[derive(Debug, Clone)]
 pub struct SieveOfAtkin {
-    len: usize,
+    limit: usize,
     is_prime: Vec<bool>,
     primes: Vec<usize>,
 }
@@ -98,14 +100,14 @@ impl SieveOfAtkin {
         }
 
         Self {
-            len: limit,
+            limit,
             is_prime,
             primes,
         }
     }
 
-    pub fn len(&self) -> usize {
-        self.len
+    pub fn limit(&self) -> usize {
+        self.limit
     }
 
     pub fn is_prime(&self, n: usize) -> bool {
@@ -114,5 +116,19 @@ impl SieveOfAtkin {
 
     pub fn primes(&self) -> &[usize] {
         &self.primes
+    }
+}
+
+impl PrimeSieve for SieveOfAtkin {
+    fn limit(&self) -> usize {
+        self.limit()
+    }
+
+    fn is_prime(&self, n: usize) -> bool {
+        self.is_prime(n)
+    }
+
+    fn primes(&self) -> &[usize] {
+        self.primes()
     }
 }

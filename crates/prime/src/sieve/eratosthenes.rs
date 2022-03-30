@@ -1,13 +1,15 @@
+use super::PrimeSieve;
+
 #[derive(Debug, Clone)]
 pub struct SieveOfEratosthenes {
-    len: usize,
+    limit: usize,
     is_prime: Vec<bool>,
     primes: Vec<usize>,
 }
 
 impl SieveOfEratosthenes {
-    pub fn len(&self) -> usize {
-        self.len
+    pub fn limit(&self) -> usize {
+        self.limit
     }
 
     pub fn new(n: usize) -> Self {
@@ -21,9 +23,12 @@ impl SieveOfEratosthenes {
             if is_prime[cur] {
                 primes.push(cur);
 
-                (2..).map(|x| x * cur).take_while(|&x| x <= n).for_each(|x| {
-                    is_prime[x] = false;
-                });
+                (2..)
+                    .map(|x| x * cur)
+                    .take_while(|&x| x <= n)
+                    .for_each(|x| {
+                        is_prime[x] = false;
+                    });
             }
             cur += 1;
         }
@@ -35,7 +40,7 @@ impl SieveOfEratosthenes {
         }
 
         Self {
-            len: n,
+            limit: n,
             is_prime,
             primes,
         }
@@ -47,5 +52,19 @@ impl SieveOfEratosthenes {
 
     pub fn primes(&self) -> &[usize] {
         &self.primes
+    }
+}
+
+impl PrimeSieve for SieveOfEratosthenes {
+    fn limit(&self) -> usize {
+        self.limit()
+    }
+
+    fn is_prime(&self, n: usize) -> bool {
+        self.is_prime(n)
+    }
+
+    fn primes(&self) -> &[usize] {
+        self.primes()
     }
 }
