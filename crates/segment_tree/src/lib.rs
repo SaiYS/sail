@@ -94,7 +94,7 @@ where
     }
 
     pub fn range<R: RangeBounds<usize>>(&self, range: R) -> M::T {
-        let (from, to) = util::expand_range_bound(range, 0, self.leaf_len());
+        let (from, to) = util::expand_range_bound(&range, 0, self.leaf_len());
         debug_assert!(from < to);
 
         self.range_inner(from, to, 0, self.leaf_len(), 0).get()

@@ -59,7 +59,7 @@ impl<A: AbelianGroup> FenwickTree<A> {
     }
 
     pub fn range_sum<R: RangeBounds<usize>>(&self, range: R) -> A::T {
-        let (from, to) = util::expand_range_bound(range, 0, self.len());
+        let (from, to) = util::expand_range_bound(&range, 0, self.len());
         debug_assert!(from < to);
 
         if from == 0 {

@@ -1,6 +1,6 @@
 use std::ops::RangeBounds;
 
-pub fn expand_range_bound<R: RangeBounds<usize>>(r: R, min: usize, max: usize) -> (usize, usize) {
+pub fn expand_range_bound<R: RangeBounds<usize>>(r: &R, min: usize, max: usize) -> (usize, usize) {
     let from = match r.start_bound() {
         std::ops::Bound::Included(start) => *start,
         std::ops::Bound::Excluded(_) => unimplemented!(),
