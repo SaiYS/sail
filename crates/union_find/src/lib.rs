@@ -50,4 +50,3 @@ impl UnionFind {
         self.find_root(a) == self.find_root(b)
     }
 }
-
