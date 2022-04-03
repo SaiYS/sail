@@ -1,4 +1,4 @@
-use crate::factorize::{FactorizationError, Factorized};
+use super::factorize::{FactorizationError, Factorized};
 
 pub trait PrimeSieve {
     fn limit(&self) -> usize;
@@ -32,7 +32,7 @@ pub trait PrimeSieve {
                 factors.push((n, 1));
             }
 
-            Ok(Factorized { factors })
+            Ok(Factorized::new(factors))
         }
     }
 }

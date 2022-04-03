@@ -3,9 +3,9 @@ use std::marker::PhantomData;
 
 #[derive(Debug, Clone)]
 pub struct ListGraph<D> {
-    pub(crate) phantom: PhantomData<D>,
-    pub(crate) len: usize,
-    pub(crate) data: Vec<Vec<usize>>,
+    phantom: PhantomData<D>,
+    len: usize,
+    buffer: Vec<Vec<usize>>,
 }
 
 pub type DirectedListGraph = ListGraph<Directed>;
@@ -27,16 +27,16 @@ impl<D: DirectionType> ListGraph<D> {
         Self {
             phantom: PhantomData,
             len: n,
-            data,
+            buffer: data,
         }
     }
 
     pub fn add_edge(&mut self, from: usize, to: usize) {
         if self.directed() {
-            self.data[from].push(to);
+            self.buffer[from].push(to);
         } else {
-            self.data[from].push(to);
-            self.data[to].push(from);
+            self.buffer[from].push(to);
+            self.buffer[to].push(from);
         }
     }
 
@@ -57,6 +57,6 @@ impl<D: DirectionType> ListGraph<D> {
     }
 
     pub fn adjacencies(&self, node: usize) -> std::slice::Iter<usize> {
-        self.data[node].iter()
+        self.buffer[node].iter()
     }
 }

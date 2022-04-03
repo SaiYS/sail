@@ -1,9 +1,12 @@
 #[derive(Debug, Clone)]
 pub struct Factorized<T> {
-    pub(crate) factors: Vec<(T, usize)>,
+    factors: Vec<(T, usize)>,
 }
 
 impl<T> Factorized<T> {
+    pub fn new(factors: Vec<(T, usize)>) -> Self {
+        Self { factors }
+    }
     pub fn factors(self) -> Vec<(T, usize)> {
         self.factors
     }

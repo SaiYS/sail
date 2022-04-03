@@ -17,6 +17,7 @@ prime = { path = "crates/prime" }
 segment_tree = { path = "crates/segment_tree" }
 union_find = { path = "crates/union_find" }
 vis = { path = "crates/vis" }
+rolling_hash = { path = "crates/rolling_hash" }
 
 [dev-dependencies]
 num = "=0.2.1"

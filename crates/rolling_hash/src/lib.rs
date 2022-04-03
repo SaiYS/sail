@@ -34,10 +34,10 @@ impl Base for DefaultBase {
 }
 
 #[derive(Debug, Clone)]
-pub struct RollingHash<B = DefaultBase, M = DefaultMod> {
+pub struct RollingHash<B: Base = DefaultBase, M: Mod = DefaultMod> {
     phantom_base: PhantomData<fn() -> B>,
     phantom_mod: PhantomData<fn() -> M>,
-    s: Vec<char>,
+    pub s: Vec<char>,
     hash: Vec<u128>,
     powers: Vec<u128>,
 }
@@ -79,21 +79,16 @@ impl<B: Base, M: Mod> RollingHash<B, M> {
         let (from1, to1) = util::expand_range_bound(&r1, 0, self.len());
         let (from2, to2) = util::expand_range_bound(&r2, 0, self.len());
 
-        to1 - from1 == to2 - from2
-            && if from1 <= from2 {
-                let d = from2 - from1;
-                M::rem(self.hash(r1) * self.powers[d]) == self.hash(r2)
-            } else {
-                let d = from1 - from2;
-                self.hash(r1) == M::rem(self.hash(r2) * self.powers[d])
-            }
+        to1 - from1 == to2 - from2 && self.hash(r1) == self.hash(r2)
     }
 }
+
+pub type RollingHashDefault = RollingHash<DefaultBase, DefaultMod>;
 
 #[test]
 fn debug() {
     let s: Vec<char> = String::from("abracadabra").chars().collect();
-    let h = RollingHash::<DefaultBase, DefaultMod>::new(s);
+    let h = RollingHashDefault::new(s);
     dbg!(&h);
     dbg!(h.hash(0..4));
     dbg!(h.hash(7..11));
