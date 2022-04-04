@@ -1,6 +1,6 @@
 use super::{SuffixSort, LS};
-use itertools::Itertools;
 use fisher_yates::Shufflable;
+use itertools::Itertools;
 
 #[derive(Debug, Clone)]
 pub enum InducedSort {}
@@ -65,6 +65,7 @@ fn sa_is(s: &[u32]) -> Vec<usize> {
     }
 
     let rep = (0..n).filter(|&x| ty[x].is_lms()).collect_vec();
+    let m = rep.len();
     let sa = induced_sort(n, s, &ty, rep.clone().shuffle());
 
     let mut cur = 0;
@@ -82,19 +83,21 @@ fn sa_is(s: &[u32]) -> Vec<usize> {
         t[j] = Some(cur);
     }
     let t = t.into_iter().filter_map(|x| x).collect_vec();
-    let m = t.len();
 
-    let seed = if cur as usize + 1 < m {
-        sa_is(&t).into_iter().map(|x| rep[x]).collect_vec()
-    } else if m == 1 {
-        vec![0]
+    let seed = if m == 0 {
+        vec![]
+    } else if cur as usize + 1 < m {
+        sa_is(&t)
     } else {
-        let mut sa = vec![0; m];
+        let mut sa = vec![None; m];
         t.into_iter()
             .enumerate()
-            .for_each(|(i, j)| sa[j as usize] = i);
-        sa.into_iter().map(|x| rep[x]).collect_vec()
-    };
+            .for_each(|(i, j)| sa[j as usize] = Some(i));
+        sa.into_iter().map(|x| x.unwrap()).collect_vec()
+    }
+    .into_iter()
+    .map(|x| rep[x])
+    .collect_vec();
 
     induced_sort(n, s, &ty, seed)
 }

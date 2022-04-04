@@ -72,10 +72,6 @@ impl<S> SuffixArray<S> {
         self.s.len()
     }
 
-    pub fn suffix(&self, k: usize) -> &[char] {
-        &self.s[k..]
-    }
-
     pub fn find<T: AsRef<str>>(&self, pat: T) -> Option<usize> {
         let pat = pat.as_ref().chars().collect_vec();
 
@@ -98,7 +94,11 @@ impl<S> SuffixArray<S> {
             r
         };
 
-        self[p].starts_with(&pat).then(|| self.buffer[p])
+        if self[p].starts_with(&pat) {
+            Some(self.buffer[p])
+        } else {
+            None
+        }
     }
 }
 
@@ -106,7 +106,7 @@ impl<S> Index<usize> for SuffixArray<S> {
     type Output = [char];
 
     fn index(&self, index: usize) -> &Self::Output {
-        self.suffix(self.buffer[index])
+        &self.s[self.buffer[index]..]
     }
 }
 
