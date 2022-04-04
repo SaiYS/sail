@@ -14,6 +14,7 @@ graph = { path = "crates/graph" }
 itertools_sail = { path = "crates/itertools_sail" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
+suffix_array = { path = "crates/suffix_array" }
 segment_tree = { path = "crates/segment_tree" }
 union_find = { path = "crates/union_find" }
 vis = { path = "crates/vis" }

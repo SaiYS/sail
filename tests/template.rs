@@ -7,8 +7,6 @@ fn main() {
     todo!("You can solve it!")
 }
 
-use sail::*;
-
 use im_rc::{ordmap, ordset, OrdMap, OrdSet};
 use itertools::{iproduct, izip, Itertools as _};
 use itertools_num::ItertoolsNum as _;

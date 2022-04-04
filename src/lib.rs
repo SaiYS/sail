@@ -6,6 +6,7 @@ pub mod prelude {
     pub use prime::{miller_rabin::MillerRabin as _, sieve::atkin::SieveOfAtkin};
     pub use rolling_hash::RollingHashDefault;
     pub use segment_tree::{monoid::Monoid, SegmentTree};
+    pub use suffix_array::SaIs;
     pub use union_find::UnionFind;
     pub use vis::{vis, visualize::Visualize, Yn};
 }
@@ -31,5 +32,6 @@ pub use segment_tree::{
     monoid::{Min, Monoid},
     SegmentTree,
 };
+pub use suffix_array::{induced_sort::InducedSort, DefaultSort, SaIs, SuffixArray, SuffixSort};
 pub use union_find::UnionFind;
 pub use vis::{vis, visualize::Visualize, yn, Yn, YN};
