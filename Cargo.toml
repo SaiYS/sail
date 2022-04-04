@@ -10,15 +10,17 @@ members = ["crates/*"]
 
 [dependencies]
 fenwick_tree = { path = "crates/fenwick_tree" }
+fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }
 itertools_sail = { path = "crates/itertools_sail" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
-suffix_array = { path = "crates/suffix_array" }
-segment_tree = { path = "crates/segment_tree" }
-union_find = { path = "crates/union_find" }
-vis = { path = "crates/vis" }
 rolling_hash = { path = "crates/rolling_hash" }
+segment_tree = { path = "crates/segment_tree" }
+suffix_array = { path = "crates/suffix_array" }
+union_find = { path = "crates/union_find" }
+util = { path = "crates/util" }
+vis = { path = "crates/vis" }
 
 [dev-dependencies]
 num = "=0.2.1"

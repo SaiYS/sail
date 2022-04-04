@@ -1,6 +1,6 @@
 use super::{SuffixSort, LS};
 use itertools::Itertools;
-use util::Shufflable;
+use fisher_yates::Shufflable;
 
 #[derive(Debug, Clone)]
 pub enum InducedSort {}

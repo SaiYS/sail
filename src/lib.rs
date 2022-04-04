@@ -1,5 +1,6 @@
 pub mod prelude {
     pub use fenwick_tree::FenwickTree;
+    pub use fisher_yates::{shuffle, Shufflable};
     pub use graph::list_graph::{DirectedListGraph, UndirectedListGraph};
     pub use itertools_sail::ItertoolsSail as _;
     pub use modint::{ModInt1000000007, ModInt998244353};
@@ -15,6 +16,7 @@ pub use fenwick_tree::{
     abelian_group::{AbelianGroup, Addictive},
     FenwickTree,
 };
+pub use fisher_yates::{shuffle, Shufflable};
 pub use graph::{
     list_graph::{DirectedListGraph, ListGraph, UndirectedListGraph},
     Directed, DirectionType, Undirected,
