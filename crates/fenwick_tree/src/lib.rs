@@ -7,6 +7,16 @@ pub struct FenwickTree<A: AbelianGroup> {
     buffer: Vec<A>,
 }
 
+impl<A: AbelianGroup> From<Vec<A::T>> for FenwickTree<A> {
+    fn from(v: Vec<A::T>) -> Self {
+        let mut res = FenwickTree::new(v.len());
+        for (i, val) in v.into_iter().enumerate() {
+            res.add(i, val);
+        }
+        res
+    }
+}
+
 impl<A: AbelianGroup> FenwickTree<A> {
     pub fn new(n: usize) -> Self {
         Self {
@@ -19,7 +29,7 @@ impl<A: AbelianGroup> FenwickTree<A> {
         self.len
     }
 
-    fn prefix_sum_inner(&self, to: usize) -> A {
+    fn prefix_inner(&self, to: usize) -> A {
         let mut res = self.buffer[0].clone();
         let mut i = to;
         while i != 0 {
@@ -29,20 +39,20 @@ impl<A: AbelianGroup> FenwickTree<A> {
         res
     }
 
-    pub fn prefix_sum(&self, to: usize) -> A::T {
+    pub fn prefix(&self, to: usize) -> A::T {
         if to == 0 {
             A::identity().get()
         } else {
-            self.prefix_sum_inner(to - 1).get()
+            self.prefix_inner(to - 1).get()
         }
     }
 
-    pub fn range_sum<R: RangeBounds<usize>>(&self, range: R) -> A::T {
+    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> A::T {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
         if from == 0 {
-            self.prefix_sum(to)
+            self.prefix(to)
         } else {
-            A::binary_operation(self.prefix_sum_inner(to), self.prefix_sum_inner(from).inv()).get()
+            A::binary_operation(self.prefix_inner(to - 1), self.prefix_inner(from - 1).inv()).get()
         }
     }
 

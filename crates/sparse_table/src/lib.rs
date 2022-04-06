@@ -1,22 +1,28 @@
 use algebraic_structures::semigroup::SemiGroup;
 use itertools::Itertools;
-use std::{fmt::Debug, ops::RangeBounds};
+use std::ops::RangeBounds;
 use util::expand_range_bound;
 
 #[derive(Debug, Clone)]
-pub struct SparseTable<S> {
+pub struct SparseTable<S: SemiGroup> {
     len: usize,
     buffer: Vec<Vec<S>>,
 }
 
-impl<S: SemiGroup + Debug> SparseTable<S> {
+impl<S: SemiGroup> From<Vec<S::T>> for SparseTable<S> {
+    fn from(v: Vec<S::T>) -> Self {
+        Self::new(v)
+    }
+}
+
+impl<S: SemiGroup> SparseTable<S> {
     pub fn new(v: Vec<S::T>) -> Self {
-        let n = v.len();
-        let rank = n.next_power_of_two().trailing_zeros() as usize;
+        let len = v.len();
+        let rank = len.next_power_of_two().trailing_zeros() as usize;
         let mut buffer: Vec<Vec<S>> = vec![Vec::new(); rank];
         buffer[0] = v.into_iter().map(|x| x.into()).collect_vec();
         for (height, width) in (1..rank).map(|x| (x, 1 << x)) {
-            buffer[height] = (0..=n - width)
+            buffer[height] = (0..=len - width)
                 .map(|i| {
                     S::binary_operation(
                         buffer[height - 1][i].clone(),
@@ -25,7 +31,7 @@ impl<S: SemiGroup + Debug> SparseTable<S> {
                 })
                 .collect_vec();
         }
-        Self { len: n, buffer }
+        Self { len, buffer }
     }
 
     pub fn len(&self) -> usize {
@@ -38,17 +44,11 @@ impl<S: SemiGroup + Debug> SparseTable<S> {
         if to - from == 1 {
             self.buffer[0][from].clone()
         } else {
-            let h = (BITS - (from ^ (to - 1)).leading_zeros() - 1) as usize;
+            let h = (to - from).next_power_of_two().trailing_zeros() as usize - 1;
+            // let h = self.rank() - (BITS - ((from) ^ (to - 1)).leading_zeros() - 1) as usize;
             let w = to - (1 << h);
-            dbg!(from, to, h, w);
             S::binary_operation(self.buffer[h][from].clone(), self.buffer[h][w].clone())
         }
         .get()
     }
 }
-
-#[cfg(target_pointer_width = "64")]
-const BITS: u32 = 64;
-
-#[cfg(target_pointer_width = "32")]
-const BITS: u32 = 32;

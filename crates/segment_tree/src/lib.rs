@@ -1,15 +1,23 @@
-use itertools::Itertools;
 use algebraic_structures::monoid::Monoid;
-use std::fmt::{Debug, Display};
 use std::ops::RangeBounds;
 
 #[derive(Debug, Clone)]
-pub struct SegmentTree<M> {
+pub struct SegmentTree<M: Monoid> {
     n: usize,
     buffer: Vec<M>,
 }
 
-impl<M> SegmentTree<M> {
+impl<M: Monoid> From<Vec<M::T>> for SegmentTree<M> {
+    fn from(v: Vec<M::T>) -> Self {
+        let mut st = SegmentTree::new(v.len());
+        for (i, val) in v.into_iter().enumerate() {
+            st.update(i, val);
+        }
+        st
+    }
+}
+
+impl<M: Monoid> SegmentTree<M> {
     pub fn size(&self) -> usize {
         self.buffer.len()
     }
@@ -25,32 +33,7 @@ impl<M> SegmentTree<M> {
     fn leaf_idx(&self, i: usize) -> usize {
         self.leaf_len() + i - 1
     }
-}
 
-impl<M> SegmentTree<M>
-where
-    M: Monoid + Clone,
-    M::T: Display,
-{
-    pub fn dbg_tree(&self) {
-        let mut cur = 0;
-        for rank in 0..self.rank() {
-            let l = 1 << rank;
-            let s = self.buffer[cur..(cur + l)]
-                .iter()
-                .map(|x| x.clone().get())
-                .join(" ");
-            println!("{}", s);
-            cur += l;
-        }
-    }
-}
-
-impl<M> SegmentTree<M>
-where
-    M: Monoid + Clone,
-    M::T: Into<M> + Clone,
-{
     pub fn new(n: usize) -> Self {
         Self {
             n,
