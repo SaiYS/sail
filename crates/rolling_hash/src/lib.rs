@@ -40,9 +40,11 @@ impl<M: Mod> RollingHash<M> {
             hash.push(M::rem(*hash.last().unwrap() * base + c as u128));
         }
 
-        let mut powers = vec![1u128];
-        for _ in 0..s.len() {
-            powers.push(M::rem(*powers.last().unwrap() * base));
+        let mut powers = vec![0u128; s.len()];
+        powers[0] = 1;
+        powers[1] = base;
+        for i in 2..s.len() {
+            powers[i] = M::rem(powers[i / 2] * powers[i % 2]);
         }
 
         Self {
