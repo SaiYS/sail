@@ -2,8 +2,8 @@ use num_integer::Integer;
 use num_traits::{Bounded, One, Zero};
 use std::ops::{Add, BitAnd, BitOr, BitXor, Mul, Not};
 
-pub trait SemiGroup: Clone + From<Self::T> {
-    type T: Clone;
+pub trait SemiGroup: Clone {
+    type T: Clone + Into<Self>;
     fn binary_operation(x: Self, y: Self) -> Self;
     fn get(self) -> Self::T;
 }

@@ -38,7 +38,7 @@ impl<S: SemiGroup + Debug> SparseTable<S> {
         if to - from == 1 {
             self.buffer[0][from].clone()
         } else {
-            let h = (usize::BITS - (from ^ (to - 1)).leading_zeros() - 1) as usize;
+            let h = (BITS - (from ^ (to - 1)).leading_zeros() - 1) as usize;
             let w = to - (1 << h);
             dbg!(from, to, h, w);
             S::binary_operation(self.buffer[h][from].clone(), self.buffer[h][w].clone())
@@ -46,3 +46,9 @@ impl<S: SemiGroup + Debug> SparseTable<S> {
         .get()
     }
 }
+
+#[cfg(target_pointer_width = "64")]
+const BITS: u32 = 64;
+
+#[cfg(target_pointer_width = "32")]
+const BITS: u32 = 32;
