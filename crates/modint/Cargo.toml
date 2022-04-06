@@ -9,6 +9,3 @@ license = "MIT"
 [dependencies]
 num-traits = "=0.2.11"
 vis = { path = "/Users/roku/room/comp/sail/crates/vis" }
-
-[dev-dependencies]
-rand = "0.8.5"
