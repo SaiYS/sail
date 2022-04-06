@@ -1,5 +1,7 @@
 use std::{marker::PhantomData, ops::RangeBounds};
 
+use rand::Rng;
+
 pub trait Mod {
     const MOD: u128;
     fn rem(x: u128) -> u128 {
@@ -22,41 +24,29 @@ impl Mod for DefaultMod {
     }
 }
 
-pub trait Base {
-    const BASE: u128;
-}
-
 #[derive(Debug, Clone)]
-pub enum DefaultBase {}
-
-impl Base for DefaultBase {
-    const BASE: u128 = 20200213;
-}
-
-#[derive(Debug, Clone)]
-pub struct RollingHash<B: Base = DefaultBase, M: Mod = DefaultMod> {
-    phantom_base: PhantomData<fn() -> B>,
-    phantom_mod: PhantomData<fn() -> M>,
+pub struct RollingHash<M: Mod = DefaultMod> {
+    phantom: PhantomData<fn() -> M>,
     pub s: Vec<char>,
     hash: Vec<u128>,
     powers: Vec<u128>,
 }
 
-impl<B: Base, M: Mod> RollingHash<B, M> {
+impl<M: Mod> RollingHash<M> {
     pub fn new(s: Vec<char>) -> Self {
+        let base: u128 = rand::thread_rng().gen_range(1, 1000000000);
         let mut hash = vec![0u128];
         for &c in s.iter() {
-            hash.push(M::rem(*hash.last().unwrap() * B::BASE + c as u128));
+            hash.push(M::rem(*hash.last().unwrap() * base + c as u128));
         }
 
         let mut powers = vec![1u128];
         for _ in 0..s.len() {
-            powers.push(M::rem(*powers.last().unwrap() * B::BASE));
+            powers.push(M::rem(*powers.last().unwrap() * base));
         }
 
         Self {
-            phantom_base: PhantomData,
-            phantom_mod: PhantomData,
+            phantom: PhantomData,
             s,
             hash,
             powers,
@@ -83,7 +73,7 @@ impl<B: Base, M: Mod> RollingHash<B, M> {
     }
 }
 
-pub type RollingHashDefault = RollingHash<DefaultBase, DefaultMod>;
+pub type RollingHashDefault = RollingHash<DefaultMod>;
 
 #[test]
 fn debug() {
