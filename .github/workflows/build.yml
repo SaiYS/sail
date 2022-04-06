@@ -1,0 +1,17 @@
+on: [push]
+
+name: build 1.42.0
+
+jobs:
+  build_and_test:
+    name: sail
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: 1.42.0
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
