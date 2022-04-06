@@ -1,24 +1,10 @@
 use algebraic_structures::abelian_group::AbelianGroup;
-use std::ops::{Index, IndexMut, RangeBounds};
+use std::ops::RangeBounds;
 
 #[derive(Debug, Clone)]
-pub struct FenwickTree<T> {
+pub struct FenwickTree<A: AbelianGroup> {
     len: usize,
-    buffer: Vec<T>,
-}
-
-impl<A> Index<usize> for FenwickTree<A> {
-    type Output = A;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        self.buffer.index(index)
-    }
-}
-
-impl<A> IndexMut<usize> for FenwickTree<A> {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        self.buffer.index_mut(index)
-    }
+    buffer: Vec<A>,
 }
 
 impl<A: AbelianGroup> FenwickTree<A> {
@@ -32,14 +18,12 @@ impl<A: AbelianGroup> FenwickTree<A> {
     pub fn len(&self) -> usize {
         self.len
     }
-}
 
-impl<A: AbelianGroup> FenwickTree<A> {
     fn prefix_sum_inner(&self, to: usize) -> A {
-        let mut res = self[0].clone();
+        let mut res = self.buffer[0].clone();
         let mut i = to;
         while i != 0 {
-            res = A::binary_operation(res, self[i].clone());
+            res = A::binary_operation(res, self.buffer[i].clone());
             i -= lowest_bit(i).unwrap();
         }
         res
@@ -64,10 +48,10 @@ impl<A: AbelianGroup> FenwickTree<A> {
 
     pub fn add(&mut self, mut i: usize, value: A::T) {
         if i == 0 {
-            self[0] = A::binary_operation(self[0].clone(), value.into());
+            self.buffer[0] = A::binary_operation(self.buffer[0].clone(), value.into());
         } else {
             while i < self.len() {
-                self[i] = A::binary_operation(self[i].clone(), value.clone().into());
+                self.buffer[i] = A::binary_operation(self.buffer[i].clone(), value.clone().into());
                 i += lowest_bit(i).unwrap();
             }
         }
