@@ -9,6 +9,7 @@ members = ["crates/*"]
 
 
 [dependencies]
+algebraic_structures = { path = "crates/algebraic_structures" }
 fenwick_tree = { path = "crates/fenwick_tree" }
 fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }

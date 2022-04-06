@@ -1,9 +1,7 @@
 use itertools::Itertools;
-use monoid::Monoid;
+use algebraic_structures::monoid::Monoid;
 use std::fmt::{Debug, Display};
 use std::ops::RangeBounds;
-
-pub mod monoid;
 
 #[derive(Debug, Clone)]
 pub struct SegmentTree<M> {
@@ -51,7 +49,7 @@ where
 impl<M> SegmentTree<M>
 where
     M: Monoid + Clone,
-    M::T: Clone,
+    M::T: Into<M> + Clone,
 {
     pub fn new(n: usize) -> Self {
         Self {
@@ -61,7 +59,7 @@ where
     }
 
     fn update_inner(&mut self, i: usize, value: M::T) {
-        self.buffer[i] = M::set(value.clone());
+        self.buffer[i] = value.clone().into();
         if i > 0 {
             self.update_inner(
                 (i - 1) >> 1,

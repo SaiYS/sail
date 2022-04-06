@@ -1,7 +1,5 @@
-pub mod abelian_group;
+use algebraic_structures::group::Group;
 use std::ops::{Index, IndexMut, RangeBounds};
-
-use abelian_group::AbelianGroup;
 
 #[derive(Debug, Clone)]
 pub struct FenwickTree<T> {
@@ -13,7 +11,7 @@ impl<A> Index<usize> for FenwickTree<A> {
     type Output = A;
 
     fn index(&self, index: usize) -> &Self::Output {
-        &self.buffer[index]
+        self.buffer.index(index)
     }
 }
 
@@ -23,7 +21,7 @@ impl<A> IndexMut<usize> for FenwickTree<A> {
     }
 }
 
-impl<A: AbelianGroup> FenwickTree<A> {
+impl<A: Group> FenwickTree<A> {
     pub fn new(n: usize) -> Self {
         Self {
             len: n + 1,
@@ -36,15 +34,12 @@ impl<A: AbelianGroup> FenwickTree<A> {
     }
 }
 
-impl<A: AbelianGroup> FenwickTree<A> {
+impl<A: Group> FenwickTree<A> {
     fn prefix_sum_inner(&self, to: usize) -> A {
-        if to >= self.len() {
-            panic!("panicked at 'index out of bounds'");
-        }
         let mut res = self[0].clone();
         let mut i = to;
         while i != 0 {
-            res = A::add(res, self[i].clone());
+            res = A::binary_operation(res, self[i].clone());
             i -= lowest_bit(i).unwrap();
         }
         res
@@ -60,27 +55,19 @@ impl<A: AbelianGroup> FenwickTree<A> {
 
     pub fn range_sum<R: RangeBounds<usize>>(&self, range: R) -> A::T {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
-        debug_assert!(from < to);
-
         if from == 0 {
             self.prefix_sum(to)
         } else {
-            A::add(self.prefix_sum_inner(to), self.prefix_sum_inner(from).inv()).get()
+            A::binary_operation(self.prefix_sum_inner(to), self.prefix_sum_inner(from).inv()).get()
         }
     }
 
     pub fn add(&mut self, mut i: usize, value: A::T) {
-        if i >= self.len() {
-            panic!("panicked at 'index out of bounds'");
-        }
-
-        let value = A::set(value);
-
         if i == 0 {
-            self.buffer[0] = A::add(self[0].clone(), value.clone());
+            self[0] = A::binary_operation(self[0].clone(), value.into());
         } else {
             while i < self.len() {
-                self.buffer[i] = A::add(self[i].clone(), value.clone());
+                self[i] = A::binary_operation(self[i].clone(), value.clone().into());
                 i += lowest_bit(i).unwrap();
             }
         }
