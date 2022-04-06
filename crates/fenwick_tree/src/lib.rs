@@ -1,4 +1,4 @@
-use algebraic_structures::group::Group;
+use algebraic_structures::abelian_group::AbelianGroup;
 use std::ops::{Index, IndexMut, RangeBounds};
 
 #[derive(Debug, Clone)]
@@ -21,7 +21,7 @@ impl<A> IndexMut<usize> for FenwickTree<A> {
     }
 }
 
-impl<A: Group> FenwickTree<A> {
+impl<A: AbelianGroup> FenwickTree<A> {
     pub fn new(n: usize) -> Self {
         Self {
             len: n + 1,
@@ -34,7 +34,7 @@ impl<A: Group> FenwickTree<A> {
     }
 }
 
-impl<A: Group> FenwickTree<A> {
+impl<A: AbelianGroup> FenwickTree<A> {
     fn prefix_sum_inner(&self, to: usize) -> A {
         let mut res = self[0].clone();
         let mut i = to;

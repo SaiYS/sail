@@ -75,14 +75,4 @@ impl<M: Mod> RollingHash<M> {
     }
 }
 
-pub type RollingHashDefault = RollingHash<DefaultMod>;
-
-#[test]
-fn debug() {
-    let s: Vec<char> = String::from("abracadabra").chars().collect();
-    let h = RollingHashDefault::new(s);
-    dbg!(&h);
-    dbg!(h.hash(0..4));
-    dbg!(h.hash(7..11));
-    assert_eq!(h.hash(0..4), h.hash(7..11));
-}
+pub type RollingHashFx = RollingHash<DefaultMod>;
