@@ -3,4 +3,3 @@
 - KMP
 - delayed segment tree
 - combinatorics
-- sparce table

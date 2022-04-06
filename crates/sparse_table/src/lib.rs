@@ -4,12 +4,12 @@ use std::{fmt::Debug, ops::RangeBounds};
 use util::expand_range_bound;
 
 #[derive(Debug, Clone)]
-pub struct SparceTable<S> {
+pub struct SparseTable<S> {
     len: usize,
     buffer: Vec<Vec<S>>,
 }
 
-impl<S: SemiGroup + Debug> SparceTable<S> {
+impl<S: SemiGroup + Debug> SparseTable<S> {
     pub fn new(v: Vec<S::T>) -> Self {
         let n = v.len();
         let rank = n.next_power_of_two().trailing_zeros() as usize;
