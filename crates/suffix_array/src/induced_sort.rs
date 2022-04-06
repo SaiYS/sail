@@ -5,8 +5,8 @@ use itertools::Itertools;
 #[derive(Debug, Clone)]
 pub enum InducedSort {}
 
-fn induced_sort(n: usize, s: &[u32], ty: &[LS], seed: Vec<usize>) -> Vec<usize> {
-    let mut buckets = vec![0usize; 1 << 8];
+fn induced_sort(n: usize, s: &[u8], ty: &[LS], seed: Vec<usize>) -> Vec<usize> {
+    let mut buckets = vec![0usize; std::u8::MAX as usize + 1];
     for &c in s {
         buckets[c as usize] += 1;
     }
@@ -47,7 +47,7 @@ fn induced_sort(n: usize, s: &[u32], ty: &[LS], seed: Vec<usize>) -> Vec<usize> 
     sa.into_iter().map(|x| x.unwrap()).collect_vec()
 }
 
-fn sa_is(s: &[u32]) -> Vec<usize> {
+fn sa_is(s: &[u8]) -> Vec<usize> {
     let n = s.len();
     let mut ty = vec![LS::L; n];
     ty[n - 1] = LS::L;
@@ -103,7 +103,7 @@ fn sa_is(s: &[u32]) -> Vec<usize> {
 }
 
 impl SuffixSort for InducedSort {
-    fn sort(s: &[u32]) -> Vec<usize> {
+    fn sort(s: &[u8]) -> Vec<usize> {
         sa_is(s)
     }
 }

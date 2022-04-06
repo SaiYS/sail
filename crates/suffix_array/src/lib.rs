@@ -4,7 +4,7 @@ use induced_sort::InducedSort;
 use itertools::Itertools;
 
 pub trait SuffixSort {
-    fn sort(s: &[u32]) -> Vec<usize>;
+    fn sort(s: &[u8]) -> Vec<usize>;
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -43,7 +43,7 @@ impl LS {
 pub enum DefaultSort {}
 
 impl SuffixSort for DefaultSort {
-    fn sort(s: &[u32]) -> Vec<usize> {
+    fn sort(s: &[u8]) -> Vec<usize> {
         (0..s.len()).sorted_by_key(|&from| &s[from..]).collect_vec()
     }
 }
@@ -61,7 +61,7 @@ impl<S: SuffixSort> SuffixArray<S> {
     pub fn new(s: Vec<char>) -> Self {
         Self {
             phantom: PhantomData,
-            buffer: S::sort(&s.iter().map(|&x| x as u32).collect_vec()),
+            buffer: S::sort(&s.iter().map(|&x| x as u8).collect_vec()),
             s,
         }
     }
@@ -111,15 +111,3 @@ impl<S> Index<usize> for SuffixArray<S> {
 }
 
 pub type SaIs = SuffixArray<InducedSort>;
-
-#[test]
-fn debug() {
-    let s = "safikkusuarei".chars().collect_vec();
-    let n = dbg!(s.len());
-    let sa_is = SaIs::new(s);
-    for i in 0..n {
-        println!("{:?}", &sa_is[i]);
-    }
-
-    dbg!(sa_is.find("re"));
-}
