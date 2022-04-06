@@ -18,6 +18,7 @@ modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 rolling_hash = { path = "crates/rolling_hash" }
 segment_tree = { path = "crates/segment_tree" }
+sparse_table = { path = "crates/sparse_table" }
 suffix_array = { path = "crates/suffix_array" }
 union_find = { path = "crates/union_find" }
 util = { path = "crates/util" }
