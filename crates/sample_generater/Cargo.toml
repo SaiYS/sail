@@ -8,3 +8,4 @@ license = "MIT"
 
 [dependencies]
 rand = { version = "=0.7.3", features = ["small_rng"] }
+itertools = "=0.9.0"
