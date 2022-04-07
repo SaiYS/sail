@@ -48,20 +48,20 @@ macro_rules! gen {
 
     // sorted array
     (@rng [$rng:expr] $name:tt = [$lower:tt => $upper:tt; $rep:tt]) => {
-        let $name = Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
+        let $name = itertools::Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
     };
     (@rng [$rng:expr] $name:tt = [$lower:tt => $upper:tt; $rep:tt], $($rest:tt)*) => {
-        let $name = Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
+        let $name = itertools::Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
         gen! {
             @rng [$rng]
             $($rest)*
         }
     };
     (@rng [$rng:expr] mut $name:tt = [$lower:tt => $upper:tt; $rep:tt]) => {
-        let mut $name = Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
+        let mut $name = itertools::Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
     };
     (@rng [$rng:expr] mut $name:tt = [$lower:tt => $upper:tt; $rep:tt], $($rest:tt)*) => {
-        let mut $name = Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
+        let mut $name = itertools::Itertools::sorted((0..$rep).map(|_| rand::Rng::gen_range($rng, $lower, $upper + 1))).collect::<Vec<_>>();
         gen! {
             @rng [$rng]
             $($rest)*
