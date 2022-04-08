@@ -96,7 +96,7 @@ macro_rules! gen {
         }
     };
 
-    // ficed value
+    // fixed value
     (@rng [$rng:expr] $name:tt = $val:tt) => {
         let $name = $val;
     };
