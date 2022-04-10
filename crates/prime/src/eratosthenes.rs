@@ -1,4 +1,4 @@
-use super::PrimeSieve;
+use super::sieve::PrimeSieve;
 
 #[derive(Debug, Clone)]
 pub struct SieveOfEratosthenes {

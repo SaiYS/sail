@@ -36,6 +36,3 @@ pub trait PrimeSieve {
         }
     }
 }
-
-pub mod atkin;
-pub mod eratosthenes;
