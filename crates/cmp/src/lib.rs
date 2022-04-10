@@ -8,15 +8,15 @@ impl<T: Sized + Clone + Ord> MaxAssign for T {
     }
 }
 
-pub trait MaxByKeyAssign {
-    fn max_assign<F: FnMut(&Self) -> K, K: Ord>(&mut self, other: Self, f: F);
-}
+// pub trait MaxByKeyAssign {
+//     fn max_assign<F: FnMut(&Self) -> K, K: Ord>(&mut self, other: Self, f: F);
+// }
 
-impl<T: Sized + Clone + Ord> MaxByKeyAssign for T {
-    fn max_assign<F: FnMut(&T) -> K, K: Ord>(&mut self, other: Self, f: F) {
-        *self = std::cmp::max_by_key(self.clone(), other, f);
-    }
-}
+// impl<T: Sized + Clone + Ord> MaxByKeyAssign for T {
+//     fn max_assign<F: FnMut(&T) -> K, K: Ord>(&mut self, other: Self, f: F) {
+//         *self = std::cmp::max_by_key(self.clone(), other, f);
+//     }
+// }
 
 pub trait MinAssign {
     fn min_assign(&mut self, other: Self);
@@ -28,15 +28,15 @@ impl<T: Sized + Clone + Ord> MinAssign for T {
     }
 }
 
-pub trait MinByKeyAssign {
-    fn min_assign<F: FnMut(&Self) -> K, K: Ord>(&mut self, other: Self, f: F);
-}
+// pub trait MinByKeyAssign {
+//     fn min_assign<F: FnMut(&Self) -> K, K: Ord>(&mut self, other: Self, f: F);
+// }
 
-impl<T: Sized + Clone + Ord> MinByKeyAssign for T {
-    fn min_assign<F: FnMut(&T) -> K, K: Ord>(&mut self, other: Self, f: F) {
-        *self = std::cmp::min_by_key(self.clone(), other, f);
-    }
-}
+// impl<T: Sized + Clone + Ord> MinByKeyAssign for T {
+//     fn min_assign<F: FnMut(&T) -> K, K: Ord>(&mut self, other: Self, f: F) {
+//         *self = std::cmp::min_by_key(self.clone(), other, f);
+//     }
+// }
 
 /// max function for variable arguments.
 ///
