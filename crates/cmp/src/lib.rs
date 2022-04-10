@@ -41,7 +41,7 @@ impl<T: Sized + Clone + Ord> MinByKeyAssign for T {
 /// max function for variable arguments.
 ///
 /// ```
-/// assert_eq!(4, max_min::max!(3, 1, 4));
+/// assert_eq!(4, cmp::max!(3, 1, 4));
 /// ```
 #[macro_export]
 macro_rules! max {
@@ -53,7 +53,7 @@ macro_rules! max {
 /// min function for variable arguments.
 ///
 /// ```
-/// assert_eq!(1, max_min::min!(3, 1, 4));
+/// assert_eq!(1, cmp::min!(3, 1, 4));
 /// ```
 #[macro_export]
 macro_rules! min {

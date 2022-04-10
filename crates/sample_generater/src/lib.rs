@@ -61,7 +61,7 @@ macro_rules! gen {
     // repeat pattern
     // foo = [bar; n]
     (@rng [$rng:expr] $name:tt = [$generable:expr; $rep:expr], $($rest:tt)*) => {
-        let $name = (0..$rep).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
+        let $name = (0..$rep as usize).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
         gen! {
             @rng [$rng]
             $($rest)*
@@ -69,11 +69,11 @@ macro_rules! gen {
     };
 
     (@rng [$rng:expr] $name:tt = [$generable:expr; $rep:expr]) => {
-        let $name = (0..$rep).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
+        let $name = (0..$rep as usize).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
     };
 
     (@rng [$rng:expr] mut $name:tt = [$generable:expr; $rep:expr], $($rest:tt)*) => {
-        let mut $name = (0..$rep).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
+        let mut $name = (0..$rep as usize).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
         gen! {
             @rng [$rng]
             $($rest)*
@@ -81,7 +81,7 @@ macro_rules! gen {
     };
 
     (@rng [$rng:expr] mut $name:tt = [$generable:expr; $rep:expr]) => {
-        let mut $name = (0..$rep).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
+        let mut $name = (0..$rep as usize).map(|_| $generable.gen($rng)).collect::<Vec<_>>();
     };
 
     // fixed pattern

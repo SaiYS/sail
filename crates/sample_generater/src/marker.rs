@@ -64,7 +64,8 @@ mod tests {
     #[test]
     fn stargraph() {
         gen! {
-            e = StarGraphEdges(5)
+            n = 5usize,
+            e = StarGraphEdges(n)
         }
 
         dbg!(e);
