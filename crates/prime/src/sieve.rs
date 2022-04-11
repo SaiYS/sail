@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use super::factorize::{FactorizationError, Factors};
 
 pub trait PrimeSieve {
@@ -12,7 +14,7 @@ pub trait PrimeSieve {
         } else if n == 1 {
             Err(FactorizationError::One)
         } else {
-            let mut factors = Vec::new();
+            let mut factors = BTreeMap::new();
             for &p in self.primes().iter() {
                 if p * p > n {
                     break;
@@ -24,12 +26,12 @@ pub trait PrimeSieve {
                 }
 
                 if c > 0 {
-                    factors.push((p, c));
+                    factors.insert(p, c);
                 }
             }
 
             if n != 1 {
-                factors.push((n, 1));
+                factors.insert(n, 1);
             }
 
             Ok(Factors(factors))

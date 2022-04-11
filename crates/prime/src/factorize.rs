@@ -1,11 +1,10 @@
+use std::collections::btree_map::{BTreeMap, IntoIter};
+
 #[derive(Debug, Clone)]
-pub struct Factors<T>(pub Vec<(T, usize)>);
+pub struct Factors<T>(pub BTreeMap<T, usize>);
 
 impl<T> Factors<T> {
-    pub fn new(factors: Vec<(T, usize)>) -> Self {
-        Self(factors)
-    }
-    pub fn factors(self) -> Vec<(T, usize)> {
+    pub fn factors(self) -> BTreeMap<T, usize> {
         self.0
     }
 }
@@ -13,7 +12,7 @@ impl<T> Factors<T> {
 impl<T> IntoIterator for Factors<T> {
     type Item = (T, usize);
 
-    type IntoIter = std::vec::IntoIter<Self::Item>;
+    type IntoIter = IntoIter<T, usize>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.factors().into_iter()
@@ -40,7 +39,7 @@ macro_rules! impl_factorize_for_uint {
                 } else if self == &1 {
                     Err(FactorizationError::One)
                 } else {
-                    let mut factors = vec![];
+                    let mut factors = BTreeMap::new();
                     let mut x = self.clone();
                     let mut d = 2;
                     loop {
@@ -53,13 +52,13 @@ macro_rules! impl_factorize_for_uint {
                             c += 1;
                         }
                         if c > 0 {
-                            factors.push((d, c))
+                            factors.insert(d, c);
                         }
                         d += 1;
                     }
 
                     if x > 1 {
-                        factors.push((x, 1));
+                        factors.insert(x, 1);
                     }
 
                     Ok(Factors(factors))
@@ -71,10 +70,3 @@ macro_rules! impl_factorize_for_uint {
 }
 
 impl_factorize_for_uint!(usize, u8, u16, u32, u64, u128);
-
-#[test]
-fn factorize() {
-    let n = 17u64;
-    let factors = n.factorize().ok().unwrap().factors();
-    assert_eq!(factors, vec![(17, 1)]);
-}
