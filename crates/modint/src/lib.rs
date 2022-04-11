@@ -1,8 +1,12 @@
+use num_integer::Integer;
+use num_traits::{Inv, One, Pow, Zero};
 use std::{
     convert::TryInto,
     fmt::{Debug, Display, Formatter},
+    iter::{Product, Sum},
     marker::PhantomData,
     num::{NonZeroU64, ParseIntError},
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
     str::FromStr,
 };
 
@@ -32,20 +36,20 @@ impl Modulus for Mod1000000007 {
 pub type ModInt1000000007 = ModInt<Mod1000000007>;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ModInt<O> {
+pub struct ModInt<M> {
     value: u64,
-    phantom: PhantomData<fn() -> O>,
+    phantom: PhantomData<fn() -> M>,
 }
 
-impl<O> ModInt<O> {
+impl<M> ModInt<M> {
     pub fn get(&self) -> u64 {
         self.value
     }
 }
 
-impl<O: Modulus> ModInt<O> {
+impl<M: Modulus> ModInt<M> {
     pub fn order(&self) -> u64 {
-        O::VALUE.get()
+        M::VALUE.get()
     }
 
     pub fn new<T>(value: T) -> Self
@@ -59,12 +63,12 @@ impl<O: Modulus> ModInt<O> {
             )
         });
 
-        let value = if value > O::VALUE.get() as i64 {
-            value as u64 % O::VALUE.get()
+        let value = if value > M::VALUE.get() as i64 {
+            value as u64 % M::VALUE.get()
         } else if value >= 0 {
             value as u64
         } else {
-            O::VALUE.get() - (value.abs() as u64 % O::VALUE.get())
+            M::VALUE.get() - (value.abs() as u64 % M::VALUE.get())
         };
 
         Self {
@@ -77,7 +81,7 @@ impl<O: Modulus> ModInt<O> {
 macro_rules! impl_from_primitive {
     ($($t:ty),*) => {
         $(
-            impl<O: Modulus> From<$t> for ModInt<O> {
+            impl<M: Modulus> From<$t> for ModInt<M> {
                 fn from(value: $t) -> Self {
                     Self::new(value)
                 }
@@ -88,7 +92,7 @@ macro_rules! impl_from_primitive {
 
 impl_from_primitive!(u8, u16, u32, u64, usize, i8, i16, i32, i64, isize);
 
-impl<O: Modulus> FromStr for ModInt<O> {
+impl<M: Modulus> FromStr for ModInt<M> {
     type Err = ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -97,76 +101,70 @@ impl<O: Modulus> FromStr for ModInt<O> {
     }
 }
 
-impl<O: Modulus> Debug for ModInt<O> {
+impl<M: Modulus> Debug for ModInt<M> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} (mod. {})", self.get(), O::VALUE)
+        write!(f, "{} (mod. {})", self.get(), M::VALUE)
     }
 }
 
-impl<O: Modulus> Display for ModInt<O> {
+impl<M: Modulus> Display for ModInt<M> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         Display::fmt(&self.get(), f)
     }
 }
 
-use num_traits::{Inv, One, Pow, Zero};
-use std::{
-    iter::{Product, Sum},
-    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
-};
-
-impl<O: Modulus> Add for ModInt<O> {
+impl<M: Modulus> Add for ModInt<M> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::new(if self.get() + rhs.get() < O::VALUE.get() {
+        Self::new(if self.get() + rhs.get() < M::VALUE.get() {
             self.get() + rhs.get()
         } else {
-            self.get() + rhs.get() - O::VALUE.get()
+            self.get() + rhs.get() - M::VALUE.get()
         })
     }
 }
 
-impl<O: Modulus> AddAssign for ModInt<O> {
+impl<M: Modulus> AddAssign for ModInt<M> {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs;
     }
 }
 
-impl<O: Modulus> Sub for ModInt<O> {
+impl<M: Modulus> Sub for ModInt<M> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         Self::new(if self.get() >= rhs.get() {
             self.get() - rhs.get()
         } else {
-            self.get() + O::VALUE.get() - rhs.get()
+            self.get() + M::VALUE.get() - rhs.get()
         })
     }
 }
 
-impl<O: Modulus> SubAssign for ModInt<O> {
+impl<M: Modulus> SubAssign for ModInt<M> {
     fn sub_assign(&mut self, rhs: Self) {
         *self = *self - rhs;
     }
 }
 
-impl<O: Modulus> Mul for ModInt<O> {
+impl<M: Modulus> Mul for ModInt<M> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        let value = (self.get() * rhs.get()) % O::VALUE.get();
+        let value = (self.get() * rhs.get()) % M::VALUE.get();
         Self::new(value)
     }
 }
 
-impl<O: Modulus> MulAssign for ModInt<O> {
+impl<M: Modulus> MulAssign for ModInt<M> {
     fn mul_assign(&mut self, rhs: Self) {
         *self = *self * rhs;
     }
 }
 
-impl<O: Modulus> Div for ModInt<O> {
+impl<M: Modulus> Div for ModInt<M> {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
@@ -174,13 +172,13 @@ impl<O: Modulus> Div for ModInt<O> {
     }
 }
 
-impl<O: Modulus> DivAssign for ModInt<O> {
+impl<M: Modulus> DivAssign for ModInt<M> {
     fn div_assign(&mut self, rhs: Self) {
         *self = *self / rhs
     }
 }
 
-impl<O: Modulus> Sum for ModInt<O> {
+impl<M: Modulus> Sum for ModInt<M> {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -189,7 +187,7 @@ impl<O: Modulus> Sum for ModInt<O> {
     }
 }
 
-impl<O: Modulus> Product for ModInt<O> {
+impl<M: Modulus> Product for ModInt<M> {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -201,34 +199,34 @@ impl<O: Modulus> Product for ModInt<O> {
 macro_rules! impl_ops_for_unsigned_int {
     ($($t:ty),*) => {
         $(
-            impl<O: Modulus> Add<$t> for ModInt<O> {
+            impl<M: Modulus> Add<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn add(self, rhs: $t) -> Self::Output {
                     let value = self.get() + rhs as u64;
-                    Self::new(if value < O::VALUE.get() {
+                    Self::new(if value < M::VALUE.get() {
                         value
                     } else {
-                        value - O::VALUE.get()
+                        value - M::VALUE.get()
                     })
                 }
             }
 
-            impl<O: Modulus> Add<ModInt<O>> for $t {
-                type Output = ModInt<O>;
+            impl<M: Modulus> Add<ModInt<M>> for $t {
+                type Output = ModInt<M>;
 
-                fn add(self, rhs: ModInt<O>) -> Self::Output {
+                fn add(self, rhs: ModInt<M>) -> Self::Output {
                     rhs + self
                 }
             }
 
-            impl<O: Modulus> AddAssign<$t> for ModInt<O> {
+            impl<M: Modulus> AddAssign<$t> for ModInt<M> {
                 fn add_assign(&mut self, rhs: $t) {
                     *self = *self + rhs;
                 }
             }
 
-            impl<O: Modulus> Sub<$t> for ModInt<O> {
+            impl<M: Modulus> Sub<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn sub(self, rhs: $t) -> Self::Output {
@@ -241,44 +239,44 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<O: Modulus> Sub<ModInt<O>> for $t {
-                type Output = ModInt<O>;
+            impl<M: Modulus> Sub<ModInt<M>> for $t {
+                type Output = ModInt<M>;
 
-                fn sub(self, rhs: ModInt<O>) -> Self::Output {
+                fn sub(self, rhs: ModInt<M>) -> Self::Output {
                     -(rhs - self)
                 }
             }
 
-            impl<O: Modulus> SubAssign<$t> for ModInt<O> {
+            impl<M: Modulus> SubAssign<$t> for ModInt<M> {
                 fn sub_assign(&mut self, rhs: $t) {
                     *self = *self - rhs;
                 }
             }
 
-            impl<O: Modulus> Mul<$t> for ModInt<O> {
+            impl<M: Modulus> Mul<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn mul(self, rhs: $t) -> Self::Output {
-                    let value = self.get() * rhs as u64 % O::VALUE.get();
+                    let value = self.get() * rhs as u64 % M::VALUE.get();
                     Self::new(value)
                 }
             }
 
-            impl<O: Modulus> Mul<ModInt<O>> for $t {
-                type Output = ModInt<O>;
+            impl<M: Modulus> Mul<ModInt<M>> for $t {
+                type Output = ModInt<M>;
 
-                fn mul(self, rhs: ModInt<O>) -> Self::Output {
+                fn mul(self, rhs: ModInt<M>) -> Self::Output {
                     rhs * self
                 }
             }
 
-            impl<O: Modulus> MulAssign<$t> for ModInt<O> {
+            impl<M: Modulus> MulAssign<$t> for ModInt<M> {
                 fn mul_assign(&mut self, rhs: $t) {
                     *self = *self * rhs;
                 }
             }
 
-            impl<O: Modulus> Div<$t> for ModInt<O> {
+            impl<M: Modulus> Div<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn div(self, rhs: $t) -> Self::Output {
@@ -286,22 +284,22 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<O: Modulus> Div<ModInt<O>> for $t {
-                type Output = ModInt<O>;
+            impl<M: Modulus> Div<ModInt<M>> for $t {
+                type Output = ModInt<M>;
 
-                fn div(self, rhs: ModInt<O>) -> Self::Output {
+                fn div(self, rhs: ModInt<M>) -> Self::Output {
                     (rhs / self).inv()
                 }
             }
 
 
-            impl<O: Modulus> DivAssign<$t> for ModInt<O> {
+            impl<M: Modulus> DivAssign<$t> for ModInt<M> {
                 fn div_assign(&mut self, rhs: $t) {
                     *self = *self / rhs
                 }
             }
 
-            impl<O: Modulus> Sum<$t> for ModInt<O> {
+            impl<M: Modulus> Sum<$t> for ModInt<M> {
                 fn sum<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -310,7 +308,7 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<O: Modulus> Product<$t> for ModInt<O> {
+            impl<M: Modulus> Product<$t> for ModInt<M> {
                 fn product<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -319,7 +317,7 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<O: Modulus> Pow<$t> for ModInt<O> {
+            impl<M: Modulus> Pow<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn pow(self, mut exp: $t) -> Self::Output {
@@ -344,7 +342,7 @@ impl_ops_for_unsigned_int!(u8, u16, u32, u64, usize);
 macro_rules! impl_ops_for_signed_int {
     ($($t:ty),*) => {
         $(
-            impl<O: Modulus> Add<$t> for ModInt<O> {
+            impl<M: Modulus> Add<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn add(self, rhs: $t) -> Self::Output {
@@ -352,14 +350,14 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<O: Modulus> AddAssign<$t> for ModInt<O> {
+            impl<M: Modulus> AddAssign<$t> for ModInt<M> {
                 fn add_assign(&mut self, rhs: $t) {
                     *self = *self + rhs;
                 }
             }
 
 
-            impl<O: Modulus> Sub<$t> for ModInt<O> {
+            impl<M: Modulus> Sub<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn sub(self, rhs: $t) -> Self::Output {
@@ -367,13 +365,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<O: Modulus> SubAssign<$t> for ModInt<O> {
+            impl<M: Modulus> SubAssign<$t> for ModInt<M> {
                 fn sub_assign(&mut self, rhs: $t) {
                     *self = *self - rhs;
                 }
             }
 
-            impl<O: Modulus> Mul<$t> for ModInt<O> {
+            impl<M: Modulus> Mul<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn mul(self, rhs: $t) -> Self::Output {
@@ -381,13 +379,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<O: Modulus> MulAssign<$t> for ModInt<O> {
+            impl<M: Modulus> MulAssign<$t> for ModInt<M> {
                 fn mul_assign(&mut self, rhs: $t) {
                     *self = *self * rhs;
                 }
             }
 
-            impl<O: Modulus> Div<$t> for ModInt<O> {
+            impl<M: Modulus> Div<$t> for ModInt<M> {
                 type Output = Self;
 
                 fn div(self, rhs: $t) -> Self::Output {
@@ -395,13 +393,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<O: Modulus> DivAssign<$t> for ModInt<O> {
+            impl<M: Modulus> DivAssign<$t> for ModInt<M> {
                 fn div_assign(&mut self, rhs: $t) {
                     *self = *self / rhs
                 }
             }
 
-            impl<O: Modulus> Sum<$t> for ModInt<O> {
+            impl<M: Modulus> Sum<$t> for ModInt<M> {
                 fn sum<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -410,7 +408,7 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<O: Modulus> Product<$t> for ModInt<O> {
+            impl<M: Modulus> Product<$t> for ModInt<M> {
                 fn product<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -424,7 +422,7 @@ macro_rules! impl_ops_for_signed_int {
 
 impl_ops_for_signed_int!(i8, i16, i32, i64, isize);
 
-impl<O: Modulus> Neg for ModInt<O> {
+impl<M: Modulus> Neg for ModInt<M> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
@@ -432,7 +430,7 @@ impl<O: Modulus> Neg for ModInt<O> {
     }
 }
 
-impl<O: Modulus> Zero for ModInt<O> {
+impl<M: Modulus> Zero for ModInt<M> {
     fn zero() -> Self {
         Self::new(0)
     }
@@ -442,7 +440,7 @@ impl<O: Modulus> Zero for ModInt<O> {
     }
 }
 
-impl<O: Modulus> One for ModInt<O> {
+impl<M: Modulus> One for ModInt<M> {
     fn one() -> Self {
         Self::new(1)
     }
@@ -452,22 +450,30 @@ impl<O: Modulus> One for ModInt<O> {
     }
 }
 
-impl<O: Modulus> Inv for ModInt<O> {
+impl<M: Modulus> Inv for ModInt<M> {
     type Output = Self;
 
     fn inv(self) -> Self::Output {
+        // dbg!(i64::extended_gcd(&self.get(), &M::VALUE.get()));
+        // self.pow(M::VALUE.get() - 2)
         if self.get() == 0 {
             panic!("attempt to divide by zero")
-        } else if O::IS_PRIME {
-            self.pow(O::VALUE.get() - 2)
         } else {
-            unimplemented!("division at the non-prime order")
+            debug_assert!(self.get().gcd(&M::VALUE.get()) == 1);
+            Self::new(Integer::extended_gcd(&(self.get() as i64), &(M::VALUE.get() as i64)).x)
         }
     }
 }
 
-impl<O> vis::visualize::Visualize for ModInt<O> {
-    fn visualize(&self, _split: &str) -> String {
-        self.get().visualize(_split)
+impl<M> vis::visualize::Visualize for ModInt<M> {
+    fn visualize(&self, split: &str) -> String {
+        self.get().visualize(split)
+    }
+}
+
+#[test]
+fn feature() {
+    for i in 1u64..13 {
+        assert!((ModInt998244353::new(i).inv() * i).is_one());
     }
 }
