@@ -1,11 +1,11 @@
-use super::factorize::{FactorizationError, Factorized};
+use super::factorize::{FactorizationError, Factors};
 
 pub trait PrimeSieve {
     fn limit(&self) -> usize;
     fn is_prime(&self, n: usize) -> bool;
     fn primes(&self) -> &[usize];
 
-    fn factorize(&self, mut n: usize) -> Result<Factorized<usize>, FactorizationError> {
+    fn factorize(&self, mut n: usize) -> Result<Factors<usize>, FactorizationError> {
         assert!(n <= self.limit() * self.limit());
         if n == 0 {
             Err(FactorizationError::Zero)
@@ -32,7 +32,7 @@ pub trait PrimeSieve {
                 factors.push((n, 1));
             }
 
-            Ok(Factorized::new(factors))
+            Ok(Factors(factors))
         }
     }
 }

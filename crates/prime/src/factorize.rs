@@ -1,24 +1,22 @@
 #[derive(Debug, Clone)]
-pub struct Factorized<T> {
-    factors: Vec<(T, usize)>,
-}
+pub struct Factors<T>(pub Vec<(T, usize)>);
 
-impl<T> Factorized<T> {
+impl<T> Factors<T> {
     pub fn new(factors: Vec<(T, usize)>) -> Self {
-        Self { factors }
+        Self(factors)
     }
     pub fn factors(self) -> Vec<(T, usize)> {
-        self.factors
+        self.0
     }
 }
 
-impl<T> IntoIterator for Factorized<T> {
+impl<T> IntoIterator for Factors<T> {
     type Item = (T, usize);
 
     type IntoIter = std::vec::IntoIter<Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.factors.into_iter()
+        self.factors().into_iter()
     }
 }
 
@@ -29,14 +27,14 @@ pub enum FactorizationError {
 }
 
 pub trait Factorization: Sized {
-    fn factorize(&self) -> Result<Factorized<Self>, FactorizationError>;
+    fn factorize(&self) -> Result<Factors<Self>, FactorizationError>;
 }
 
 macro_rules! impl_factorize_for_uint {
 ($($t:ty),*) => {
     $(
         impl Factorization for $t {
-            fn factorize(&self) -> Result<Factorized<Self>, FactorizationError> {
+            fn factorize(&self) -> Result<Factors<Self>, FactorizationError> {
                 if self == &0 {
                     Err(FactorizationError::Zero)
                 } else if self == &1 {
@@ -64,7 +62,7 @@ macro_rules! impl_factorize_for_uint {
                         factors.push((x, 1));
                     }
 
-                    Ok(Factorized { factors })
+                    Ok(Factors(factors))
                 }
             }
         }
