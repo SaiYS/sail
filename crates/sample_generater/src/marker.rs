@@ -3,7 +3,7 @@ use itertools::Itertools;
 use rand::seq::SliceRandom;
 
 #[derive(Clone, Copy)]
-pub struct Permutation(usize);
+pub struct Permutation(pub usize);
 
 impl Generable for Permutation {
     type Output = Vec<usize>;
@@ -16,7 +16,7 @@ impl Generable for Permutation {
 }
 
 #[derive(Clone, Copy)]
-pub struct Permutation1(usize);
+pub struct Permutation1(pub usize);
 
 impl Generable for Permutation1 {
     type Output = Vec<usize>;
@@ -29,7 +29,7 @@ impl Generable for Permutation1 {
 }
 
 #[derive(Clone, Copy)]
-pub struct StarGraphEdges(usize);
+pub struct StarGraphEdges(pub usize);
 
 impl Generable for StarGraphEdges {
     type Output = Vec<(usize, usize)>;
