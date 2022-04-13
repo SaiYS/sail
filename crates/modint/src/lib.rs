@@ -1,4 +1,4 @@
-use num_integer::Integer;
+use num_integer::{Integer};
 use num_traits::{Inv, One, Pow, Zero};
 use std::{
     convert::TryInto,
@@ -471,9 +471,4 @@ impl<M> vis::visualize::Visualize for ModInt<M> {
     }
 }
 
-#[test]
-fn feature() {
-    for i in 1u64..13 {
-        assert!((ModInt998244353::new(i).inv() * i).is_one());
-    }
-}
+pub mod combinatorics;
