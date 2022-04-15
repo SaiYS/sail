@@ -58,13 +58,3 @@ impl<M: Modulus> Factorial for ModInt<M> {
         self.permutation(k) / k.factorial()
     }
 }
-
-#[test]
-fn factorial() {
-    let a = 5usize.factorial();
-    dbg!(a);
-    let b = 5usize.combination(0u8);
-    dbg!(b);
-    let c = crate::ModInt998244353::new(5).combination(6);
-    dbg!(c);
-}

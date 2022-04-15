@@ -471,4 +471,5 @@ impl<M> vis::visualize::Visualize for ModInt<M> {
     }
 }
 
-pub mod combinatorics;
+pub mod factorial;
+pub mod table;
