@@ -1,4 +1,4 @@
-use num_integer::{Integer};
+use num_integer::Integer;
 use num_traits::{Inv, One, Pow, Zero};
 use std::{
     convert::TryInto,
@@ -466,8 +466,8 @@ impl<M: Modulus> Inv for ModInt<M> {
 }
 
 impl<M> vis::visualize::Visualize for ModInt<M> {
-    fn visualize(&self, split: &str) -> String {
-        self.get().visualize(split)
+    fn visualize(&self) -> String {
+        self.get().visualize()
     }
 }
 
