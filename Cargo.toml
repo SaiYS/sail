@@ -10,6 +10,8 @@ members = ["crates/*"]
 
 [dependencies]
 algebraic_structures = { path = "crates/algebraic_structures" }
+bitset = { path = "crates/bitset" }
+cmp = { path = "crates/cmp" }
 fenwick_tree = { path = "crates/fenwick_tree" }
 fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }
@@ -17,6 +19,7 @@ itertools_sail = { path = "crates/itertools_sail" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 rolling_hash = { path = "crates/rolling_hash" }
+sample_generater = { path = "crates/sample_generater" }
 segment_tree = { path = "crates/segment_tree" }
 sparse_table = { path = "crates/sparse_table" }
 suffix_array = { path = "crates/suffix_array" }
