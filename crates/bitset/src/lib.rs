@@ -140,45 +140,35 @@ impl Bitset {
         self.buffer.len()
     }
 
-    pub fn get(&self, k: usize) -> Option<bool> {
-        if k < self.len() {
-            let (w, b) = address(k);
+    pub fn get(&self, i: usize) -> Option<bool> {
+        if i < self.len() {
+            let (w, b) = address(i);
             Some(self.buffer[w] & (1 << b) != 0)
         } else {
             None
         }
     }
 
-    pub fn set(&mut self, k: usize) {
-        debug_assert!(k < self.len());
-        let (w, b) = address(k);
+    pub fn set(&mut self, i: usize) {
+        debug_assert!(i < self.len());
+        let (w, b) = address(i);
         self.buffer[w] |= 1 << b;
     }
 
-    pub fn remove(&mut self, k: usize) {
-        debug_assert!(k < self.len());
-        let (w, b) = address(k);
+    pub fn remove(&mut self, i: usize) {
+        debug_assert!(i < self.len());
+        let (w, b) = address(i);
         self.buffer[w] &= ONES ^ (1 << b);
     }
 
-    pub fn flip(&mut self, k: usize) {
-        debug_assert!(k < self.len());
-        let (w, b) = address(k);
+    pub fn flip(&mut self, i: usize) {
+        debug_assert!(i < self.len());
+        let (w, b) = address(i);
         self.buffer[w] ^= 1 << b;
     }
 
     pub fn count_zeros(&self) -> usize {
         self.len() - self.count_ones()
-        // self.buffer
-        //     .iter()
-        //     .map(|w| w.count_zeros() as usize)
-        //     .sum::<usize>()
-        //     - (self.len()..self.words() * 8)
-        //         .filter(|&x| {
-        //             let (w, b) = address(x);
-        //             self.buffer[w] & (1 << b) == 0
-        //         })
-        //         .count()
     }
 
     pub fn count_ones(&self) -> usize {
@@ -196,8 +186,8 @@ impl Bitset {
 }
 
 // return (w, b), kth bit appears at bth bit of wth word
-fn address(k: usize) -> (usize, usize) {
-    (k >> 3, k & 7)
+fn address(i: usize) -> (usize, usize) {
+    (i >> 3, i & 7)
 }
 
 #[test]

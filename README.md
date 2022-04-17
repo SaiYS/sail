@@ -1,3 +1,3 @@
-# Sail: Competitive Programming Library
+# Competitive Programming Library SAIL
 
 This project is under development

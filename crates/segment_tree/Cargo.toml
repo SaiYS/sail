@@ -11,3 +11,7 @@ num-traits = "=0.2.11"
 itertools = "=0.9.0"
 util = { path = "../util" }
 algebraic_structures = { path = "../algebraic_structures" }
+
+[dev-dependencies]
+rand = "0.8.5"
+modint = { path = "../modint" }

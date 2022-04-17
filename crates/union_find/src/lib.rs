@@ -12,18 +12,18 @@ impl UnionFind {
         }
     }
 
-    pub fn tree_size(&mut self, id: usize) -> usize {
-        let root = self.root(id);
+    pub fn tree_size(&mut self, i: usize) -> usize {
+        let root = self.root(i);
         self.size[root]
     }
 
-    pub fn root(&mut self, id: usize) -> usize {
-        if let Some(parent) = self.root[id] {
+    pub fn root(&mut self, i: usize) -> usize {
+        if let Some(parent) = self.root[i] {
             let res = self.root(parent);
-            self.root[id] = Some(res);
+            self.root[i] = Some(res);
             res
         } else {
-            id
+            i
         }
     }
 
