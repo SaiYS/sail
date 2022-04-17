@@ -1,4 +1,4 @@
-use algebraic_structures::semigroup::SemiGroup;
+pub use algebraic_structures::semigroup::SemiGroup;
 use itertools::Itertools;
 use std::ops::RangeBounds;
 use util::expand_range_bound;

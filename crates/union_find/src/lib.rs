@@ -13,13 +13,13 @@ impl UnionFind {
     }
 
     pub fn tree_size(&mut self, id: usize) -> usize {
-        let root = self.find_root(id);
+        let root = self.root(id);
         self.size[root]
     }
 
-    pub fn find_root(&mut self, id: usize) -> usize {
+    pub fn root(&mut self, id: usize) -> usize {
         if let Some(parent) = self.root[id] {
-            let res = self.find_root(parent);
+            let res = self.root(parent);
             self.root[id] = Some(res);
             res
         } else {
@@ -28,8 +28,8 @@ impl UnionFind {
     }
 
     pub fn unite(&mut self, a: usize, b: usize) {
-        let mut a = self.find_root(a);
-        let mut b = self.find_root(b);
+        let mut a = self.root(a);
+        let mut b = self.root(b);
 
         if a == b {
             return;
@@ -47,6 +47,6 @@ impl UnionFind {
     }
 
     pub fn is_joint(&mut self, a: usize, b: usize) -> bool {
-        self.find_root(a) == self.find_root(b)
+        self.root(a) == self.root(b)
     }
 }

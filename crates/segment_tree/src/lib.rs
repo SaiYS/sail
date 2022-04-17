@@ -1,4 +1,4 @@
-use algebraic_structures::monoid::Monoid;
+pub use algebraic_structures::monoid::Monoid;
 use std::ops::RangeBounds;
 
 #[derive(Debug, Clone)]

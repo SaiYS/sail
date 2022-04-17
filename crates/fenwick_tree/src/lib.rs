@@ -1,4 +1,4 @@
-use algebraic_structures::abelian_group::AbelianGroup;
+pub use algebraic_structures::abelian_group::AbelianGroup;
 use std::ops::RangeBounds;
 
 #[derive(Debug, Clone)]
