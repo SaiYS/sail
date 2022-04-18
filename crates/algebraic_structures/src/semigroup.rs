@@ -4,8 +4,22 @@ use std::ops::{Add, BitAnd, BitOr, BitXor, Mul, Not};
 
 pub trait SemiGroup: Clone {
     type T: Clone + Into<Self>;
-    fn binary_operation(x: Self, y: Self) -> Self;
     fn get(self) -> Self::T;
+    fn binary_operation(x: Self, y: Self) -> Self;
+    fn binary_operation_assign(&mut self, other: Self) {
+        *self = Self::binary_operation(self.clone(), other);
+    }
+    fn fold(v: &[Self]) -> Option<Self> {
+        if v.is_empty() {
+            None
+        } else {
+            let mut res = v[0].clone();
+            for e in v.iter().skip(1) {
+                res = Self::binary_operation(res.clone(), e.clone());
+            }
+            Some(res)
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]

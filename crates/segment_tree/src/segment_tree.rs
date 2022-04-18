@@ -121,21 +121,6 @@ impl<M: Monoid> SegmentTree<M> {
         &self.buffer[self.capacity - 1..self.size]
     }
 
-    /// Update one value at index `i` with `new_value`
-    ///
-    /// Complexity: O(log n)
-    pub fn update(&mut self, i: usize, new_value: M::T) {
-        let mut cur = self.capacity - 1 + i;
-        self.buffer[cur] = new_value.into();
-        while cur != 0 {
-            cur = (cur - 1) >> 1;
-            self.buffer[cur] = M::binary_operation(
-                self.buffer[cur * 2 + 1].clone(),
-                self.buffer[cur * 2 + 2].clone(),
-            )
-        }
-    }
-
     /// Returns a value of i-th leaf
     ///
     /// Complexity: O(1)
@@ -176,6 +161,21 @@ impl<M: Monoid> SegmentTree<M> {
     /// This can be more efficient than calling `self.get_range(..)`
     pub fn get_all(&self) -> M::T {
         self.buffer[0].clone().get()
+    }
+
+    /// Update one value at index `i` with `new_value`
+    ///
+    /// Complexity: O(log n)
+    pub fn update(&mut self, i: usize, new_value: M::T) {
+        let mut cur = self.capacity - 1 + i;
+        self.buffer[cur] = new_value.into();
+        while cur != 0 {
+            cur = (cur - 1) >> 1;
+            self.buffer[cur] = M::binary_operation(
+                self.buffer[cur * 2 + 1].clone(),
+                self.buffer[cur * 2 + 2].clone(),
+            )
+        }
     }
 }
 
