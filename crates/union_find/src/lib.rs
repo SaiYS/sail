@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::HashMap;
 
 use itertools::Itertools;
 
@@ -81,6 +81,3 @@ impl UnionFind {
         (0..self.len()).map(|x| (self.root(x), x)).into_group_map()
     }
 }
-
-#[test]
-fn feature() {}
