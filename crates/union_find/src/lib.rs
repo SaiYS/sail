@@ -1,5 +1,11 @@
+use std::collections::{BTreeMap, HashMap, HashSet};
+
+use itertools::Itertools;
+
+/// UnionFind
 #[derive(Debug, Clone)]
 pub struct UnionFind {
+    len: usize,
     root: Vec<Option<usize>>,
     size: Vec<usize>,
 }
@@ -7,14 +13,14 @@ pub struct UnionFind {
 impl UnionFind {
     pub fn new(n: usize) -> Self {
         Self {
+            len: n,
             root: vec![None; n],
             size: vec![1; n],
         }
     }
 
-    pub fn tree_size(&mut self, i: usize) -> usize {
-        let root = self.root(i);
-        self.size[root]
+    pub fn len(&self) -> usize {
+        self.len
     }
 
     pub fn root(&mut self, i: usize) -> usize {
@@ -27,6 +33,9 @@ impl UnionFind {
         }
     }
 
+    /// Merges trees containing `a` or `b`
+    ///
+    /// if `a` and `b` are already connected, do nothing
     pub fn unite(&mut self, a: usize, b: usize) {
         let mut a = self.root(a);
         let mut b = self.root(b);
@@ -46,7 +55,32 @@ impl UnionFind {
         self.size[a] += self.size[b];
     }
 
+    /// Returns if `a` and `b` is contained in the same connected tree
     pub fn is_joint(&mut self, a: usize, b: usize) -> bool {
         self.root(a) == self.root(b)
     }
+
+    pub fn tree_size(&mut self, i: usize) -> usize {
+        let root = self.root(i);
+        self.size[root]
+    }
+
+    pub fn get_tree(&mut self, i: usize) -> Vec<usize> {
+        (0..self.len())
+            .filter(|&x| self.root(x) == self.root(i))
+            .collect_vec()
+    }
+
+    /// Returns the number of connected trees
+    pub fn trees_count(&mut self) -> usize {
+        (0..self.len()).map(|x| self.root(x)).unique().count()
+    }
+
+    /// Returns map of connected trees
+    pub fn trees(&mut self) -> HashMap<usize, Vec<usize>> {
+        (0..self.len()).map(|x| (self.root(x), x)).into_group_map()
+    }
 }
+
+#[test]
+fn feature() {}
