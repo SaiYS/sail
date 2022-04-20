@@ -67,40 +67,152 @@ impl<T: Visualize, U: Visualize, V: Visualize, W: Visualize, X: Visualize> Visua
 
 #[macro_export]
 macro_rules! vis {
-    () => {
-        println!();
+    (@w [$w:expr] @rest $(;)*) => {};
+
+    (@w [$w:expr] @term [$term:expr] @item [$item:expr] @rest $($rest:tt)*) => {
+        write!($w, "{}{}", $item, $term).ok();
+        vis!(
+            @w [$w]
+            @rest $($rest)*
+            ;
+        );
     };
 
-    ($x:expr) => {
-        println!("{}", $x.visualize());
+    (@w [$w:expr] @rest $item:tt , $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term [' ']
+            @item [$item]
+            @rest $($rest)*
+            ;
+        );
     };
 
-    ($xs:expr => $sep:literal) => {
-        vis!(itertools::Itertools::join(
-            &mut $xs.iter().map(|e| e.visualize()),
-            $sep
-        ));
+    (@w [$w:expr] @rest $item:tt ; $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term ['\n']
+            @item [$item]
+            @rest $($rest)*
+            ;
+        );
     };
 
-    ($xs:expr => $sep1:literal => $sep2:literal) => {
-        vis!(itertools::Itertools::join(
-            &mut $xs
-                .iter()
-                .map(|ys| itertools::Itertools::join(&mut ys.iter().map(|e| e.visualize()), $sep1)),
-            $sep2
-        ));
+    (@w [$w:expr] @rest $item:tt => $sep:tt , $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term [' ']
+            @item [
+                itertools::Itertools::join(
+                    &mut $item.iter().map(|e| e.visualize()),
+                    $sep
+                )
+            ]
+            @rest $($rest)*
+            ;
+        );
     };
 
-    ($xs:expr => $sep1:literal => $sep2:literal => $sep3:literal) => {
-        vis!(itertools::Itertools::join(
-            &mut $xs.iter().map(|ys| itertools::Itertools::join(
-                &mut ys.iter().map(|zs| itertools::Itertools::join(
-                    &mut zs.iter().map(|e| e.visualize()),
-                    $sep1
-                )),
-                $sep2
-            )),
-            $sep3
-        ));
+    (@w [$w:expr] @rest $xs:tt => $sep:tt ; $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term ['\n']
+            @item [
+                itertools::Itertools::join(
+                    &mut $xs.iter().map(|e| e.visualize()),
+                    $sep
+                )
+            ]
+            @rest $($rest)*
+            ;
+        );
+    };
+
+    (@w [$w:expr] @rest $xs:tt => $sep1:tt => $sep2:tt , $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term [' ']
+            @item [
+                itertools::Itertools::join(
+                    &mut $xs
+                        .iter()
+                        .map(|ys| itertools::Itertools::join(&mut ys.iter().map(|e| e.visualize()), $sep1)),
+                    $sep2
+                )
+            ]
+            @rest $($rest)*
+            ;
+        );
+    };
+
+    (@w [$w:expr] @rest $xs:tt => $sep1:tt => $sep2:tt ; $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term ['\n']
+            @item [
+                itertools::Itertools::join(
+                    &mut $xs
+                        .iter()
+                        .map(|ys| itertools::Itertools::join(&mut ys.iter().map(|e| e.visualize()), $sep1)),
+                    $sep2
+                )
+            ]
+            @rest $($rest)*
+            ;
+        );
+    };
+
+    (@w [$w:expr] @rest $xs:tt => $sep1:tt => $sep2:tt => $sep3:tt , $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term [' ']
+            @item [
+                itertools::Itertools::join(
+                    &mut $xs.iter().map(|ys| itertools::Itertools::join(
+                        &mut ys.iter().map(|zs| itertools::Itertools::join(
+                            &mut zs.iter().map(|e| e.visualize()),
+                            $sep1
+                        )),
+                        $sep2
+                    )),
+                    $sep3
+                )
+            ]
+            @rest $($rest)*
+            ;
+        );
+    };
+
+    (@w [$w:expr] @rest $xs:tt => $sep1:tt => $sep2:tt => $sep3:tt ; $($rest:tt)*) => {
+        vis!(
+            @w [$w]
+            @term ['\n']
+            @item [
+                itertools::Itertools::join(
+                    &mut $xs.iter().map(|ys| itertools::Itertools::join(
+                        &mut ys.iter().map(|zs| itertools::Itertools::join(
+                            &mut zs.iter().map(|e| e.visualize()),
+                            $sep1
+                        )),
+                        $sep2
+                    )),
+                    $sep3
+                )
+            ]
+            @rest $($rest)*
+            ;
+        );
+    };
+
+    ($($rest:tt)*) => {
+        let mut writer = std::io::BufWriter::new(std::io::stdout());
+        vis!(
+            @w [writer]
+            @rest $($rest)*
+            ;
+        );
+
+        std::io::Write::flush(&mut writer).unwrap();
+        drop(writer);
     };
 }
