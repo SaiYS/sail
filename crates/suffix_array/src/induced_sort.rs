@@ -52,16 +52,16 @@ fn sa_is(s: &[u8]) -> Vec<usize> {
     let mut ty = vec![LS::L; n];
     ty[n - 1] = LS::L;
     for i in (0..n - 1).rev() {
-        ty[i] = if s[i] < s[i + 1] {
-            LS::S
-        } else if s[i] > s[i + 1] {
-            if ty[i + 1].is_s() {
-                ty[i + 1] = LS::Lms;
+        ty[i] = match s[i].cmp(&s[i + 1]) {
+            std::cmp::Ordering::Less => LS::S,
+            std::cmp::Ordering::Equal => ty[i + 1],
+            std::cmp::Ordering::Greater => {
+                if ty[i + 1].is_s() {
+                    ty[i + 1] = LS::Lms;
+                }
+                LS::L
             }
-            LS::L
-        } else {
-            ty[i + 1]
-        };
+        }
     }
 
     let rep = (0..n).filter(|&x| ty[x].is_lms()).collect_vec();
@@ -82,7 +82,7 @@ fn sa_is(s: &[u8]) -> Vec<usize> {
         }
         t[j] = Some(cur);
     }
-    let t = t.into_iter().filter_map(|x| x).collect_vec();
+    let t = t.into_iter().flatten().collect_vec();
 
     let seed = if m == 0 {
         vec![]

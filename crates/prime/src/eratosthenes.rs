@@ -33,10 +33,14 @@ impl SieveOfEratosthenes {
             cur += 1;
         }
 
-        for i in cur..=n {
-            if is_prime[i] {
-                primes.push(i);
-            }
+        for (i, _) in is_prime
+            .iter()
+            .enumerate()
+            .take(n + 1)
+            .skip(cur)
+            .filter(|&(_, &e)| e)
+        {
+            primes.push(i);
         }
 
         Self {

@@ -17,6 +17,10 @@ impl<D: DirectionType> ListGraph<D> {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub(crate) fn directed(&self) -> bool {
         D::DIRECTED
     }

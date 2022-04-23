@@ -18,10 +18,10 @@ impl<A: AbelianGroup> From<Vec<A::T>> for FenwickTree<A> {
 }
 
 impl<A: AbelianGroup> FenwickTree<A> {
-    pub fn new(n: usize) -> Self {
+    pub fn new(len: usize) -> Self {
         Self {
-            len: n + 1,
-            buffer: vec![A::identity(); n + 1],
+            len: len + 1,
+            buffer: vec![A::identity(); len + 1],
         }
     }
 

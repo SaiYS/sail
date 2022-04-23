@@ -93,10 +93,14 @@ impl SieveOfAtkin {
             }
         }
 
-        for i in 7..=limit {
-            if is_prime[i] {
-                primes.push(i);
-            }
+        for (i, _) in is_prime
+            .iter()
+            .enumerate()
+            .take(limit + 1)
+            .skip(7)
+            .filter(|&(_, &e)| e)
+        {
+            primes.push(i);
         }
 
         Self {
