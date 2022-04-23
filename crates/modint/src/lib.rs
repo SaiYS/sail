@@ -294,7 +294,6 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-
             impl<M: Modulus> DivAssign<$t> for ModInt<M> {
                 fn div_assign(&mut self, rhs: $t) {
                     *self = *self / rhs
@@ -357,7 +356,6 @@ macro_rules! impl_ops_for_signed_int {
                     *self = *self + rhs;
                 }
             }
-
 
             impl<M: Modulus> Sub<$t> for ModInt<M> {
                 type Output = Self;

@@ -7,7 +7,6 @@ license = "MIT"
 [workspace]
 members = ["crates/*"]
 
-
 [dependencies]
 algebraic_structures = { path = "crates/algebraic_structures" }
 bitset = { path = "crates/bitset" }
