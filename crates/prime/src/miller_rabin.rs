@@ -1,15 +1,15 @@
 use rand::Rng;
 
 pub trait MillerRabin {
-    fn is_prime<R: Rng>(self, accuracy: usize, rng: &mut R) -> bool;
+    fn is_prime<R: Rng>(&self, accuracy: usize, rng: &mut R) -> bool;
 }
 
 macro_rules! impl_miller_rabin_for_uint {
     ($($t:ty),*) => {
         $(
             impl MillerRabin for $t {
-                fn is_prime<R: rand::Rng>(self, k: usize, rng: &mut R) -> bool {
-                    let n = self;
+                fn is_prime<R: rand::Rng>(&self, k: usize, rng: &mut R) -> bool {
+                    let n = *self;
                     if n == 2 {
                         true
                     } else if n == 0 || n == 1 || n & 1 == 0 {

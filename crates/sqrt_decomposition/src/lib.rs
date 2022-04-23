@@ -32,13 +32,14 @@ impl<M: Monoid> Decomposition<M> {
             block_sum: (0..)
                 .take_while(|&x| x * block_size < len)
                 .map(|i| {
-                    let from = i * block_size;
-                    let to = min(from + block_size, len);
-                    let mut sum = M::identity();
-                    for j in from..to {
-                        sum.binary_operation_assign(original[j].clone());
-                    }
-                    sum
+                    original
+                        .iter()
+                        .take(min(i * block_size + block_size, len))
+                        .skip(i * block_size)
+                        .fold(M::identity(), |mut sum, x| {
+                            sum.binary_operation_assign(x.clone());
+                            sum
+                        })
                 })
                 .collect(),
             original,
@@ -47,6 +48,10 @@ impl<M: Monoid> Decomposition<M> {
 
     pub fn len(&self) -> usize {
         self.len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     fn block_len(&self) -> usize {
@@ -106,7 +111,7 @@ mod tests {
 
     fn verify_sqrt_decomposition() {
         let mut rng = thread_rng();
-        let n = 2000;
+        let n = 200;
         let a = repeat_with(|| rng.gen_range(0..n))
             .take(n)
             .collect::<Vec<usize>>();

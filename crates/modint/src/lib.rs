@@ -167,6 +167,7 @@ impl<M: Modulus> MulAssign for ModInt<M> {
 impl<M: Modulus> Div for ModInt<M> {
     type Output = Self;
 
+    #[allow(clippy::suspicious_arithmetic_impl)]
     fn div(self, rhs: Self) -> Self::Output {
         self * rhs.inv()
     }
@@ -279,6 +280,7 @@ macro_rules! impl_ops_for_unsigned_int {
             impl<M: Modulus> Div<$t> for ModInt<M> {
                 type Output = Self;
 
+                #[allow(clippy::suspicious_arithmetic_impl)]
                 fn div(self, rhs: $t) -> Self::Output {
                     self * Self::new(rhs).inv()
                 }
@@ -388,6 +390,7 @@ macro_rules! impl_ops_for_signed_int {
             impl<M: Modulus> Div<$t> for ModInt<M> {
                 type Output = Self;
 
+                #[allow(clippy::suspicious_arithmetic_impl)]
                 fn div(self, rhs: $t) -> Self::Output {
                     self * Self::new(rhs).inv()
                 }

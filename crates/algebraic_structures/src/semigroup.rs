@@ -221,9 +221,7 @@ impl SemiGroup for SSingleton {
         Self
     }
 
-    fn get(self) -> Self::T {
-        ()
-    }
+    fn get(self) -> Self::T {}
 }
 
 impl From<()> for SSingleton {

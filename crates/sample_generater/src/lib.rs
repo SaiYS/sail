@@ -112,12 +112,11 @@ macro_rules! gen {
 
     // initialize rng
     ($($rest:tt)+) => {
-        let mut rng = rand::thread_rng();
+        let mut _rng = rand::thread_rng();
         gen! {
-            @rng [&mut rng]
+            @rng [&mut _rng]
             $($rest)+
         }
-        drop(rng);
     };
 }
 

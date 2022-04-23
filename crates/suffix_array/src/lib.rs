@@ -11,7 +11,7 @@ pub trait SuffixSort {
 enum LS {
     L,
     S,
-    LMS,
+    Lms,
 }
 
 impl LS {
@@ -19,14 +19,14 @@ impl LS {
         match self {
             LS::L => false,
             LS::S => true,
-            LS::LMS => true,
+            LS::Lms => true,
         }
     }
     fn is_l(self) -> bool {
         match self {
             LS::L => true,
             LS::S => false,
-            LS::LMS => false,
+            LS::Lms => false,
         }
     }
 
@@ -34,7 +34,7 @@ impl LS {
         match self {
             LS::L => false,
             LS::S => false,
-            LS::LMS => true,
+            LS::Lms => true,
         }
     }
 }
@@ -70,6 +70,10 @@ impl<S: SuffixSort> SuffixArray<S> {
 impl<S> SuffixArray<S> {
     pub fn len(&self) -> usize {
         self.s.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     pub fn find<T: AsRef<str>>(&self, pat: T) -> Option<usize> {

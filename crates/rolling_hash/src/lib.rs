@@ -59,6 +59,10 @@ impl<M: Mod> RollingHash<M> {
         self.s.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn hash<R: RangeBounds<usize>>(&self, range: R) -> u128 {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
         let from = M::rem(self.hash[from] * self.powers[to - from]);

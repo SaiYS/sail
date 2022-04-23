@@ -56,7 +56,7 @@ fn sa_is(s: &[u8]) -> Vec<usize> {
             LS::S
         } else if s[i] > s[i + 1] {
             if ty[i + 1].is_s() {
-                ty[i + 1] = LS::LMS;
+                ty[i + 1] = LS::Lms;
             }
             LS::L
         } else {

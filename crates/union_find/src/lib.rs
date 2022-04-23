@@ -23,6 +23,10 @@ impl UnionFind {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn root(&mut self, i: usize) -> usize {
         if let Some(parent) = self.root[i] {
             let res = self.root(parent);

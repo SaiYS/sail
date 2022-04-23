@@ -38,6 +38,10 @@ impl<S: SemiGroup> SparseTable<S> {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn range<R: RangeBounds<usize>>(&self, range: R) -> S::T {
         let (from, to) = expand_range_bound(&range, 0, self.len());
 

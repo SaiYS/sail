@@ -16,11 +16,10 @@ pub struct Bitset {
 impl From<Vec<bool>> for Bitset {
     fn from(v: Vec<bool>) -> Self {
         let mut res = Self::new(v.len());
-        for i in 0..v.len() {
-            if v[i] {
-                res.set(i);
-            }
-        }
+        v.into_iter()
+            .enumerate()
+            .filter(|&(_, x)| x)
+            .for_each(|(i, _)| res.set(i));
         res
     }
 }
@@ -29,10 +28,11 @@ impl ToString for Bitset {
     fn to_string(&self) -> String {
         (0..self.len())
             .map(|x| {
-                if {
+                let res = {
                     let (w, b) = address(x);
                     self.buffer[w] & (1 << b) != 0
-                } {
+                };
+                if res {
                     '1'
                 } else {
                     '0'
@@ -128,12 +128,16 @@ impl Bitset {
         debug_assert!(n != 0);
         Self {
             len: n,
-            buffer: vec![ZEROS; (n - 1 >> 3) + 1].into_boxed_slice(),
+            buffer: vec![ZEROS; ((n - 1) >> 3) + 1].into_boxed_slice(),
         }
     }
 
     pub fn len(&self) -> usize {
         self.len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     fn words(&self) -> usize {

@@ -97,6 +97,10 @@ impl<M: Monoid> SegmentTree<M> {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Returns the height of the tree
     pub fn height(&self) -> usize {
         self.height
@@ -227,7 +231,7 @@ mod tests {
 
     #[test]
     fn run_varify() {
-        for _ in 0..10000 {
+        for _ in 0..100 {
             verify();
         }
     }

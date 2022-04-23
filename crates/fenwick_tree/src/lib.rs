@@ -29,6 +29,10 @@ impl<A: AbelianGroup> FenwickTree<A> {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     fn prefix_inner(&self, to: usize) -> A {
         let mut res = self.buffer[0].clone();
         let mut i = to;

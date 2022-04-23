@@ -16,8 +16,7 @@ impl<M: Modulus> CombTable<M> {
             factorials.push(cur);
         }
 
-        let mut factorial_inversed = vec![];
-        factorial_inversed.push(factorials.last().unwrap().inv());
+        let mut factorial_inversed = vec![factorials.last().unwrap().inv()];
         for i in (1..=n).rev() {
             factorial_inversed.push(*factorial_inversed.last().unwrap() * i);
         }
