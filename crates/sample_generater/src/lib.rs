@@ -37,14 +37,14 @@ macro_rules! impl_generable_for_range_expr {
             impl Generable for Range<$t> {
                 type Output = $t;
                 fn gen<R: Rng>(self, rng: &mut R) -> Self::Output {
-                    rng.gen_range(self.start, self.end)
+                    rng.gen_range(self)
                 }
             }
 
             impl Generable for RangeInclusive<$t> {
                 type Output = $t;
                 fn gen<R: Rng>(self, rng: &mut R) -> Self::Output {
-                    rng.gen_range(self.start(), self.end() + 1)
+                    rng.gen_range(self)
                 }
             }
         )*

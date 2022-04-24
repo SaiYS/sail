@@ -34,7 +34,7 @@ pub struct RollingHash<M: Mod = DefaultMod> {
 
 impl<M: Mod> RollingHash<M> {
     pub fn new(s: Vec<char>) -> Self {
-        let base: u128 = rand::thread_rng().gen_range(1, 1000000000);
+        let base: u128 = rand::thread_rng().gen_range(1..1000000000);
         let mut hash = vec![0u128];
         for &c in s.iter() {
             hash.push(M::rem(*hash.last().unwrap() * base + c as u128));

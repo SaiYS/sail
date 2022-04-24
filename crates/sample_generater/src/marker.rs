@@ -35,7 +35,7 @@ impl Generable for StarGraphEdges {
     type Output = Vec<(usize, usize)>;
 
     fn gen<R: rand::Rng>(self, rng: &mut R) -> Self::Output {
-        let root = rng.gen_range(1, self.0 + 1);
+        let root = rng.gen_range(1..=self.0);
         (1..=self.0)
             .filter(|&x| x != root)
             .map(|x| (root, x))

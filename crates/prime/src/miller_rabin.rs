@@ -19,7 +19,7 @@ macro_rules! impl_miller_rabin_for_uint {
                         let d = (n - 1) >> s;
 
                         for _ in 0..k {
-                            let a = rng.gen_range(1, n);
+                            let a = rng.gen_range(1..n);
                             let mut y = mod_pow(a as u128, d as u128, n as u128) as $t;
                             if y != 1 && y != n - 1 && {
                                 (0..s).all(|_| {

@@ -5,6 +5,6 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-num-traits = "=0.2.11"
-num-integer = "=0.1.42"
+num-traits = "0.2.14"
+num-integer = "0.1.44"
 vis = { path = "../vis" }

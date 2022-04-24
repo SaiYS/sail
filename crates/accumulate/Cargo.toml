@@ -6,4 +6,4 @@ license = "MIT"
 
 [dependencies]
 util = { path = "../util" }
-num-traits = "=0.2.11"
+num-traits = "0.2.14"

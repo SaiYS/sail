@@ -5,4 +5,4 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-rand = { version = "=0.7.3", features = ["small_rng"] }
+rand = { version = "0.8.5", features = ["small_rng"] }
