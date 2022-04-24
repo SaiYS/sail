@@ -1,10 +1,10 @@
-use super::sieve::PrimeSieve;
+use super::PrimeSieve;
 
 #[derive(Debug, Clone)]
 pub struct SieveOfEratosthenes {
     limit: usize,
-    is_prime: Vec<bool>,
-    primes: Vec<usize>,
+    is_prime: Box<[bool]>,
+    primes: Box<[usize]>,
 }
 
 impl SieveOfEratosthenes {
@@ -45,8 +45,8 @@ impl SieveOfEratosthenes {
 
         Self {
             limit: n,
-            is_prime,
-            primes,
+            is_prime: is_prime.into_boxed_slice(),
+            primes: primes.into_boxed_slice(),
         }
     }
 

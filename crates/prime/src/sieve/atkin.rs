@@ -1,4 +1,4 @@
-use super::sieve::PrimeSieve;
+use super::PrimeSieve;
 
 const WHEEL: &[usize] = &[1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59];
 const CANDEDATE_A: &[usize] = &[1, 13, 17, 29, 37, 41, 49, 53];

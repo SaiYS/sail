@@ -1,6 +1,8 @@
+use super::factorize::{FactorizationError, Factors};
 use std::collections::BTreeMap;
 
-use super::factorize::{FactorizationError, Factors};
+pub mod atkin;
+pub mod eratosthenes;
 
 pub trait PrimeSieve {
     fn limit(&self) -> usize;

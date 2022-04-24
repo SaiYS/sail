@@ -1,6 +1,17 @@
 use rand::Rng;
 
+/// # Miller–Rabin algorythm
+///
+/// Seehttps://en.wikipedia.org/wiki/Miller%e2%80%93Rabin_primality_test
+///
+/// Estimate whether the number is prime or composite.
+/// This algorythm is **non-deterministic**,
+/// an argument `accuracy` is used to indicate the accuracy of the judgement.
+/// Possibility of incorrect judge with `accuracy = k` is 4 ^ -k at most.
+///
+/// Complexity: `O(k × log3 n)`
 pub trait MillerRabin {
+    /// Returns whether `self` is a prime number
     fn is_prime<R: Rng>(&self, accuracy: usize, rng: &mut R) -> bool;
 }
 
