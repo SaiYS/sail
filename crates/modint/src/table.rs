@@ -1,13 +1,13 @@
-use super::{ModInt, Modulus};
+use super::ModInt;
 use num_traits::{Inv, One};
 
 #[derive(Debug, Clone)]
-pub struct CombTable<M: Modulus> {
+pub struct CombTable<const M: u64> {
     factorials: Box<[ModInt<M>]>,
     factorials_inversed: Box<[ModInt<M>]>,
 }
 
-impl<M: Modulus> CombTable<M> {
+impl<const M: u64> CombTable<M> {
     pub fn new(n: usize) -> Self {
         let mut cur = ModInt::<M>::one();
         let mut factorials = vec![cur];
