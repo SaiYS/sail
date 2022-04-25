@@ -31,18 +31,3 @@ impl IndexCompression {
         self.dec[compressed]
     }
 }
-
-#[test]
-fn debug() {
-    use fisher_yates::Shufflable;
-
-    let n = 100;
-    let t = 1000000;
-    let a = (0..n).map(|x| x * t).collect_vec().shuffle();
-    let b = IndexCompression::new(&a);
-
-    for i in 0..n {
-        assert_eq!(b.compress(i * t), i);
-        assert_eq!(b.decompress(i), i * t);
-    }
-}

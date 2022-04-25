@@ -57,7 +57,7 @@ impl<T: Clone + Zero + Add<Output = T> + Neg<Output = T>> Imos<T> {
 }
 
 #[test]
-fn debug() {
+fn imos_test() {
     let mut imos = Imos::<i32>::new(5);
     dbg!(&imos);
     imos.range_add(1, ..);

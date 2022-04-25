@@ -162,10 +162,3 @@ where
         )
     }
 }
-
-#[test]
-fn debug() {
-    let a = (1, "s");
-    let s = VisWrapper(a).to_string();
-    dbg!(s);
-}
