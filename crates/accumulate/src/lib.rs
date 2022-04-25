@@ -2,9 +2,11 @@ use num_traits::Zero;
 use std::ops::{Add, Index, RangeBounds, Sub};
 use util::expand_range_bound;
 
+pub mod imos;
+
 pub struct Accumulation<T> {
     len: usize,
-    buffer: Box<[T]>,
+    buffer: Vec<T>,
 }
 
 impl<T: Clone + Add + Zero> From<Vec<T>> for Accumulation<T> {
@@ -17,10 +19,7 @@ impl<T: Clone + Add + Zero> From<Vec<T>> for Accumulation<T> {
             acc
         });
 
-        Self {
-            len,
-            buffer: buffer.into_boxed_slice(),
-        }
+        Self { len, buffer }
     }
 }
 
@@ -34,10 +33,7 @@ impl<T: Clone + Add + Zero> From<&[T]> for Accumulation<T> {
             acc
         });
 
-        Self {
-            len,
-            buffer: buffer.into_boxed_slice(),
-        }
+        Self { len, buffer }
     }
 }
 
@@ -71,7 +67,7 @@ impl<T: Clone + Add<Output = T> + Sub<Output = T>> Accumulation<T> {
 }
 
 #[test]
-fn debug() {
+fn accumulation_test() {
     let v = vec![1, 2, 3];
     let a = Accumulation::from(v);
     assert_eq!(a.range_sum(0..1), 1);
