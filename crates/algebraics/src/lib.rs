@@ -11,6 +11,6 @@ pub trait Operation: Sized + Clone {
     }
 }
 
-pub mod property;
 pub mod abstruct;
+pub mod property;
 pub mod structure;

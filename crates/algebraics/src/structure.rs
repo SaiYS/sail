@@ -206,7 +206,6 @@ impl<T: Clone + PartialEq + Integer> Monoid for Gcd<T> {
 
 impl<T: Clone + PartialEq + Integer> Idempotent for Gcd<T> {}
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Lcm<T>(pub T);
 
@@ -239,7 +238,6 @@ impl<T: Clone + PartialEq + Integer> Monoid for Lcm<T> {
 }
 
 impl<T: Clone + PartialEq + Integer> Idempotent for Lcm<T> {}
-
 
 #[macro_export]
 macro_rules! impl_magma {

@@ -51,9 +51,7 @@ impl<M: Monoid> SemiGroup for M {
     }
 }
 
-pub trait Group:
-    Associativity + Identity + Invertibility + Cancellativity + From<Self::T>
-{
+pub trait Group: Associativity + Identity + Invertibility + Cancellativity + From<Self::T> {
     type T: Clone;
     fn get(self) -> Self::T;
     fn identity() -> Self {
