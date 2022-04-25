@@ -128,9 +128,37 @@ where
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{} {}",
+            "{} {} {} {}",
             VisWrapper(self.0 .0.clone()),
-            VisWrapper(self.0 .1.clone())
+            VisWrapper(self.0 .1.clone()),
+            VisWrapper(self.0 .2.clone()),
+            VisWrapper(self.0 .3.clone())
+        )
+    }
+}
+
+impl<T, U, V, W, X> Display for VisWrapper<(T, U, V, W, X)>
+where
+    T: Clone,
+    U: Clone,
+    V: Clone,
+    W: Clone,
+    X: Clone,
+    VisWrapper<T>: Display,
+    VisWrapper<U>: Display,
+    VisWrapper<V>: Display,
+    VisWrapper<W>: Display,
+    VisWrapper<X>: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{} {} {} {} {}",
+            VisWrapper(self.0 .0.clone()),
+            VisWrapper(self.0 .1.clone()),
+            VisWrapper(self.0 .2.clone()),
+            VisWrapper(self.0 .3.clone()),
+            VisWrapper(self.0 .4.clone()),
         )
     }
 }
