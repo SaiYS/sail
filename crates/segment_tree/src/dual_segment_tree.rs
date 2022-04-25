@@ -1,4 +1,4 @@
-// use algebraic_structures::monoid::Monoid;
+// use algebraics::monoid::Monoid;
 
 // pub struct DualSegmentTree<M: Monoid> {
 //     len: usize,

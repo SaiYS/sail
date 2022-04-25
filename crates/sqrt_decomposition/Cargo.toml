@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-algebraic_structures = { path = "../algebraic_structures" }
+algebraics = { path = "../algebraics" }
 util = { path = "../util" }
 
 [dev-dependencies]

@@ -8,7 +8,7 @@ license = "MIT"
 num-traits = "0.2.14"
 itertools = "0.10.3"
 util = { path = "../util" }
-algebraic_structures = { path = "../algebraic_structures" }
+algebraics = { path = "../algebraics" }
 
 [dev-dependencies]
 rand = "0.8.5"

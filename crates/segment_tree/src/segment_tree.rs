@@ -1,4 +1,4 @@
-use algebraic_structures::monoid::Monoid;
+use algebraics::{abstruct::Monoid, property::Identity};
 use itertools::Itertools;
 use std::{
     fmt::{Debug, Display},
@@ -40,14 +40,14 @@ impl<M: Monoid> From<Vec<M::T>> for SegmentTree<M> {
         let capacity = len.next_power_of_two();
         let height = capacity.trailing_zeros() as usize + 1;
         let size = capacity * 2 - 1;
-        let mut buffer = vec![M::identity(); size];
+        let mut buffer: Vec<M> = vec![Identity::identity(); size];
 
         for (i, e) in v.into_iter().enumerate() {
             buffer[size / 2 + i] = e.into();
         }
 
         for i in (0..capacity - 1).rev() {
-            buffer[i] = M::binary_operation(buffer[i * 2 + 1].clone(), buffer[i * 2 + 2].clone());
+            buffer[i] = buffer[i * 2 + 1].clone().operate(buffer[i * 2 + 2].clone());
         }
 
         Self {
@@ -66,14 +66,14 @@ impl<M: Monoid> From<&[M::T]> for SegmentTree<M> {
         let capacity = len.next_power_of_two();
         let height = capacity.trailing_zeros() as usize + 1;
         let size = capacity * 2 - 1;
-        let mut buffer = vec![M::identity(); size];
+        let mut buffer: Vec<M> = vec![Identity::identity(); size];
 
         for (i, e) in v.iter().enumerate() {
             buffer[size / 2 + i] = e.clone().into();
         }
 
         for i in (0..capacity - 1).rev() {
-            buffer[i] = M::binary_operation(buffer[i * 2 + 1].clone(), buffer[i * 2 + 2].clone());
+            buffer[i] = buffer[i * 2 + 1].clone().operate(buffer[i * 2 + 2].clone());
         }
 
         Self {
@@ -116,7 +116,7 @@ impl<M: Monoid> SegmentTree<M> {
             capacity,
             size,
             height,
-            buffer: vec![M::identity(); size],
+            buffer: vec![Identity::identity(); size],
         }
     }
 
@@ -135,22 +135,22 @@ impl<M: Monoid> SegmentTree<M> {
     /// Returns a folded value of leaves in `range`
     ///
     /// Complexity: O(log n)
-    pub fn get_range<R: RangeBounds<usize>>(&self, range: R) -> M::T {
+    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> M::T {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
         debug_assert!(from < to);
 
         let mut from = from + self.capacity - 1;
         let mut to = to + self.capacity - 1;
-        let mut res = M::identity();
+        let mut res: M = Identity::identity();
 
         while from < to {
             if from & 1 == 0 {
-                res = M::binary_operation(res.clone(), self.buffer[from].clone());
+                res.operate_assign(self.buffer[from].clone());
                 from += 1;
             }
             if to & 1 == 0 {
                 to -= 1;
-                res = M::binary_operation(res.clone(), self.buffer[to].clone());
+                res.operate_assign(self.buffer[to].clone());
             }
             from = (from - 1) >> 1;
             to = (to - 1) >> 1;
@@ -175,10 +175,9 @@ impl<M: Monoid> SegmentTree<M> {
         self.buffer[cur] = new_value.into();
         while cur != 0 {
             cur = (cur - 1) >> 1;
-            self.buffer[cur] = M::binary_operation(
-                self.buffer[cur * 2 + 1].clone(),
-                self.buffer[cur * 2 + 2].clone(),
-            )
+            self.buffer[cur] = self.buffer[cur * 2 + 1]
+                .clone()
+                .operate(self.buffer[cur * 2 + 2].clone())
         }
     }
 }
@@ -186,20 +185,17 @@ impl<M: Monoid> SegmentTree<M> {
 #[cfg(test)]
 mod tests {
     use super::SegmentTree;
-    use algebraic_structures::{monoid::MSum, semigroup::SemiGroup};
+    use algebraics::{abstruct::Monoid, structure::Min};
     use itertools::Itertools;
-    use modint::ModInt998244353;
     use rand::Rng;
 
     fn verify() {
         let mut rng = rand::thread_rng();
 
         let n = 1000usize;
-        let a = (0..n)
-            .map(|_| ModInt998244353::new(rng.gen_range(0..n)))
-            .collect_vec();
+        let a = (0..n).map(|_| rng.gen_range(0..n)).collect_vec();
 
-        let mut st = SegmentTree::<MSum<ModInt998244353>>::from(a);
+        let mut st = SegmentTree::<Min<usize>>::from(a);
 
         for _ in 0..n {
             if rng.gen_bool(0.8) {
@@ -212,19 +208,14 @@ mod tests {
                 }
 
                 assert_eq!(
-                    st.get_range(from..=to).get(),
-                    st.raw_leaves()[from..=to]
-                        .iter()
-                        .copied()
-                        .map(|x| x.get())
-                        .sum::<ModInt998244353>()
-                        .get()
+                    st.range(from..=to),
+                    Min::fold_right(&st.raw_leaves()[from..=to]).get()
                 );
             } else {
                 // update
                 let i = rng.gen_range(0..n);
-                let new_value = rng.gen_range(0..n);
-                st.update(i, new_value.into());
+                let value = rng.gen_range(0..n);
+                st.update(i, value);
             }
         }
     }

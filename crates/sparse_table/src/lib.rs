@@ -1,21 +1,23 @@
-pub use algebraic_structures::semigroup::SemiGroup;
+use algebraics::{abstruct::SemiGroup, property::Idempotent};
 use itertools::Itertools;
 use std::ops::RangeBounds;
 use util::expand_range_bound;
 
+pub use algebraics::structure::{Gcd, Lcm, Max, Min};
+
 #[derive(Debug, Clone)]
-pub struct SparseTable<S: SemiGroup> {
+pub struct SparseTable<S: SemiGroup + Idempotent> {
     len: usize,
     buffer: Vec<Vec<S>>,
 }
 
-impl<S: SemiGroup> From<Vec<S::T>> for SparseTable<S> {
+impl<S: SemiGroup + Idempotent> From<Vec<S::T>> for SparseTable<S> {
     fn from(v: Vec<S::T>) -> Self {
         Self::new(v)
     }
 }
 
-impl<S: SemiGroup> SparseTable<S> {
+impl<S: SemiGroup + Idempotent> SparseTable<S> {
     pub fn new(v: Vec<S::T>) -> Self {
         let len = v.len();
         let rank = len.next_power_of_two().trailing_zeros() as usize;
@@ -24,10 +26,9 @@ impl<S: SemiGroup> SparseTable<S> {
         for (height, width) in (1..rank).map(|x| (x, 1 << x)) {
             buffer[height] = (0..=len - width)
                 .map(|i| {
-                    S::binary_operation(
-                        buffer[height - 1][i].clone(),
-                        buffer[height - 1][i + width / 2].clone(),
-                    )
+                    buffer[height - 1][i]
+                        .clone()
+                        .operate(buffer[height - 1][i + width / 2].clone())
                 })
                 .collect_vec();
         }
@@ -50,8 +51,45 @@ impl<S: SemiGroup> SparseTable<S> {
         } else {
             let h = (to - from).next_power_of_two().trailing_zeros() as usize - 1;
             let w = to - (1 << h);
-            S::binary_operation(self.buffer[h][from].clone(), self.buffer[h][w].clone())
+            self.buffer[h][from]
+                .clone()
+                .operate(self.buffer[h][w].clone())
         }
         .get()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use algebraics::structure::Min;
+    use itertools::Itertools;
+    use rand::{thread_rng, Rng};
+
+    use crate::SparseTable;
+
+    #[test]
+    fn run_verify_sparse_table() {
+        for _ in 0..100 {
+            verify_sparse_table();
+        }
+    }
+
+    fn verify_sparse_table() {
+        let mut rng = thread_rng();
+
+        let n = 1000;
+        let a: Vec<u32> = (0..n).map(|_| rng.gen_range(0..1000)).collect_vec();
+        let st = SparseTable::<Min<u32>>::new(a.clone());
+
+        for _ in 0..1000 {
+            let mut from = rng.gen_range(0..n);
+            let mut to = rng.gen_range(0..n);
+
+            if from > to {
+                std::mem::swap(&mut from, &mut to);
+            }
+
+            assert_eq!(st.range(from..=to), *a[from..=to].iter().min().unwrap());
+        }
     }
 }

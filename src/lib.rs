@@ -41,7 +41,7 @@ pub mod consts {
 
 // re-exported crates
 pub use accumulate;
-pub use algebraic_structures;
+pub use algebraics;
 pub use bitset;
 pub use cmp;
 pub use fenwick_tree;

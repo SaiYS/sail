@@ -9,7 +9,7 @@ members = ["crates/*"]
 
 [dependencies]
 accumulate = { path = "crates/accumulate" }
-algebraic_structures = { path = "crates/algebraic_structures" }
+algebraics = { path = "crates/algebraics" }
 bitset = { path = "crates/bitset" }
 cmp = { path = "crates/cmp" }
 fenwick_tree = { path = "crates/fenwick_tree" }

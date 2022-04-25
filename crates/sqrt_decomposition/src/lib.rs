@@ -1,9 +1,13 @@
+use algebraics::property::Identity;
 use std::{
     cmp::{max, min},
     ops::RangeBounds,
 };
 
-pub use algebraic_structures::{monoid::Monoid, semigroup::SemiGroup};
+pub use algebraics::{
+    abstruct::Monoid,
+    structure::{Additive, Gcd, Lcm, Max, Min, Multiplicative},
+};
 
 #[derive(Debug, Clone)]
 pub struct Decomposition<M: Monoid> {
@@ -36,8 +40,8 @@ impl<M: Monoid> Decomposition<M> {
                         .iter()
                         .take(min(i * block_size + block_size, len))
                         .skip(i * block_size)
-                        .fold(M::identity(), |mut sum, x| {
-                            sum.binary_operation_assign(x.clone());
+                        .fold(Identity::identity(), |mut sum: M, x| {
+                            sum.operate_assign(x.clone());
                             sum
                         })
                 })
@@ -73,7 +77,7 @@ impl<M: Monoid> Decomposition<M> {
     /// Update one value at index i into new_value
     pub fn update(&mut self, i: usize, new_value: M::T) {
         self.original[i] = new_value.into();
-        self.block_sum[i / self.block_size] = M::fold(self.nth_block(i / self.block_size)).unwrap();
+        self.block_sum[i / self.block_size] = M::fold_right(self.nth_block(i / self.block_size));
     }
 
     /// Returns one value at index i
@@ -84,17 +88,15 @@ impl<M: Monoid> Decomposition<M> {
     /// Returns a folded value in `range`
     pub fn get_range<R: RangeBounds<usize>>(&mut self, range: R) -> M::T {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
-        let mut res = M::identity();
+        let mut res: M = Identity::identity();
         for i in 0..self.block_len() {
             let (l, r) = self.block_range(i);
             if from <= l && r <= to {
-                res.binary_operation_assign(self.block_sum[i].clone());
+                res.operate_assign(self.block_sum[i].clone());
             } else if r <= from || to <= l {
                 continue;
             } else {
-                res.binary_operation_assign(
-                    M::fold(&self.original[max(from, l)..min(to, r)]).unwrap(),
-                );
+                res.operate_assign(M::fold_right(&self.original[max(from, l)..min(to, r)]));
             }
         }
 
@@ -105,17 +107,17 @@ impl<M: Monoid> Decomposition<M> {
 #[cfg(test)]
 mod tests {
     use super::Decomposition;
-    use algebraic_structures::{monoid::MMin, semigroup::SemiGroup};
+    use algebraics::{abstruct::Monoid, structure::Max};
     use rand::{thread_rng, Rng};
     use std::{iter::repeat_with, mem::swap};
 
     fn verify_sqrt_decomposition() {
         let mut rng = thread_rng();
-        let n = 200;
+        let n = 1000;
         let a = repeat_with(|| rng.gen_range(0..n))
             .take(n)
             .collect::<Vec<usize>>();
-        let mut sd = Decomposition::<MMin<usize>>::from(a);
+        let mut sd = Decomposition::<Max<usize>>::from(a);
 
         for _ in 0..n {
             if rng.gen_bool(0.8) {
@@ -129,7 +131,7 @@ mod tests {
                 }
                 assert_eq!(
                     sd.get_range(from..to),
-                    MMin::fold(&sd.original[from..to]).unwrap().get()
+                    Max::fold_right(&sd.original[from..to]).get()
                 );
             } else {
                 let x = rng.gen_range(0..n);
