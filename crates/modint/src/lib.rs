@@ -37,13 +37,11 @@ pub type ModInt998244353 = ModInt<998244353>;
 pub type ModInt1000000007 = ModInt<1000000007>;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ModInt<const M: u64> {
-    value: u64,
-}
+pub struct ModInt<const M: u64>(u64);
 
 impl<const M: u64> ModInt<M> {
     pub fn get(&self) -> u64 {
-        self.value
+        self.0
     }
 }
 
@@ -71,7 +69,7 @@ impl<const M: u64> ModInt<M> {
             M - (value.abs() as u64 % M)
         };
 
-        Self { value }
+        Self(value)
     }
 }
 
@@ -460,12 +458,6 @@ impl<const M: u64> Inv for ModInt<M> {
             debug_assert!(self.get().gcd(&M) == 1);
             Self::new(Integer::extended_gcd(&(self.get() as i64), &(M as i64)).x)
         }
-    }
-}
-
-impl<const M: u64> io::output::Visualize for ModInt<M> {
-    fn visualize(&self) -> String {
-        self.get().visualize()
     }
 }
 

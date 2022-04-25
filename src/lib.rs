@@ -9,7 +9,11 @@ pub mod prelude {
     pub use crate::consts::*;
     pub use cmp::{max, min, MaxAssign as _, MaxAssign as _};
     pub use index_compression::IndexCompression;
-    pub use io::{vis, output::Visualize, Yn};
+    pub use io::{
+        interactive_input,
+        output::util::{polar_question, Yn},
+        vis,
+    };
     pub use modint::{ModInt, ModInt1000000007, ModInt998244353};
 }
 

@@ -34,14 +34,14 @@ pub mod wrapper;
 macro_rules! vis {
     () => {};
     ($item:expr) => {
-        println!("{}", $crate::wrapper::VisWrapper($item));
+        println!("{}", $crate::output::wrapper::VisWrapper($item));
     };
     ($item:expr , $($rest:tt)*) => {
-        print!("{} ", $crate::wrapper::VisWrapper($item));
+        print!("{} ", $crate::output::wrapper::VisWrapper($item));
         vis!($($rest)*);
     };
     ($item:expr ; $($rest:tt)*) => {
-        println!("{}", $crate::wrapper::VisWrapper($item));
+        println!("{}", $crate::output::wrapper::VisWrapper($item));
         vis!($($rest)*);
     };
 }
