@@ -7,4 +7,4 @@ license = "MIT"
 [dependencies]
 num-traits = "0.2.14"
 num-integer = "0.1.44"
-vis = { path = "../vis" }
+io = { path = "../io" }

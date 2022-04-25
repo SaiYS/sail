@@ -25,4 +25,5 @@ macro_rules! YN {
     };
 }
 
-pub mod visualize;
+pub mod output;
+pub mod input;

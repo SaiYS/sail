@@ -16,6 +16,7 @@ fenwick_tree = { path = "crates/fenwick_tree" }
 fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }
 index_compression = { path = "crates/index_compression" }
+io = { path = "crates/io" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 rolling_hash = { path = "crates/rolling_hash" }
@@ -26,7 +27,6 @@ sqrt_decomposition = { path = "crates/sqrt_decomposition" }
 suffix_array = { path = "crates/suffix_array" }
 union_find = { path = "crates/union_find" }
 util = { path = "crates/util" }
-vis = { path = "crates/vis" }
 
 [dev-dependencies]
 # num = "0.2.1"

@@ -463,7 +463,7 @@ impl<const M: u64> Inv for ModInt<M> {
     }
 }
 
-impl<const M: u64> vis::visualize::Visualize for ModInt<M> {
+impl<const M: u64> io::output::Visualize for ModInt<M> {
     fn visualize(&self) -> String {
         self.get().visualize()
     }

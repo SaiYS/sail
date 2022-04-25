@@ -49,7 +49,6 @@ impl<S: SemiGroup> SparseTable<S> {
             self.buffer[0][from].clone()
         } else {
             let h = (to - from).next_power_of_two().trailing_zeros() as usize - 1;
-            // let h = self.rank() - (BITS - ((from) ^ (to - 1)).leading_zeros() - 1) as usize;
             let w = to - (1 << h);
             S::binary_operation(self.buffer[h][from].clone(), self.buffer[h][w].clone())
         }
