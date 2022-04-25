@@ -1,10 +1,8 @@
-pub use proconio::{input, source::line::LineSource};
-
 #[macro_export]
 macro_rules! interactive_input {
     ($($arg:tt)*) => {
-        let mut source = proconio::source::line::LineSource::new(std::io::BufReader::new(std::io::stdin()));
-        proconio::input! {
+        let mut source = ::proconio::source::line::LineSource::new(std::io::BufReader::new(std::io::stdin()));
+        ::proconio::input! {
             from &mut source,
             $($arg)*
         }
@@ -12,6 +10,7 @@ macro_rules! interactive_input {
 }
 
 #[test]
+#[ignore = "need user input"]
 fn interactive_input_test() {
     interactive_input! {
         n: usize

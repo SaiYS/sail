@@ -6,3 +6,4 @@ license = "MIT"
 
 [dependencies]
 proconio = "0.4.3"
+itertools = "0.10.3"
