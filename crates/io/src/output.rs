@@ -4,7 +4,7 @@ pub mod util {
     /// if `flag` is true, `yes` will print, else `no` will print.
     ///
     /// ```
-    /// use io::output::polar_question;
+    /// use io::output::util::polar_question;
     ///
     /// polar_question(true, "Alice", "Bob"); // Alice
     /// polar_question(false, "Alice", "Bob"); // Bob
