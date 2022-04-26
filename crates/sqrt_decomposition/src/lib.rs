@@ -1,4 +1,4 @@
-use algebraics::property::Identity;
+use itertools::Itertools as _;
 use std::{
     cmp::{max, min},
     ops::RangeBounds,
@@ -13,12 +13,12 @@ pub use algebraics::{
 pub struct Decomposition<M: Monoid> {
     len: usize,
     block_size: usize,
-    original: Vec<M>,
-    block_sum: Vec<M>,
+    original: Vec<M::I>,
+    block_sum: Vec<M::I>,
 }
 
-impl<M: Monoid> From<Vec<M::T>> for Decomposition<M> {
-    fn from(v: Vec<M::T>) -> Self {
+impl<M: Monoid> From<Vec<M::I>> for Decomposition<M> {
+    fn from(v: Vec<M::I>) -> Self {
         let sqrt = (v.len() as f64).sqrt().round() as usize;
         Self::new(v, sqrt)
     }
@@ -26,9 +26,9 @@ impl<M: Monoid> From<Vec<M::T>> for Decomposition<M> {
 
 impl<M: Monoid> Decomposition<M> {
     /// Create a new `Decomposition`
-    pub fn new(v: Vec<M::T>, block_size: usize) -> Self {
+    pub fn new(v: Vec<M::I>, block_size: usize) -> Self {
         let len = v.len();
-        let original: Vec<M> = v.into_iter().map(|x| x.into()).collect();
+        let original = v.into_iter().collect_vec();
 
         Self {
             len,
@@ -40,8 +40,8 @@ impl<M: Monoid> Decomposition<M> {
                         .iter()
                         .take(min(i * block_size + block_size, len))
                         .skip(i * block_size)
-                        .fold(Identity::identity(), |mut sum: M, x| {
-                            sum.operate_assign(x.clone());
+                        .fold(<M as Monoid>::identity(), |mut sum, x: &M::I| {
+                            M::operate_assign(&mut sum, x.clone());
                             sum
                         })
                 })
@@ -69,38 +69,41 @@ impl<M: Monoid> Decomposition<M> {
         )
     }
 
-    fn nth_block(&self, n: usize) -> &[M] {
+    fn nth_block(&self, n: usize) -> &[M::I] {
         let (from, to) = self.block_range(n);
         &self.original[from..to]
     }
 
     /// Update one value at index i into new_value
-    pub fn update(&mut self, i: usize, new_value: M::T) {
-        self.original[i] = new_value.into();
+    pub fn update(&mut self, i: usize, new_value: M::I) {
+        self.original[i] = new_value;
         self.block_sum[i / self.block_size] = M::fold_right(self.nth_block(i / self.block_size));
     }
 
     /// Returns one value at index i
-    pub fn get(&mut self, i: usize) -> M::T {
-        self.original[i].clone().get()
+    pub fn get(&mut self, i: usize) -> M::I {
+        self.original[i].clone()
     }
 
     /// Returns a folded value in `range`
-    pub fn get_range<R: RangeBounds<usize>>(&mut self, range: R) -> M::T {
+    pub fn get_range<R: RangeBounds<usize>>(&mut self, range: R) -> M::I {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
-        let mut res: M = Identity::identity();
+        let mut res = <M as Monoid>::identity();
         for i in 0..self.block_len() {
             let (l, r) = self.block_range(i);
             if from <= l && r <= to {
-                res.operate_assign(self.block_sum[i].clone());
+                M::operate_assign(&mut res, self.block_sum[i].clone());
             } else if r <= from || to <= l {
                 continue;
             } else {
-                res.operate_assign(M::fold_right(&self.original[max(from, l)..min(to, r)]));
+                M::operate_assign(
+                    &mut res,
+                    M::fold_right(&self.original[max(from, l)..min(to, r)]),
+                );
             }
         }
 
-        res.get()
+        res
     }
 }
 
@@ -131,7 +134,7 @@ mod tests {
                 }
                 assert_eq!(
                     sd.get_range(from..to),
-                    Max::fold_right(&sd.original[from..to]).get()
+                    Max::fold_right(&sd.original[from..to])
                 );
             } else {
                 let x = rng.gen_range(0..n);

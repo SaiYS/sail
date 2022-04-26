@@ -1,4 +1,4 @@
-use algebraics::{abstruct::Monoid, property::Identity};
+use algebraics::abstruct::Monoid;
 use itertools::Itertools;
 use std::{
     fmt::{Debug, Display},
@@ -12,20 +12,20 @@ pub struct SegmentTree<M: Monoid> {
     capacity: usize,
     size: usize,
     height: usize,
-    buffer: Vec<M>,
+    buffer: Vec<M::I>,
 }
 
 impl<M> Debug for SegmentTree<M>
 where
     M: Monoid,
-    M::T: Display,
+    M::I: Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = (0..self.height())
             .map(|x| {
                 ((1 << x) - 1..)
                     .take(1 << x)
-                    .map(|x| self.buffer[x].clone().get())
+                    .map(|x| &self.buffer[x])
                     .join(" ")
             })
             .join("\n");
@@ -33,21 +33,21 @@ where
     }
 }
 
-impl<M: Monoid> From<Vec<M::T>> for SegmentTree<M> {
+impl<M: Monoid> From<Vec<M::I>> for SegmentTree<M> {
     /// Complexity: O(n)
-    fn from(v: Vec<M::T>) -> Self {
+    fn from(v: Vec<M::I>) -> Self {
         let len = v.len();
         let capacity = len.next_power_of_two();
         let height = capacity.trailing_zeros() as usize + 1;
         let size = capacity * 2 - 1;
-        let mut buffer: Vec<M> = vec![Identity::identity(); size];
+        let mut buffer = vec![<M as Monoid>::identity(); size];
 
         for (i, e) in v.into_iter().enumerate() {
-            buffer[size / 2 + i] = e.into();
+            buffer[size / 2 + i] = e;
         }
 
         for i in (0..capacity - 1).rev() {
-            buffer[i] = buffer[i * 2 + 1].clone().operate(buffer[i * 2 + 2].clone());
+            buffer[i] = M::operate(buffer[i * 2 + 1].clone(), buffer[i * 2 + 2].clone());
         }
 
         Self {
@@ -60,20 +60,20 @@ impl<M: Monoid> From<Vec<M::T>> for SegmentTree<M> {
     }
 }
 
-impl<M: Monoid> From<&[M::T]> for SegmentTree<M> {
-    fn from(v: &[M::T]) -> Self {
+impl<M: Monoid> From<&[M::I]> for SegmentTree<M> {
+    fn from(v: &[M::I]) -> Self {
         let len = v.len();
         let capacity = len.next_power_of_two();
         let height = capacity.trailing_zeros() as usize + 1;
         let size = capacity * 2 - 1;
-        let mut buffer: Vec<M> = vec![Identity::identity(); size];
+        let mut buffer = vec![<M as Monoid>::identity(); size];
 
         for (i, e) in v.iter().enumerate() {
-            buffer[size / 2 + i] = e.clone().into();
+            buffer[size / 2 + i] = e.clone();
         }
 
         for i in (0..capacity - 1).rev() {
-            buffer[i] = buffer[i * 2 + 1].clone().operate(buffer[i * 2 + 2].clone());
+            buffer[i] = M::operate(buffer[i * 2 + 1].clone(), buffer[i * 2 + 2].clone());
         }
 
         Self {
@@ -116,68 +116,69 @@ impl<M: Monoid> SegmentTree<M> {
             capacity,
             size,
             height,
-            buffer: vec![Identity::identity(); size],
+            buffer: vec![<M as Monoid>::identity(); size],
         }
     }
 
     /// Returns ref of original array sliced from its buffer
-    pub fn raw_leaves(&self) -> &[M] {
+    pub fn raw_leaves(&self) -> &[M::I] {
         &self.buffer[self.capacity - 1..self.size]
     }
 
     /// Returns a value of i-th leaf
     ///
     /// Complexity: O(1)
-    pub fn get(&self, i: usize) -> M::T {
-        self.buffer[self.capacity - 1 + i].clone().get()
+    pub fn get(&self, i: usize) -> M::I {
+        self.buffer[self.capacity - 1 + i].clone()
     }
 
     /// Returns a folded value of leaves in `range`
     ///
     /// Complexity: O(log n)
-    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> M::T {
+    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> M::I {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
         debug_assert!(from < to);
 
         let mut from = from + self.capacity - 1;
         let mut to = to + self.capacity - 1;
-        let mut res: M = Identity::identity();
+        let mut res = <M as Monoid>::identity();
 
         while from < to {
             if from & 1 == 0 {
-                res.operate_assign(self.buffer[from].clone());
+                M::operate_assign(&mut res, self.buffer[from].clone());
                 from += 1;
             }
             if to & 1 == 0 {
                 to -= 1;
-                res.operate_assign(self.buffer[to].clone());
+                M::operate_assign(&mut res, self.buffer[to].clone());
             }
             from = (from - 1) >> 1;
             to = (to - 1) >> 1;
         }
 
-        res.get()
+        res
     }
 
     /// Returns a folded value of all leaves
     ///
     /// Complexity: O(1)
     /// This can be more efficient than calling `self.get_range(..)`
-    pub fn get_all(&self) -> M::T {
-        self.buffer[0].clone().get()
+    pub fn get_all(&self) -> M::I {
+        self.buffer[0].clone()
     }
 
     /// Update one value at index `i` with `new_value`
     ///
     /// Complexity: O(log n)
-    pub fn update(&mut self, i: usize, new_value: M::T) {
+    pub fn update(&mut self, i: usize, new_value: M::I) {
         let mut cur = self.capacity - 1 + i;
-        self.buffer[cur] = new_value.into();
+        self.buffer[cur] = new_value;
         while cur != 0 {
             cur = (cur - 1) >> 1;
-            self.buffer[cur] = self.buffer[cur * 2 + 1]
-                .clone()
-                .operate(self.buffer[cur * 2 + 2].clone())
+            self.buffer[cur] = M::operate(
+                self.buffer[cur * 2 + 1].clone(),
+                self.buffer[cur * 2 + 2].clone(),
+            )
         }
     }
 }
@@ -209,7 +210,7 @@ mod tests {
 
                 assert_eq!(
                     st.range(from..=to),
-                    Min::fold_right(&st.raw_leaves()[from..=to]).get()
+                    Min::fold_right(&st.raw_leaves()[from..=to])
                 );
             } else {
                 // update

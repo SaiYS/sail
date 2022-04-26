@@ -3,110 +3,137 @@ use num_traits::{Bounded, One, Zero};
 
 use crate::{
     abstruct::{AbelianGroup, Monoid},
-    property::{Associativity, Cancellativity, Commutativity, Idempotent, Identity, Invertibility},
-    Operation,
+    property::{
+        Associativity, Cancellativity, Commutativity, Idempotent, Identity, Invertibility,
+        Operation,
+    },
 };
 use std::{
     cmp::{max, min},
     ops::{Add, Mul, Neg},
 };
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Min<T>(pub T);
+// impl<T: Clone + Operation<T>> Operation<Option<T>> for Option<T> {
+//     fn operate(x: Option<T>, y: Option<T>) -> Option<T> {
+//         match (x, y) {
+//             (None, None) => None,
+//             (None, Some(y)) => Some(y),
+//             (Some(x), None) => Some(x),
+//             (Some(x), Some(y)) => Some(T::operate(x, y)),
+//         }
+//     }
+// }
 
-impl<T> From<T> for Min<T> {
-    fn from(x: T) -> Self {
+// impl<T: Clone + PartialEq + Operation<T>> Identity<Option<T>> for Option<T> {
+//     fn identity() -> Option<T> {
+//         None
+//     }
+// }
+
+// impl<T: Clone + PartialEq + Operation<T>> Monoid for Option<T> {
+//     type I = T;
+
+//     fn get(self) -> Self::I {
+//         todo!()
+//     }
+// }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Min<I>(pub I);
+
+impl<I> From<I> for Min<I> {
+    fn from(x: I) -> Self {
         Self(x)
     }
 }
 
-impl<T: Clone + Ord> Operation for Min<T> {
-    fn operate(self, rhs: Self) -> Self {
-        min(self, rhs)
+impl<I: Clone + Ord> Operation<I> for Min<I> {
+    fn operate(x: I, y: I) -> I {
+        min(x, y)
     }
 }
 
-impl<T: Clone + Ord + Bounded> Identity for Min<T> {
-    fn identity() -> Self {
-        T::max_value().into()
+impl<I: Clone + Ord + Bounded> Identity<I> for Min<I> {
+    fn identity() -> I {
+        I::max_value()
     }
 }
 
-impl<T: Clone + Ord> Associativity for Min<T> {}
+impl<I: Clone + Ord> Associativity<I> for Min<I> {}
 
-impl<T: Clone + Ord + Bounded> Monoid for Min<T> {
-    type T = T;
+impl<I: Clone + Ord + Bounded> Monoid for Min<I> {
+    type I = I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> I {
         self.0
     }
 }
 
-impl<T: Clone + Ord> Idempotent for Min<T> {}
+impl<I: Clone + Ord> Idempotent<I> for Min<I> {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Max<T>(pub T);
+pub struct Max<I>(pub I);
 
-impl<T> From<T> for Max<T> {
-    fn from(x: T) -> Self {
+impl<I> From<I> for Max<I> {
+    fn from(x: I) -> Self {
         Self(x)
     }
 }
 
-impl<T: Clone + Ord> Operation for Max<T> {
-    fn operate(self, rhs: Self) -> Self {
-        max(self, rhs)
+impl<I: Clone + Ord> Operation<I> for Max<I> {
+    fn operate(x: I, y: I) -> I {
+        max(x, y)
     }
 }
 
-impl<T: Clone + Ord + Bounded> Identity for Max<T> {
-    fn identity() -> Self {
-        T::min_value().into()
+impl<I: Clone + Ord + Bounded> Identity<I> for Max<I> {
+    fn identity() -> I {
+        I::min_value()
     }
 }
 
-impl<T: Clone + Ord> Associativity for Max<T> {}
+impl<I: Clone + Ord> Associativity<I> for Max<I> {}
 
-impl<T: Clone + Ord + Bounded> Monoid for Max<T> {
-    type T = T;
+impl<I: Clone + Ord + Bounded> Monoid for Max<I> {
+    type I = I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> I {
         self.0
     }
 }
 
-impl<T: Clone + Ord> Idempotent for Max<T> {}
+impl<I: Clone + Ord> Idempotent<I> for Max<I> {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Additive<T>(pub T);
+pub struct Additive<I>(pub I);
 
-impl<T> From<T> for Additive<T> {
-    fn from(x: T) -> Self {
+impl<I> From<I> for Additive<I> {
+    fn from(x: I) -> Self {
         Self(x)
     }
 }
 
-impl<T: Clone + Add<Output = T>> Operation for Additive<T> {
-    fn operate(self, rhs: Self) -> Self {
-        (self.0 + rhs.0).into()
+impl<I: Clone + Add<Output = I>> Operation<I> for Additive<I> {
+    fn operate(x: I, y: I) -> I {
+        x + y
     }
 }
 
-impl<T: Clone + PartialEq + Add<Output = T> + Zero> Identity for Additive<T> {
-    fn identity() -> Self {
-        T::zero().into()
+impl<I: Clone + PartialEq + Add<Output = I> + Zero> Identity<I> for Additive<I> {
+    fn identity() -> I {
+        I::zero()
     }
 }
 
-impl<T: Clone + PartialEq + Add<Output = T>> Associativity for Additive<T> {}
+impl<I: Clone + PartialEq + Add<Output = I>> Associativity<I> for Additive<I> {}
 
 macro_rules! impl_monoid_for_additive_unsigned_int {
     ($($t:ty),*) => {
         $(
             impl Monoid for Additive<$t> {
-                type T = $t;
+                type I = $t;
 
-                fn get(self) -> Self::T {
+                fn get(self) -> Self::I {
                     self.0
                 }
             }
@@ -119,20 +146,20 @@ impl_monoid_for_additive_unsigned_int!(usize, u8, u16, u32, u64, u128);
 macro_rules! impl_abelian_group_for_additive_signed_int {
     ($($t:ty),*) => {
         $(
-            impl Invertibility for Additive<$t> {
-                fn inverse(self) -> Self {
-                    self.0.neg().into()
+            impl Invertibility<$t> for Additive<$t> {
+                fn inverse(x: $t) -> $t {
+                    x.neg()
                 }
             }
 
-            impl Cancellativity for Additive<$t> {}
+            impl Cancellativity<$t> for Additive<$t> {}
 
-            impl Commutativity for Additive<$t> {}
+            impl Commutativity<$t> for Additive<$t> {}
 
             impl AbelianGroup for Additive<$t> {
-                type T = $t;
+                type I = $t;
 
-                fn get(self) -> Self::T {
+                fn get(self) -> $t {
                     self.0
                 }
             }
@@ -143,101 +170,101 @@ macro_rules! impl_abelian_group_for_additive_signed_int {
 impl_abelian_group_for_additive_signed_int!(isize, i8, i16, i32, i64, i128);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Multiplicative<T>(pub T);
+pub struct Multiplicative<I>(pub I);
 
-impl<T> From<T> for Multiplicative<T> {
-    fn from(x: T) -> Self {
+impl<I> From<I> for Multiplicative<I> {
+    fn from(x: I) -> Self {
         Self(x)
     }
 }
 
-impl<T: Clone + Mul<Output = T>> Operation for Multiplicative<T> {
-    fn operate(self, rhs: Self) -> Self {
-        (self.0 * rhs.0).into()
+impl<I: Clone + Mul<Output = I>> Operation<I> for Multiplicative<I> {
+    fn operate(x: I, y: I) -> I {
+        x * y
     }
 }
 
-impl<T: Clone + PartialEq + Mul<Output = T> + One> Identity for Multiplicative<T> {
-    fn identity() -> Self {
-        T::one().into()
+impl<I: Clone + PartialEq + Mul<Output = I> + One> Identity<I> for Multiplicative<I> {
+    fn identity() -> I {
+        I::one()
     }
 }
 
-impl<T: Clone + PartialEq + Mul<Output = T>> Associativity for Multiplicative<T> {}
+impl<I: Clone + PartialEq + Mul<Output = I>> Associativity<I> for Multiplicative<I> {}
 
-impl<T: Clone + PartialEq + Mul<Output = T> + One> Monoid for Multiplicative<T> {
-    type T = T;
+impl<I: Clone + PartialEq + Mul<Output = I> + One> Monoid for Multiplicative<I> {
+    type I = I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> I {
         self.0
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Gcd<T>(pub T);
+pub struct Gcd<I>(pub I);
 
-impl<T> From<T> for Gcd<T> {
-    fn from(x: T) -> Self {
+impl<I> From<I> for Gcd<I> {
+    fn from(x: I) -> Self {
         Self(x)
     }
 }
 
-impl<T: Clone + Integer> Operation for Gcd<T> {
-    fn operate(self, rhs: Self) -> Self {
-        self.0.gcd(&rhs.0).into()
+impl<I: Clone + Integer> Operation<I> for Gcd<I> {
+    fn operate(x: I, y: I) -> I {
+        x.gcd(&y)
     }
 }
 
-impl<T: Clone + PartialEq + Integer + Zero> Identity for Gcd<T> {
-    fn identity() -> Self {
-        T::zero().into()
+impl<I: Clone + PartialEq + Integer + Zero> Identity<I> for Gcd<I> {
+    fn identity() -> I {
+        I::zero()
     }
 }
 
-impl<T: Clone + PartialEq + Integer> Associativity for Gcd<T> {}
+impl<I: Clone + PartialEq + Integer> Associativity<I> for Gcd<I> {}
 
-impl<T: Clone + PartialEq + Integer> Monoid for Gcd<T> {
-    type T = T;
+impl<I: Clone + PartialEq + Integer> Monoid for Gcd<I> {
+    type I = I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> I {
         self.0
     }
 }
 
-impl<T: Clone + PartialEq + Integer> Idempotent for Gcd<T> {}
+impl<I: Clone + PartialEq + Integer> Idempotent<I> for Gcd<I> {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Lcm<T>(pub T);
+pub struct Lcm<I>(pub I);
 
-impl<T> From<T> for Lcm<T> {
-    fn from(x: T) -> Self {
+impl<I> From<I> for Lcm<I> {
+    fn from(x: I) -> Self {
         Self(x)
     }
 }
 
-impl<T: Clone + Integer> Operation for Lcm<T> {
-    fn operate(self, rhs: Self) -> Self {
-        self.0.lcm(&rhs.0).into()
+impl<I: Clone + Integer> Operation<I> for Lcm<I> {
+    fn operate(x: I, y: I) -> I {
+        x.lcm(&y)
     }
 }
 
-impl<T: Clone + PartialEq + Integer + One> Identity for Lcm<T> {
-    fn identity() -> Self {
-        T::one().into()
+impl<I: Clone + PartialEq + Integer + One> Identity<I> for Lcm<I> {
+    fn identity() -> I {
+        I::one()
     }
 }
 
-impl<T: Clone + PartialEq + Integer> Associativity for Lcm<T> {}
+impl<I: Clone + PartialEq + Integer> Associativity<I> for Lcm<I> {}
 
-impl<T: Clone + PartialEq + Integer> Monoid for Lcm<T> {
-    type T = T;
+impl<I: Clone + PartialEq + Integer> Monoid for Lcm<I> {
+    type I = I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> I {
         self.0
     }
 }
 
-impl<T: Clone + PartialEq + Integer> Idempotent for Lcm<T> {}
+impl<I: Clone + PartialEq + Integer> Idempotent<I> for Lcm<I> {}
 
 #[macro_export]
 macro_rules! impl_magma {
@@ -251,17 +278,17 @@ macro_rules! impl_magma {
             }
         }
 
-        impl $crate::Operation for $name {
-            fn operate(self, rhs: Self) -> Self {
+        impl $crate::property::Operation<$t> for $name {
+            fn operate(x: $t, y: $t) -> $t {
                 let f = $operation;
-                f(self.0, rhs.0).into()
+                f(x, y)
             }
         }
 
         impl $crate::abstruct::Magma for $name {
-            type T = $t;
+            type I = $t;
 
-            fn get(self) -> Self::T {
+            fn get(self) -> Self::I {
                 self.0
             }
         }
@@ -285,19 +312,19 @@ macro_rules! impl_semigroup {
             }
         }
 
-        impl $crate::Operation for $name {
-            fn operate(self, rhs: Self) -> Self {
+        impl $crate::property::Operation<$t> for $name {
+            fn operate(x: $t, y: $t) -> $t {
                 let f = $operation;
-                f(self.0, rhs.0).into()
+                f(x, y)
             }
         }
 
-        impl $crate::property::Associativity for $name {}
+        impl $crate::property::Associativity<$t> for $name {}
 
         impl $crate::abstruct::SemiGroup for $name {
-            type T = $t;
+            type I = $t;
 
-            fn get(self) -> Self::T {
+            fn get(self) -> Self::I {
                 self.0
             }
         }
@@ -315,7 +342,7 @@ fn impl_semigroup_test() {
         let b: i64 = rng.gen_range(-1000..=1000);
         let c: i64 = rng.gen_range(-1000..=1000);
         dbg!(a, b, c);
-        Additive::check_associative(a.into(), b.into(), c.into());
+        Additive::check_associative(a, b, c);
     }
 }
 
@@ -331,25 +358,25 @@ macro_rules! impl_monoid {
             }
         }
 
-        impl $crate::Operation for $name {
-            fn operate(self, rhs: Self) -> Self {
+        impl $crate::property::Operation<$t> for $name {
+            fn operate(x: $t, y: $t) -> $t {
                 let f = $operation;
-                f(self.0, rhs.0).into()
+                f(x, y)
             }
         }
 
-        impl $crate::property::Identity for $name {
-            fn identity() -> Self {
+        impl $crate::property::Identity<$t> for $name {
+            fn identity() -> $t {
                 $identity.into()
             }
         }
 
-        impl $crate::property::Associativity for $name {}
+        impl $crate::property::Associativity<$t> for $name {}
 
         impl $crate::abstruct::Monoid for $name {
-            type T = $t;
+            type I = $t;
 
-            fn get(self) -> Self::T {
+            fn get(self) -> $t {
                 self.0
             }
         }
@@ -367,8 +394,8 @@ fn impl_monoid_test() {
         let b: i64 = rng.gen_range(-1000..=1000);
         let c: i64 = rng.gen_range(-1000..=1000);
         dbg!(a, b, c);
-        Additive::check_associative(a.into(), b.into(), c.into());
-        Additive::check_identity(a.into());
+        Additive::check_associative(a, b, c);
+        Additive::check_identity(a);
     }
 }
 
@@ -384,34 +411,34 @@ macro_rules! impl_group {
             }
         }
 
-        impl $crate::Operation for $name {
-            fn operate(self, rhs: Self) -> Self {
+        impl $crate::property::Operation<$t> for $name {
+            fn operate(x: $t, y: $t) -> $t {
                 let f = $operation;
-                f(self.0, rhs.0).into()
+                f(x, y)
             }
         }
 
-        impl $crate::property::Identity for $name {
-            fn identity() -> Self {
-                $identity.into()
+        impl $crate::property::Identity<$t> for $name {
+            fn identity() -> $t {
+                $identity
             }
         }
 
-        impl $crate::property::Invertibility for $name {
-            fn inverse(self) -> Self {
+        impl $crate::property::Invertibility<$t> for $name {
+            fn inverse(x: $t) -> $t {
                 let f = $inverse;
-                f(self.0).into()
+                f(x)
             }
         }
 
-        impl $crate::property::Associativity for $name {}
+        impl $crate::property::Associativity<$t> for $name {}
 
-        impl $crate::property::Cancellativity for $name {}
+        impl $crate::property::Cancellativity<$t> for $name {}
 
         impl $crate::abstruct::Group for $name {
-            type T = $t;
+            type I = $t;
 
-            fn get(self) -> Self::T {
+            fn get(self) -> $t {
                 self.0
             }
         }
@@ -429,10 +456,10 @@ fn impl_group_test() {
         let b: i64 = rng.gen_range(-1000..=1000);
         let c: i64 = rng.gen_range(-1000..=1000);
         dbg!(a, b, c);
-        Additive::check_associative(a.into(), b.into(), c.into());
-        Additive::check_cancellativity(a.into(), b.into(), c.into());
-        Additive::check_identity(a.into());
-        Additive::check_invertibility(a.into());
+        Additive::check_associative(a, b, c);
+        Additive::check_cancellativity(a, b, c);
+        Additive::check_identity(a);
+        Additive::check_invertibility(a);
     }
 }
 
@@ -448,36 +475,36 @@ macro_rules! impl_abelian_group {
             }
         }
 
-        impl $crate::Operation for $name {
-            fn operate(self, rhs: Self) -> Self {
+        impl $crate::property::Operation<$t> for $name {
+            fn operate(x: $t, y: $t) -> $t {
                 let f = $operation;
-                f(self.0, rhs.0).into()
+                f(x, y)
             }
         }
 
-        impl $crate::property::Identity for $name {
-            fn identity() -> Self {
-                $identity.into()
+        impl $crate::property::Identity<$t> for $name {
+            fn identity() -> $t {
+                $identity
             }
         }
 
-        impl $crate::property::Invertibility for $name {
-            fn inverse(self) -> Self {
+        impl $crate::property::Invertibility<$t> for $name {
+            fn inverse(x: $t) -> $t {
                 let f = $inverse;
-                f(self.0).into()
+                f(x)
             }
         }
 
-        impl $crate::property::Associativity for $name {}
+        impl $crate::property::Associativity<$t> for $name {}
 
-        impl $crate::property::Cancellativity for $name {}
+        impl $crate::property::Cancellativity<$t> for $name {}
 
-        impl $crate::property::Commutativity for $name {}
+        impl $crate::property::Commutativity<$t> for $name {}
 
         impl $crate::abstruct::AbelianGroup for $name {
-            type T = $t;
+            type I = $t;
 
-            fn get(self) -> Self::T {
+            fn get(self) -> $t {
                 self.0
             }
         }
@@ -495,10 +522,10 @@ fn impl_ablian_group_test() {
         let b: i64 = rng.gen_range(-1000..=1000);
         let c: i64 = rng.gen_range(-1000..=1000);
         dbg!(a, b, c);
-        Additive::check_associative(a.into(), b.into(), c.into());
-        Additive::check_cancellativity(a.into(), b.into(), c.into());
-        Additive::check_commutative(a.into(), b.into());
-        Additive::check_identity(a.into());
-        Additive::check_invertibility(a.into());
+        Additive::check_associative(a, b, c);
+        Additive::check_cancellativity(a, b, c);
+        Additive::check_commutative(a, b);
+        Additive::check_identity(a);
+        Additive::check_invertibility(a);
     }
 }

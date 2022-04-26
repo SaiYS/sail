@@ -7,6 +7,7 @@ license = "MIT"
 [dependencies]
 algebraics = { path = "../algebraics" }
 util = { path = "../util" }
+itertools = "0.10.3"
 
 [dev-dependencies]
 rand = "0.8.5"

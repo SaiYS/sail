@@ -1,18 +1,18 @@
 pub use algebraics::abstruct::AbelianGroup;
 
-use algebraics::{property::Identity, structure::Additive};
+use algebraics::structure::Additive;
 use std::ops::RangeBounds;
 
 #[derive(Debug, Clone)]
 pub struct FenwickTree<A: AbelianGroup> {
     len: usize,
-    buffer: Vec<A>,
+    buffer: Vec<A::I>,
 }
 
 pub type AdditiveFenwickTree = FenwickTree<Additive<i64>>;
 
-impl<A: AbelianGroup> From<Vec<A::T>> for FenwickTree<A> {
-    fn from(v: Vec<A::T>) -> Self {
+impl<A: AbelianGroup> From<Vec<A::I>> for FenwickTree<A> {
+    fn from(v: Vec<A::I>) -> Self {
         let mut res = FenwickTree::new(v.len());
         for (i, val) in v.into_iter().enumerate() {
             res.add(i, val);
@@ -25,7 +25,7 @@ impl<A: AbelianGroup> FenwickTree<A> {
     pub fn new(len: usize) -> Self {
         Self {
             len: len + 1,
-            buffer: vec![Identity::identity(); len + 1],
+            buffer: vec![<A as AbelianGroup>::identity(); len + 1],
         }
     }
 
@@ -37,41 +37,42 @@ impl<A: AbelianGroup> FenwickTree<A> {
         self.len() == 0
     }
 
-    fn prefix_inner(&self, to: usize) -> A {
+    fn prefix_inner(&self, to: usize) -> A::I {
         let mut res = self.buffer[0].clone();
         let mut i = to;
         while i != 0 {
-            res.operate_assign(self.buffer[i].clone());
+            A::operate_assign(&mut res, self.buffer[i].clone());
             i -= lowest_bit(i).unwrap();
         }
         res
     }
 
-    pub fn prefix(&self, to: usize) -> A::T {
+    pub fn prefix(&self, to: usize) -> A::I {
         if to == 0 {
-            <A as Identity>::identity().get()
+            <A as AbelianGroup>::identity()
         } else {
-            self.prefix_inner(to - 1).get()
+            self.prefix_inner(to - 1)
         }
     }
 
-    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> A::T {
+    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> A::I {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
         if from == 0 {
             self.prefix(to)
         } else {
-            self.prefix_inner(to - 1)
-                .operate(self.prefix_inner(from - 1).inverse())
-                .get()
+            A::operate(
+                self.prefix_inner(to - 1),
+                A::inverse(self.prefix_inner(from - 1)),
+            )
         }
     }
 
-    pub fn add(&mut self, mut i: usize, value: A::T) {
+    pub fn add(&mut self, mut i: usize, value: A::I) {
         if i == 0 {
-            self.buffer[0] = self.buffer[0].clone().operate(value.into());
+            A::operate_assign(&mut self.buffer[0], value);
         } else {
             while i < self.len() {
-                self.buffer[i] = self.buffer[i].clone().operate(value.clone().into());
+                A::operate_assign(&mut self.buffer[i], value.clone());
                 i += lowest_bit(i).unwrap();
             }
         }
@@ -90,7 +91,7 @@ fn lowest_bit(x: usize) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use crate::FenwickTree;
-    use algebraics::{abstruct::AbelianGroup, structure::Additive, Operation};
+    use algebraics::{abstruct::AbelianGroup, property::Operation, structure::Additive};
     use rand::Rng;
 
     #[test]
@@ -105,7 +106,7 @@ mod tests {
 
         let n = 1000;
 
-        let mut raw: Vec<Additive<i64>> = vec![0.into(); n];
+        let mut raw: Vec<i64> = vec![0; n];
         let mut ft = FenwickTree::<algebraics::structure::Additive<i64>>::new(n);
 
         for _ in 0..n {
@@ -116,12 +117,12 @@ mod tests {
                     std::mem::swap(&mut l, &mut r);
                 }
 
-                assert_eq!(ft.range(l..=r), AbelianGroup::fold(&raw[l..=r]).get())
+                assert_eq!(ft.range(l..=r), Additive::<i64>::fold(&raw[l..=r]))
             } else {
                 let i = rng.gen_range(0..n);
                 let value = rng.gen_range(-100..=100);
                 ft.add(i, value);
-                raw[i].operate_assign(value.into());
+                Additive::operate_assign(&mut raw[i], value);
             }
         }
     }

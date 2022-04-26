@@ -1,125 +1,132 @@
-use crate::{
-    property::{Associativity, Cancellativity, Commutativity, Identity, Invertibility},
-    Operation,
+use crate::property::{
+    Associativity, Cancellativity, Commutativity, Identity, Invertibility, Operation,
 };
 
-pub trait Magma: Operation + From<Self::T> {
-    type T: Clone;
-    fn get(self) -> Self::T;
+pub trait Magma: Operation<Self::I> {
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
 }
 
-pub trait SemiGroup: Associativity + From<Self::T> {
-    type T: Clone;
-    fn get(self) -> Self::T;
+pub trait SemiGroup: Associativity<Self::I> {
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
 }
 
 impl<S: SemiGroup> Magma for S {
-    type T = <S as SemiGroup>::T;
+    type I = <S as SemiGroup>::I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> Self::I {
         SemiGroup::get(self)
     }
 }
 
-pub trait Monoid: Associativity + Identity + From<Self::T> {
-    type T: Clone;
-    fn get(self) -> Self::T;
-    fn identity() -> Self {
-        Identity::identity()
+pub trait Monoid: Associativity<Self::I> + Identity<Self::I> {
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
+    fn identity() -> Self::I {
+        <Self as Identity<Self::I>>::identity()
     }
-    fn fold_right(xs: &[Self]) -> Self {
+    fn fold_right(xs: &[Self::I]) -> Self::I {
         if let Some((x, rest)) = xs.split_last() {
-            x.clone().operate(Self::fold_right(rest))
+            Self::operate(x.clone(), Self::fold_right(rest))
         } else {
-            Monoid::identity()
+            <Self as Monoid>::identity()
         }
     }
-    fn fold_left(xs: &[Self]) -> Self {
+    fn fold_left(xs: &[Self::I]) -> Self::I {
         if let Some((x, rest)) = xs.split_first() {
-            x.clone().operate(Self::fold_left(rest))
+            Self::operate(x.clone(), Self::fold_left(rest))
         } else {
-            Monoid::identity()
+            <Self as Monoid>::identity()
         }
     }
 }
 
 impl<M: Monoid> SemiGroup for M {
-    type T = <M as Monoid>::T;
+    type I = <M as Monoid>::I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> Self::I {
         Monoid::get(self)
     }
 }
 
-pub trait Group: Associativity + Identity + Invertibility + Cancellativity + From<Self::T> {
-    type T: Clone;
-    fn get(self) -> Self::T;
-    fn identity() -> Self {
-        Identity::identity()
+pub trait Group:
+    Associativity<Self::I> + Identity<Self::I> + Invertibility<Self::I> + Cancellativity<Self::I>
+{
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
+    fn identity() -> Self::I {
+        <Self as Identity<Self::I>>::identity()
     }
-    fn fold_right(xs: &[Self]) -> Self {
+    fn fold_right(xs: &[Self::I]) -> Self::I {
         if let Some((x, rest)) = xs.split_last() {
-            x.clone().operate(Self::fold_right(rest))
+            Self::operate(x.clone(), Self::fold_right(rest))
         } else {
-            Group::identity()
+            <Self as Group>::identity()
         }
     }
-    fn fold_left(xs: &[Self]) -> Self {
+    fn fold_left(xs: &[Self::I]) -> Self::I {
         if let Some((x, rest)) = xs.split_first() {
-            x.clone().operate(Self::fold_left(rest))
+            Self::operate(x.clone(), Self::fold_left(rest))
         } else {
-            Group::identity()
+            <Self as Group>::identity()
         }
     }
 }
 
 impl<G: Group> Monoid for G {
-    type T = <G as Group>::T;
+    type I = <G as Group>::I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> Self::I {
         Group::get(self)
     }
 }
 
 pub trait AbelianGroup:
-    Associativity + Identity + Invertibility + Commutativity + Cancellativity + From<Self::T>
+    Associativity<Self::I>
+    + Identity<Self::I>
+    + Invertibility<Self::I>
+    + Commutativity<Self::I>
+    + Cancellativity<Self::I>
 {
-    type T: Clone;
-    fn get(self) -> Self::T;
-    fn identity() -> Self {
-        Identity::identity()
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
+    fn identity() -> Self::I {
+        <Self as Identity<Self::I>>::identity()
     }
-    fn fold(xs: &[Self]) -> Self {
+    fn fold(xs: &[Self::I]) -> Self::I {
         if let Some((x, rest)) = xs.split_first() {
-            x.clone().operate(Self::fold(rest))
+            Self::operate(x.clone(), Self::fold(rest))
         } else {
-            AbelianGroup::identity()
+            <Self as AbelianGroup>::identity()
         }
     }
 }
 
 impl<A: AbelianGroup> Group for A {
-    type T = <A as AbelianGroup>::T;
+    type I = <A as AbelianGroup>::I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> Self::I {
         AbelianGroup::get(self)
     }
 }
 
-pub trait QuasiGroup: Cancellativity + From<Self::T> {
-    type T: Clone;
-    fn get(self) -> Self::T;
+pub trait QuasiGroup: Cancellativity<Self::I> + From<Self::I> {
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
 }
 
-pub trait Loop: Identity + Invertibility + Cancellativity + From<Self::T> {
-    type T: Clone;
-    fn get(self) -> Self::T;
+pub trait Loop:
+    Identity<Self::I> + Invertibility<Self::I> + Cancellativity<Self::I> + From<Self::I>
+{
+    type I: Clone + PartialEq;
+    fn get(self) -> Self::I;
 }
 
 impl<L: Loop> QuasiGroup for L {
-    type T = <L as Loop>::T;
+    type I = <L as Loop>::I;
 
-    fn get(self) -> Self::T {
+    fn get(self) -> Self::I {
         Loop::get(self)
     }
 }
