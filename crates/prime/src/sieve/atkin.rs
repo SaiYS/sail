@@ -18,7 +18,15 @@ impl SieveOfAtkin {
         is_prime[2] = true;
         is_prime[3] = true;
         is_prime[5] = true;
-        let mut primes = vec![2, 3, 5];
+
+        let cap = if limit > 1 {
+            let x = limit as f64;
+            (x / x.ln() * (1.0 + 1.2762 / x.ln())) as usize
+        } else {
+            0
+        };
+        let mut primes = Vec::with_capacity(cap);
+        primes.extend_from_slice(&[2, 3, 5]);
 
         for x in 1.. {
             if 4 * x * x > limit {

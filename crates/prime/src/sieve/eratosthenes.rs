@@ -12,20 +12,27 @@ impl SieveOfEratosthenes {
         self.limit
     }
 
-    pub fn new(n: usize) -> Self {
-        let mut is_prime = vec![true; n + 1];
+    pub fn new(limit: usize) -> Self {
+        let mut is_prime = vec![true; limit + 1];
         is_prime[0] = false;
         is_prime[1] = false;
-        let mut primes = Vec::new();
+
+        let cap = if limit > 1 {
+            let x = limit as f64;
+            (x / x.ln() * (1.0 + 1.2762 / x.ln())) as usize
+        } else {
+            0
+        };
+        let mut primes = Vec::with_capacity(cap);
 
         let mut cur = 2;
-        while cur * cur <= n {
+        while cur * cur <= limit {
             if is_prime[cur] {
                 primes.push(cur);
 
                 (2..)
                     .map(|x| x * cur)
-                    .take_while(|&x| x <= n)
+                    .take_while(|&x| x <= limit)
                     .for_each(|x| {
                         is_prime[x] = false;
                     });
@@ -36,7 +43,7 @@ impl SieveOfEratosthenes {
         for (i, _) in is_prime
             .iter()
             .enumerate()
-            .take(n + 1)
+            .take(limit + 1)
             .skip(cur)
             .filter(|&(_, &e)| e)
         {
@@ -44,7 +51,7 @@ impl SieveOfEratosthenes {
         }
 
         Self {
-            limit: n,
+            limit,
             is_prime: is_prime.into_boxed_slice(),
             primes: primes.into_boxed_slice(),
         }
