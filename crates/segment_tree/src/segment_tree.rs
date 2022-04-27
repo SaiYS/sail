@@ -141,22 +141,24 @@ impl<M: Monoid> SegmentTree<M> {
 
         let mut from = from + self.capacity - 1;
         let mut to = to + self.capacity - 1;
-        let mut res = <M as Monoid>::identity();
+
+        let mut ls = <M as Monoid>::identity();
+        let mut rs = <M as Monoid>::identity();
 
         while from < to {
             if from & 1 == 0 {
-                M::operate_assign(&mut res, self.buffer[from].clone());
+                M::operate_assign(&mut ls, self.buffer[from].clone());
                 from += 1;
             }
             if to & 1 == 0 {
                 to -= 1;
-                M::operate_assign(&mut res, self.buffer[to].clone());
+                M::operate_assign(&mut rs, self.buffer[to].clone());
             }
             from = (from - 1) >> 1;
             to = (to - 1) >> 1;
         }
 
-        res
+        M::operate(ls, rs)
     }
 
     /// Returns a folded value of all leaves

@@ -12,4 +12,3 @@ algebraics = { path = "../algebraics" }
 
 [dev-dependencies]
 rand = "0.8.5"
-modint = { path = "../modint" }
