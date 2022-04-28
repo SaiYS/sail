@@ -23,7 +23,6 @@ pub mod consts {
     pub const MOD_998244353: u64 = 998244353;
     pub const INF: i64 = 2000000000;
     pub const FNI: i64 = -2000000000;
-    pub const PI: f64 = std::f64::consts::PI;
     pub const ALPHABET_LARGE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     pub const ALPHABET_SMALL: &str = "abcdefghijklmnopqrstuvwxyz";
     pub const ADJ4: [(i64, i64); 4] = [(1, 0), (0, 1), (-1, 0), (0, -1)];
