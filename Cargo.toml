@@ -25,8 +25,9 @@ segment_tree = { path = "crates/segment_tree" }
 sparse_table = { path = "crates/sparse_table" }
 sqrt_decomposition = { path = "crates/sqrt_decomposition" }
 suffix_array = { path = "crates/suffix_array" }
+timer = { path = "crates/timer" }
 union_find = { path = "crates/union_find" }
-util = { path = "crates/util" }
+# util = { path = "crates/util" }
 
 [dev-dependencies]
 # num = "0.2.1"

@@ -1,4 +1,4 @@
-use super::ModInt;
+use crate::ModInt;
 use num_traits::{Inv, One};
 
 #[derive(Debug, Clone)]

@@ -57,4 +57,5 @@ pub use segment_tree;
 pub use sparse_table;
 pub use sqrt_decomposition;
 pub use suffix_array;
+pub use timer;
 pub use union_find;

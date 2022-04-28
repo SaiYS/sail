@@ -1,4 +1,4 @@
-use super::ModInt;
+use crate::ModInt;
 use num_traits::{One, Zero};
 
 pub trait Factorial: Sized + Clone {

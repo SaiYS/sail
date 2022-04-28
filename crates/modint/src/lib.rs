@@ -9,31 +9,10 @@ use std::{
     str::FromStr,
 };
 
-// mod cg;
-
-// pub trait Modulus: Copy {
-//     const VALUE: NonZeroU64;
-//     const IS_PRIME: bool;
-// }
-
-// #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-// pub enum Mod998244353 {}
-
-// impl Modulus for Mod998244353 {
-//     const VALUE: NonZeroU64 = unsafe { NonZeroU64::new_unchecked(998244353) };
-//     const IS_PRIME: bool = true;
-// }
+pub mod factorial;
+pub mod table;
 
 pub type ModInt998244353 = ModInt<998244353>;
-
-// #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-// pub enum Mod1000000007 {}
-
-// impl Modulus for Mod1000000007 {
-//     const VALUE: NonZeroU64 = unsafe { NonZeroU64::new_unchecked(1000000007) };
-//     const IS_PRIME: bool = true;
-// }
-
 pub type ModInt1000000007 = ModInt<1000000007>;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
@@ -46,7 +25,7 @@ impl<const M: u64> ModInt<M> {
 }
 
 impl<const M: u64> ModInt<M> {
-    pub fn order(&self) -> u64 {
+    pub fn modulus(&self) -> u64 {
         M
     }
 
@@ -460,6 +439,3 @@ impl<const M: u64> Inv for ModInt<M> {
         }
     }
 }
-
-pub mod factorial;
-pub mod table;
