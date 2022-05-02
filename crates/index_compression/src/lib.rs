@@ -35,6 +35,10 @@ impl IndexCompression {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn compress(&self, from: usize) -> Option<usize> {
         self.com.get(&from).copied()
     }
