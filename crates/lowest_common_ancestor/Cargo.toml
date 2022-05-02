@@ -6,6 +6,14 @@ license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = ["segment_tree"]
+segment_tree = ["dep:segment_tree"]
+sparse_table = ["dep:sparse_table"]
+sqrt_decomposition = ["dep:sqrt_decomposition"]
+
 [dependencies]
-sparse_table = { path = "../sparse_table" }
+sparse_table = { path = "../sparse_table", optional = true }
+segment_tree = { path = "../segment_tree", optional = true }
+sqrt_decomposition = { path = "../sqrt_decomposition", optional = true }
 itertools = "0.10.3"

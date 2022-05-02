@@ -86,7 +86,7 @@ impl<M: Monoid> Decomposition<M> {
     }
 
     /// Returns a folded value in `range`
-    pub fn get_range<R: RangeBounds<usize>>(&mut self, range: R) -> M::I {
+    pub fn range<R: RangeBounds<usize>>(&self, range: R) -> M::I {
         let (from, to) = util::expand_range_bound(&range, 0, self.len());
         let mut res = <M as Monoid>::identity();
         for i in 0..self.block_len() {
@@ -133,7 +133,7 @@ mod tests {
                     swap(&mut from, &mut to);
                 }
                 assert_eq!(
-                    sd.get_range(from..to),
+                    sd.range(from..to),
                     Max::fold_right(&sd.original[from..to])
                 );
             } else {
