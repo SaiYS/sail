@@ -1,20 +1,19 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Directed {}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Undirected {}
-
-pub trait DirectionType {
-    const DIRECTED: bool;
+pub mod unweighted {
+    pub mod list_graph;
+    pub mod matrix_graph;
 }
 
-impl DirectionType for Directed {
-    const DIRECTED: bool = true;
+pub mod weighted {
+    pub mod list_graph;
+    pub mod matrix_graph;
 }
 
-impl DirectionType for Undirected {
-    const DIRECTED: bool = false;
-}
+pub use unweighted::{
+    list_graph::{DULGraph, UULGraph},
+    matrix_graph::{DUMGraph, UUMGraph},
+};
 
-pub mod list_graph;
-pub mod matrix_graph;
+pub use weighted::{
+    list_graph::{DWLGraph, UWLGraph},
+    matrix_graph::{DWMGraph, UWMGraph},
+};
