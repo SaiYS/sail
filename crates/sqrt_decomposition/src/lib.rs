@@ -132,10 +132,7 @@ mod tests {
                 if to < from {
                     swap(&mut from, &mut to);
                 }
-                assert_eq!(
-                    sd.range(from..to),
-                    Max::fold_right(&sd.original[from..to])
-                );
+                assert_eq!(sd.range(from..to), Max::fold_right(&sd.original[from..to]));
             } else {
                 let x = rng.gen_range(0..n);
                 let new_value = rng.gen_range(0..n);
