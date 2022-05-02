@@ -17,6 +17,7 @@ fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }
 index_compression = { path = "crates/index_compression" }
 io = { path = "crates/io" }
+lowest_common_ancestor = { path = "crates/lowest_common_ancestor" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 rolling_hash = { path = "crates/rolling_hash" }

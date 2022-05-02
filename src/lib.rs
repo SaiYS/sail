@@ -48,6 +48,7 @@ pub use fisher_yates;
 pub use graph;
 pub use index_compression;
 pub use io;
+pub use lowest_common_ancestor;
 pub use modint;
 pub use prime;
 pub use rolling_hash;
