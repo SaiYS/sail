@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -7,7 +9,6 @@ pub struct ListGraph<const D: bool> {
 }
 
 pub type DULGraph = ListGraph<true>;
-
 pub type UULGraph = ListGraph<false>;
 
 impl<const D: bool> ListGraph<D> {
@@ -54,4 +55,32 @@ impl<const D: bool> ListGraph<D> {
     pub fn adjacencies(&self, from: usize) -> Vec<usize> {
         self.buffer[from].iter().copied().collect_vec()
     }
+
+    pub fn distances(&self, start: usize) -> Vec<Option<usize>> {
+        let mut dist = vec![None; self.len()];
+        dist[start] = Some(0);
+        let mut q = VecDeque::new();
+        q.push_back(start);
+
+        while let Some(cur) = q.pop_front() {
+            for next in self.buffer[cur]
+                .iter()
+                .copied()
+                .filter(|&x| dist[x].is_none())
+                .collect_vec()
+            {
+                dist[next] = Some(dist[cur].unwrap() + 1);
+                q.push_back(next);
+            }
+        }
+
+        dist
+    }
+}
+
+#[test]
+fn dist_test() {
+    let g = UULGraph::from_edges1(5, &[(1, 2), (2, 3), (2, 4), (1, 5)]);
+    let d = g.distances(0);
+    dbg!(d);
 }

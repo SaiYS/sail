@@ -1,19 +1,23 @@
-use itertools::Itertools;
+use std::ops::Add;
+
+use itertools::{iproduct, Itertools};
+
+use crate::Distance::{self, Reachable, Unreachable};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MatrixGraph<const D: bool, W> {
     len: usize,
-    buffer: Vec<Vec<Option<W>>>,
+    buffer: Vec<Vec<Distance<W>>>,
 }
 
-pub type DWMGraph = MatrixGraph<true, i64>;
-pub type UWMGraph = MatrixGraph<false, i64>;
+pub type DWMGraph = MatrixGraph<true, u64>;
+pub type UWMGraph = MatrixGraph<false, u64>;
 
 impl<const D: bool, W: Copy> MatrixGraph<D, W> {
     pub fn new(len: usize) -> Self {
         Self {
             len,
-            buffer: vec![vec![None; len]; len],
+            buffer: vec![vec![Unreachable; len]; len],
         }
     }
 
@@ -27,10 +31,10 @@ impl<const D: bool, W: Copy> MatrixGraph<D, W> {
 
     pub fn add_edge(&mut self, from: usize, to: usize, cost: W) {
         if D {
-            self.buffer[from][to] = Some(cost);
+            self.buffer[from][to] = Reachable(cost);
         } else {
-            self.buffer[from][to] = Some(cost);
-            self.buffer[to][from] = Some(cost);
+            self.buffer[from][to] = Reachable(cost);
+            self.buffer[to][from] = Reachable(cost);
         }
     }
 
@@ -53,7 +57,26 @@ impl<const D: bool, W: Copy> MatrixGraph<D, W> {
     pub fn adjacencies(&self, from: usize) -> Vec<usize> {
         self.buffer[from]
             .iter()
-            .positions(|&x| x.is_some())
+            .positions(|&x| x.is_reachable())
             .collect_vec()
+    }
+}
+
+impl<const D: bool, W: Copy + Add<Output = W> + Ord> MatrixGraph<D, W> {
+    /// Floyd-Warshall algorythm
+    ///
+    /// Calculate distances for every pair of nodes on graph
+    ///
+    /// See https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    pub fn floyd_warshall(&self) -> Vec<Vec<Distance<W>>> {
+        let mut dist = self.buffer.clone();
+
+        for (k, i, j) in iproduct!(0..self.len(), 0..self.len(), 0..self.len()) {
+            if dist[i][j] > dist[i][k] + dist[k][j] {
+                dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+
+        dist
     }
 }

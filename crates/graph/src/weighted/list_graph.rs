@@ -1,4 +1,6 @@
+use crate::Distance;
 use itertools::Itertools;
+use num_traits::Unsigned;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListGraph<const D: bool, W> {
@@ -6,9 +8,8 @@ pub struct ListGraph<const D: bool, W> {
     buffer: Vec<Vec<(usize, W)>>,
 }
 
-pub type DWLGraph = ListGraph<true, i64>;
-
-pub type UWLGraph = ListGraph<false, i64>;
+pub type DWLGraph = ListGraph<true, u64>;
+pub type UWLGraph = ListGraph<false, u64>;
 
 impl<const D: bool, W: Copy> ListGraph<D, W> {
     pub fn new(len: usize) -> Self {
@@ -54,4 +55,34 @@ impl<const D: bool, W: Copy> ListGraph<D, W> {
     pub fn adjacencies(&self, from: usize) -> Vec<(usize, W)> {
         self.buffer[from].iter().copied().collect_vec()
     }
+}
+
+impl<const D: bool, W: Copy + Ord + Unsigned> ListGraph<D, W> {
+    /// Dijkstra algorythm
+    ///
+    /// See https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    pub fn dijkstra(&self, start: usize) -> Vec<Distance<W>> {
+        crate::dijkstra::dijkstra(&self.buffer, start)
+    }
+
+    /// Dijkstra algorythm with path
+    ///
+    /// Returns a pair of (dist, prev),
+    /// to restore the shortest path from `start` to `x`,
+    /// call `x = prev[x]` repeatedly
+    ///
+    /// See https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    pub fn dijkstra_with_path_hints(&self, start: usize) -> (Vec<Distance<W>>, Vec<Option<usize>>) {
+        crate::dijkstra::dijkstra_with_path_hint(&self.buffer, start)
+    }
+}
+
+#[test]
+fn dijkstra_test() {
+    let g = UWLGraph::from_edges1(
+        6,
+        &[(1, 2, 2), (2, 3, 3), (2, 4, 1), (1, 5, 100), (4, 5, 1)],
+    );
+    let d = g.dijkstra(0);
+    dbg!(d);
 }
