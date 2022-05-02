@@ -2,14 +2,14 @@ use itertools::{izip, Itertools};
 use sparse_table::{Min, SparseTable};
 
 #[derive(Debug, Clone)]
-pub struct LcaTree {
+pub struct LowestCommonAncestor {
     len: usize,
     root: usize,
     first_appear: Vec<usize>,
     rmq: SparseTable<Min<(usize, usize)>>,
 }
 
-impl LcaTree {
+impl LowestCommonAncestor {
     pub fn new(len: usize, root: usize, edges: &[(usize, usize)]) -> Self {
         let mut g = vec![Vec::new(); len];
         for &(u, v) in edges {
@@ -83,7 +83,7 @@ impl LcaTree {
 #[test]
 fn lca_test() {
     let edges = [(0, 1), (0, 2), (1, 3), (1, 4), (3, 5)];
-    let lca = LcaTree::new(6, 0, &edges);
+    let lca = LowestCommonAncestor::new(6, 0, &edges);
 
     assert_eq!(lca.lca(2, 3), 0);
     assert_eq!(lca.lca(5, 4), 1);
