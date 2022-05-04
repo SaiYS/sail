@@ -31,22 +31,22 @@ impl<W: Copy + Add<Output = W> + Sub<Output = W> + Zero> LowestCommonAncestor<W>
             }
         }
 
-        let mut double = vec![parent];
+        let mut ancestor = vec![parent];
         for k in 1.. {
-            if double.last().unwrap().iter().all(|&x| x == root) {
+            if ancestor.last().unwrap().iter().all(|&x| x == root) {
                 break;
             }
 
             let next = (0..n)
-                .map(|x| double[k - 1][double[k - 1][x]])
+                .map(|x| ancestor[k - 1][ancestor[k - 1][x]])
                 .collect_vec();
-            double.push(next);
+            ancestor.push(next);
         }
 
         Self {
             n,
             root,
-            ancestor: double,
+            ancestor,
             depth,
             dist,
         }
