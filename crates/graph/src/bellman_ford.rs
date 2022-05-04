@@ -1,4 +1,3 @@
-use crate::Distance::{self, Reachable, Unreachable};
 use num_traits::Num;
 
 #[derive(Debug, Clone)]
@@ -10,19 +9,24 @@ pub fn bellman_ford<W: Copy + Ord + Num>(
     n: usize,
     edges: &[(usize, usize, W)],
     start: usize,
-) -> BellmanFordResult<Vec<Distance<W>>> {
-    let mut dist = vec![Unreachable; n];
-    dist[start] = Reachable(W::zero());
+) -> BellmanFordResult<Vec<Option<W>>> {
+    let mut dist = vec![None; n];
+    dist[start] = Some(W::zero());
 
     for _ in 1..n {
         for &(u, v, w) in edges.iter() {
-            if dist[v] > dist[u] + w {
-                dist[v] = dist[u] + w;
+            if dist[u].is_some() && dist[v].is_none() || dist[v].unwrap() > dist[u].unwrap() + w {
+                dist[v] = Some(dist[u].unwrap() + w);
             }
         }
     }
 
-    if edges.iter().all(|&(u, v, w)| dist[u] + w >= dist[v]) {
+    if edges.iter().all(|&(u, v, w)| match (dist[u], dist[v]) {
+        (None, None) => true,
+        (None, Some(_)) => true,
+        (Some(_), None) => false,
+        (Some(x), Some(y)) => x + w >= y,
+    }) {
         Ok(dist)
     } else {
         Err(BellmanFordError)
@@ -34,22 +38,27 @@ pub fn bellman_ford_with_path_hint<W: Copy + Ord + Num>(
     n: usize,
     edges: &[(usize, usize, W)],
     start: usize,
-) -> BellmanFordResult<(Vec<Distance<W>>, Vec<Option<usize>>)> {
-    let mut dist = vec![Distance::Unreachable; n];
-    dist[start] = Reachable(W::zero());
+) -> BellmanFordResult<(Vec<Option<W>>, Vec<Option<usize>>)> {
+    let mut dist = vec![None; n];
+    dist[start] = Some(W::zero());
 
     let mut prev = vec![None; n];
 
     for _ in 1..n {
         for &(u, v, w) in edges.iter() {
-            if dist[v] > dist[u] + w {
-                dist[v] = dist[u] + w;
+            if dist[u].is_some() && dist[v].is_none() || dist[v].unwrap() > dist[u].unwrap() + w {
+                dist[v] = Some(dist[u].unwrap() + w);
                 prev[v] = Some(u);
             }
         }
     }
 
-    if edges.iter().all(|&(u, v, w)| dist[u] + w >= dist[v]) {
+    if edges.iter().all(|&(u, v, w)| match (dist[u], dist[v]) {
+        (None, None) => true,
+        (None, Some(_)) => true,
+        (Some(_), None) => false,
+        (Some(x), Some(y)) => x + w >= y,
+    }) {
         Ok((dist, prev))
     } else {
         Err(BellmanFordError)

@@ -1,25 +1,12 @@
 use itertools::{izip, Itertools};
-
-#[cfg(feature = "segment_tree")]
 use segment_tree::{segment_tree::SegmentTree, Min};
-
-#[cfg(feature = "sparse_table")]
-use sparse_table::{Min, SparseTable};
-
-#[cfg(feature = "sqrt_decomposition")]
-use sqrt_decomposition::{Decomposition, Min};
 
 #[derive(Clone)]
 pub struct LowestCommonAncestor {
     len: usize,
     root: usize,
     first_appear: Vec<usize>,
-    #[cfg(feature = "segment_tree")]
     rmq: SegmentTree<Min<(usize, usize)>>,
-    #[cfg(feature = "sparse_table")]
-    rmq: SparseTable<Min<(usize, usize)>>,
-    #[cfg(feature = "sqrt_decomposition")]
-    rmq: Decomposition<Min<(usize, usize)>>,
 }
 
 impl LowestCommonAncestor {
@@ -67,12 +54,7 @@ impl LowestCommonAncestor {
             len,
             root,
             first_appear: first_appear.into_iter().flatten().collect_vec(),
-            #[cfg(feature = "segment_tree")]
             rmq: SegmentTree::from(izip!(depth, eular_tour).collect_vec()),
-            #[cfg(feature = "sparse_table")]
-            rmq: SparseTable::new(izip!(depth, eular_tour).collect_vec()),
-            #[cfg(feature = "sqrt_decomposition")]
-            rmq: Decomposition::from(izip!(depth, eular_tour).collect_vec()),
         }
     }
 

@@ -7,3 +7,4 @@ license = "MIT"
 [dependencies]
 itertools = "0.10.3"
 num-traits = "0.2.14"
+segment_tree = { path = "../segment_tree" }
