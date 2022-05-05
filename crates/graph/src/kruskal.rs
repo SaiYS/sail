@@ -10,8 +10,7 @@ pub fn kuruskal(n: usize, edges: &[(usize, usize, usize)]) -> Vec<(usize, usize,
     let mut uf = UnionFind::new(n);
     let mut mst_edges = Vec::new();
 
-    let mut e = edges.iter().sorted_by_key(|x| x.2);
-    while let Some(&(a, b, c)) = e.next() {
+    for &(a, b, c) in edges.iter().sorted_by_key(|x| x.2) {
         if !uf.is_joint(a, b) {
             uf.unite(a, b);
             mst_edges.push((a, b, c));

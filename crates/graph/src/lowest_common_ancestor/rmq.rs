@@ -25,46 +25,14 @@ impl<W: Copy + Add<Output = W> + Sub<Output = W> + Zero> LowestCommonAncestor<W>
         let mut eular_tour = vec![];
         let mut first_appear = vec![None; n];
 
-        fn dfs<W: Copy + Add<Output = W> + Zero>(
-            g: &UWLGraph<W>,
-            eular_tour: &mut Vec<usize>,
-            depth: &mut Vec<usize>,
-            first_appear: &mut [Option<usize>],
-            dist: &mut Vec<W>,
-            cur: usize,
-            prev: Option<usize>,
-            d: usize,
-            w: W,
-        ) {
-            first_appear[cur] = Some(eular_tour.len());
-            eular_tour.push(cur);
-            depth.push(d);
-            if let Some(p) = prev {
-                dist[cur] = dist[p] + w;
-            }
-            for &(next, next_w) in g.list[cur].iter().filter(|&&(x, _)| Some(x) != prev) {
-                dfs(
-                    g,
-                    eular_tour,
-                    depth,
-                    first_appear,
-                    dist,
-                    next,
-                    Some(cur),
-                    d + 1,
-                    next_w,
-                );
-                eular_tour.push(cur);
-                depth.push(d);
-            }
-        }
-
         dfs(
             &tree,
-            &mut eular_tour,
-            &mut depth,
-            &mut first_appear,
-            &mut dist,
+            DfsRecord {
+                eular_tour: &mut eular_tour,
+                depth: &mut depth,
+                first_appear: &mut first_appear,
+                dist: &mut dist,
+            },
             root,
             None,
             0,
@@ -103,6 +71,51 @@ impl<W: Copy + Add<Output = W> + Sub<Output = W> + Zero> LowestCommonAncestor<W>
 
     pub fn distance(&self, a: usize, b: usize) -> W {
         self.dist[a] + self.dist[b] - self.dist[self.lca(a, b)] - self.dist[self.lca(a, b)]
+    }
+}
+
+struct DfsRecord<'a, W> {
+    eular_tour: &'a mut Vec<usize>,
+    depth: &'a mut Vec<usize>,
+    first_appear: &'a mut [Option<usize>],
+    dist: &'a mut [W],
+}
+
+fn dfs<W: Copy + Add<Output = W> + Zero>(
+    graph: &UWLGraph<W>,
+    DfsRecord {
+        eular_tour,
+        depth,
+        first_appear,
+        dist,
+    }: DfsRecord<W>,
+    cur: usize,
+    prev: Option<usize>,
+    d: usize,
+    w: W,
+) {
+    first_appear[cur] = Some(eular_tour.len());
+    eular_tour.push(cur);
+    depth.push(d);
+    if let Some(p) = prev {
+        dist[cur] = dist[p] + w;
+    }
+    for &(next, next_w) in graph.list[cur].iter().filter(|&&(x, _)| Some(x) != prev) {
+        dfs(
+            graph,
+            DfsRecord {
+                eular_tour,
+                depth,
+                first_appear,
+                dist,
+            },
+            next,
+            Some(cur),
+            d + 1,
+            next_w,
+        );
+        eular_tour.push(cur);
+        depth.push(d);
     }
 }
 

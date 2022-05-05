@@ -15,7 +15,7 @@ pub struct LowestCommonAncestor<W> {
 
 impl<W: Copy + Add<Output = W> + Sub<Output = W> + Zero> LowestCommonAncestor<W> {
     pub fn new(n: usize, root: usize, edges: &[(usize, usize, W)]) -> Self {
-        let tree = UWLGraph::from_edges(n, &edges);
+        let tree = UWLGraph::from_edges(n, edges);
         let mut parent = vec![root; n];
         let mut depth = vec![0usize; n];
         let mut dist = vec![W::zero(); n];
