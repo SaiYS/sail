@@ -57,6 +57,10 @@ impl<T: Clone + Add<Output = T> + Sub<Output = T>> Accumulation<T> {
         self.len() == 0
     }
 
+    pub fn accumulation(&self) -> &[T] {
+        &self.buffer
+    }
+
     /// Returns sum of values in `range`
     ///
     /// Complexity: `O(1)`
