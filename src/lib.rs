@@ -7,7 +7,8 @@
 /// ```
 pub mod prelude {
     pub use crate::consts::*;
-    pub use cmp::{max, min, MaxAssign as _, MaxAssign as _};
+    pub use cmp::{max, min, MaxAssign as _, MinAssign as _};
+    pub use counter::Counter;
     pub use index_compression::IndexCompression;
     pub use io::{
         interactive_input,
@@ -43,6 +44,7 @@ pub use accumulate;
 pub use algebraics;
 pub use bitset;
 pub use cmp;
+pub use counter;
 pub use fenwick_tree;
 pub use fisher_yates;
 pub use graph;

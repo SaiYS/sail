@@ -14,6 +14,7 @@ accumulate = { path = "crates/accumulate" }
 algebraics = { path = "crates/algebraics" }
 bitset = { path = "crates/bitset" }
 cmp = { path = "crates/cmp" }
+counter = { path = "crates/counter" }
 fenwick_tree = { path = "crates/fenwick_tree" }
 fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }
