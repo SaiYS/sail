@@ -19,8 +19,14 @@ impl<T> Counter<T> {
         self.len() == 0
     }
 
-    pub fn iter<'a>(&'a self) -> std::collections::hash_map::Iter<'a, T, usize> {
+    pub fn iter(&self) -> std::collections::hash_map::Iter<T, usize> {
         self.0.iter()
+    }
+}
+
+impl<T> Default for Counter<T> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
