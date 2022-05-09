@@ -47,4 +47,3 @@ impl<T> IntoIterator for Counter<T> {
         self.0.into_iter()
     }
 }
-
