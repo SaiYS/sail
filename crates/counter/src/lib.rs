@@ -4,6 +4,19 @@ use std::{
     ops::{Index, IndexMut},
 };
 
+/// Counter, alias of HashMap<T, usize>
+///
+/// ```
+/// use counter::Counter;
+///
+/// let mut c = Counter::new();
+///
+/// assert_eq!(c["foo"], 0);
+/// c["foo"] += 1;
+/// assert_eq!(c["foo"], 1);
+/// c["foo"] += 1;
+/// assert_eq!(c["foo"], 2);
+/// ```
 pub struct Counter<T>(HashMap<T, usize>);
 
 impl<T> Counter<T> {

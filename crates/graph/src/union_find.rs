@@ -2,10 +2,11 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-/// UnionFind
+/// UnionFind (Disjoint Set Union)
 #[derive(Debug, Clone)]
 pub struct UnionFind {
     len: usize,
+    count: usize,
     root: Vec<Option<usize>>,
     size: Vec<usize>,
 }
@@ -14,6 +15,7 @@ impl UnionFind {
     pub fn new(n: usize) -> Self {
         Self {
             len: n,
+            count: n,
             root: vec![None; n],
             size: vec![1; n],
         }
@@ -57,6 +59,7 @@ impl UnionFind {
 
         self.root[b] = Some(a);
         self.size[a] += self.size[b];
+        self.count -= 1;
     }
 
     /// Returns if `a` and `b` is contained in the same connected tree
@@ -77,7 +80,7 @@ impl UnionFind {
 
     /// Returns the number of connected trees
     pub fn trees_count(&mut self) -> usize {
-        (0..self.len()).map(|x| self.root(x)).unique().count()
+        self.count
     }
 
     /// Returns map of connected trees
