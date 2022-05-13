@@ -1,4 +1,4 @@
-use super::factorize::{FactorizationError, Factors};
+use super::factorize::{FactorizationError, PrimeFactors};
 use std::collections::BTreeMap;
 
 pub mod atkin;
@@ -9,7 +9,7 @@ pub trait PrimeSieve {
     fn is_prime(&self, n: usize) -> bool;
     fn primes(&self) -> &[usize];
 
-    fn factorize(&self, mut n: usize) -> Result<Factors<usize>, FactorizationError> {
+    fn factorize(&self, mut n: usize) -> Result<PrimeFactors<usize>, FactorizationError> {
         assert!(n <= self.limit() * self.limit());
         if n == 0 {
             Err(FactorizationError::Zero)
@@ -36,7 +36,7 @@ pub trait PrimeSieve {
                 factors.insert(n, 1);
             }
 
-            Ok(Factors(factors))
+            Ok(PrimeFactors(factors))
         }
     }
 }

@@ -1,21 +1,21 @@
 use std::collections::btree_map::{BTreeMap, IntoIter};
 
 #[derive(Debug, Clone)]
-pub struct Factors<T>(pub BTreeMap<T, usize>);
+pub struct PrimeFactors<T>(pub BTreeMap<T, usize>);
 
-impl<T> Factors<T> {
-    pub fn factors(self) -> BTreeMap<T, usize> {
+impl<T> PrimeFactors<T> {
+    pub fn primt_factors(self) -> BTreeMap<T, usize> {
         self.0
     }
 }
 
-impl<T> IntoIterator for Factors<T> {
+impl<T> IntoIterator for PrimeFactors<T> {
     type Item = (T, usize);
 
     type IntoIter = IntoIter<T, usize>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.factors().into_iter()
+        self.primt_factors().into_iter()
     }
 }
 
@@ -26,20 +26,20 @@ pub enum FactorizationError {
 }
 
 pub trait Factorization: Sized {
-    fn factorize(&self) -> Result<Factors<Self>, FactorizationError>;
+    fn factorize(&self) -> Result<PrimeFactors<Self>, FactorizationError>;
 }
 
 macro_rules! impl_factorize_for_uint {
 ($($t:ty),*) => {
     $(
         impl Factorization for $t {
-            fn factorize(&self) -> Result<Factors<Self>, FactorizationError> {
+            fn factorize(&self) -> Result<PrimeFactors<Self>, FactorizationError> {
                 if self == &0 {
                     Err(FactorizationError::Zero)
                 } else if self == &1 {
                     Err(FactorizationError::One)
                 } else {
-                    let mut factors = BTreeMap::new();
+                    let mut primt_factors = BTreeMap::new();
                     let mut x = self.clone();
                     let mut d = 2;
                     loop {
@@ -52,16 +52,16 @@ macro_rules! impl_factorize_for_uint {
                             c += 1;
                         }
                         if c > 0 {
-                            factors.insert(d, c);
+                            primt_factors.insert(d, c);
                         }
                         d += 1;
                     }
 
                     if x > 1 {
-                        factors.insert(x, 1);
+                        primt_factors.insert(x, 1);
                     }
 
-                    Ok(Factors(factors))
+                    Ok(PrimeFactors(primt_factors))
                 }
             }
         }
