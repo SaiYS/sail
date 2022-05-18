@@ -45,3 +45,11 @@ macro_rules! vis {
         vis!($($rest)*);
     };
 }
+
+#[macro_export]
+macro_rules! dvis {
+    ($($item:expr),*) => {
+        #[cfg(debug_assertions)]
+        dbg!($($item),*)
+    };
+}

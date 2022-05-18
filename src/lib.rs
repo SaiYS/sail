@@ -11,7 +11,7 @@ pub mod prelude {
     pub use counter::Counter;
     pub use index_compression::IndexCompression;
     pub use io::{
-        interactive_input,
+        dvis, interactive_input,
         output::util::{polar_question, Yn},
         vis,
     };
