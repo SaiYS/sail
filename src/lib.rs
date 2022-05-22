@@ -12,7 +12,7 @@ pub mod prelude {
     pub use index_compression::IndexCompression;
     pub use io::{
         dvis, interactive_input,
-        output::util::{polar_question, Yn},
+        output::{polar_question, Yn},
         proconio::{
             fastout, input,
             marker::{Bytes, Chars, Isize1, Usize1},
