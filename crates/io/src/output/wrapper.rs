@@ -1,7 +1,17 @@
+//! Wrapper implementation
+
 use itertools::Itertools as _;
 use std::collections::{BTreeSet, BinaryHeap, HashSet, VecDeque};
 use std::fmt::Display;
 
+/// Wrapper to visualize items
+///
+/// Numeric primitives, char, &str, String and their references
+/// will visualized in the same way as println! does.
+///
+/// Iterable Containers (array, Vec, VecDeque, HashSet, BTreeSet, BinayHeap)
+/// and tuples with items less than six
+/// will visualized in space-separated.
 pub struct VisWrapper<T>(pub T);
 
 macro_rules! impl_display_for_wrapped_iterables {
@@ -75,6 +85,16 @@ impl_display_for_wrapped_primitives! {
     isize, i8, i16, i32, i64, i128,
     f32, f64,
     char, &str, String
+}
+
+impl<T> Display for VisWrapper<(T,)>
+where
+    T: Clone,
+    VisWrapper<T>: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", VisWrapper(self.0 .0.clone()),)
+    }
 }
 
 impl<T, U> Display for VisWrapper<(T, U)>

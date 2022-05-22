@@ -11,14 +11,14 @@ pub mod prelude {
     pub use counter::Counter;
     pub use index_compression::IndexCompression;
     pub use io::{
-        dvis, interactive_input,
+        input::marker::Digits,
+        input_interactive,
         output::{polar_question, Yn},
         proconio::{
-            fastout, input,
+            input, is_stdin_empty,
             marker::{Bytes, Chars, Isize1, Usize1},
-            source::{auto::AutoSource, line::LineSource, once::OnceSource},
         },
-        vis,
+        trace, vis,
     };
     pub use modint::{ModInt1000000007, ModInt998244353, StaticModInt as ModInt};
 }
