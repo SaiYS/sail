@@ -1,5 +1,4 @@
-// #![deny(missing_docs)]
-
+#![deny(missing_docs)]
 //! # io
 //!
 //! I/O support for competitive programming
