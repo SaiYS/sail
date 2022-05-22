@@ -12,21 +12,20 @@ use std::{
 pub mod factorial;
 pub mod table;
 
-pub type ModInt998244353 = ModInt<998244353>;
-pub type ModInt1000000007 = ModInt<1000000007>;
+pub const MOD1000000007: u64 = 1000000007;
+pub type ModInt1000000007 = StaticModInt<MOD1000000007>;
+
+pub const MOD998244353: u64 = 998244353;
+pub type ModInt998244353 = StaticModInt<MOD998244353>;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ModInt<const M: u64>(u64);
+pub struct StaticModInt<const M: u64>(u64);
 
-impl<const M: u64> ModInt<M> {
+impl<const M: u64> StaticModInt<M> {
+    pub const MOD: u64 = M;
+
     pub fn get(&self) -> u64 {
         self.0
-    }
-}
-
-impl<const M: u64> ModInt<M> {
-    pub fn modulus(&self) -> u64 {
-        M
     }
 
     pub fn new<T>(value: T) -> Self
@@ -55,7 +54,7 @@ impl<const M: u64> ModInt<M> {
 macro_rules! impl_from_primitive {
     ($($t:ty),*) => {
         $(
-            impl<const M: u64> From<$t> for ModInt<M> {
+            impl<const M: u64> From<$t> for StaticModInt<M> {
                 fn from(value: $t) -> Self {
                     Self::new(value)
                 }
@@ -66,7 +65,7 @@ macro_rules! impl_from_primitive {
 
 impl_from_primitive!(u8, u16, u32, u64, usize, i8, i16, i32, i64, isize);
 
-impl<const M: u64> FromStr for ModInt<M> {
+impl<const M: u64> FromStr for StaticModInt<M> {
     type Err = ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -75,19 +74,19 @@ impl<const M: u64> FromStr for ModInt<M> {
     }
 }
 
-impl<const M: u64> Debug for ModInt<M> {
+impl<const M: u64> Debug for StaticModInt<M> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} (mod. {})", self.get(), M)
     }
 }
 
-impl<const M: u64> Display for ModInt<M> {
+impl<const M: u64> Display for StaticModInt<M> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         Display::fmt(&self.get(), f)
     }
 }
 
-impl<const M: u64> Add for ModInt<M> {
+impl<const M: u64> Add for StaticModInt<M> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -99,13 +98,13 @@ impl<const M: u64> Add for ModInt<M> {
     }
 }
 
-impl<const M: u64> AddAssign for ModInt<M> {
+impl<const M: u64> AddAssign for StaticModInt<M> {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs;
     }
 }
 
-impl<const M: u64> Sub for ModInt<M> {
+impl<const M: u64> Sub for StaticModInt<M> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -117,13 +116,13 @@ impl<const M: u64> Sub for ModInt<M> {
     }
 }
 
-impl<const M: u64> SubAssign for ModInt<M> {
+impl<const M: u64> SubAssign for StaticModInt<M> {
     fn sub_assign(&mut self, rhs: Self) {
         *self = *self - rhs;
     }
 }
 
-impl<const M: u64> Mul for ModInt<M> {
+impl<const M: u64> Mul for StaticModInt<M> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -132,13 +131,13 @@ impl<const M: u64> Mul for ModInt<M> {
     }
 }
 
-impl<const M: u64> MulAssign for ModInt<M> {
+impl<const M: u64> MulAssign for StaticModInt<M> {
     fn mul_assign(&mut self, rhs: Self) {
         *self = *self * rhs;
     }
 }
 
-impl<const M: u64> Div for ModInt<M> {
+impl<const M: u64> Div for StaticModInt<M> {
     type Output = Self;
 
     #[allow(clippy::suspicious_arithmetic_impl)]
@@ -147,13 +146,13 @@ impl<const M: u64> Div for ModInt<M> {
     }
 }
 
-impl<const M: u64> DivAssign for ModInt<M> {
+impl<const M: u64> DivAssign for StaticModInt<M> {
     fn div_assign(&mut self, rhs: Self) {
         *self = *self / rhs
     }
 }
 
-impl<const M: u64> Sum for ModInt<M> {
+impl<const M: u64> Sum for StaticModInt<M> {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -162,7 +161,7 @@ impl<const M: u64> Sum for ModInt<M> {
     }
 }
 
-impl<const M: u64> Product for ModInt<M> {
+impl<const M: u64> Product for StaticModInt<M> {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -174,7 +173,7 @@ impl<const M: u64> Product for ModInt<M> {
 macro_rules! impl_ops_for_unsigned_int {
     ($($t:ty),*) => {
         $(
-            impl<const M: u64> Add<$t> for ModInt<M> {
+            impl<const M: u64> Add<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn add(self, rhs: $t) -> Self::Output {
@@ -187,21 +186,21 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<const M: u64> Add<ModInt<M>> for $t {
-                type Output = ModInt<M>;
+            impl<const M: u64> Add<StaticModInt<M>> for $t {
+                type Output = StaticModInt<M>;
 
-                fn add(self, rhs: ModInt<M>) -> Self::Output {
+                fn add(self, rhs: StaticModInt<M>) -> Self::Output {
                     rhs + self
                 }
             }
 
-            impl<const M: u64> AddAssign<$t> for ModInt<M> {
+            impl<const M: u64> AddAssign<$t> for StaticModInt<M> {
                 fn add_assign(&mut self, rhs: $t) {
                     *self = *self + rhs;
                 }
             }
 
-            impl<const M: u64> Sub<$t> for ModInt<M> {
+            impl<const M: u64> Sub<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn sub(self, rhs: $t) -> Self::Output {
@@ -214,21 +213,21 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<const M: u64> Sub<ModInt<M>> for $t {
-                type Output = ModInt<M>;
+            impl<const M: u64> Sub<StaticModInt<M>> for $t {
+                type Output = StaticModInt<M>;
 
-                fn sub(self, rhs: ModInt<M>) -> Self::Output {
+                fn sub(self, rhs: StaticModInt<M>) -> Self::Output {
                     -(rhs - self)
                 }
             }
 
-            impl<const M: u64> SubAssign<$t> for ModInt<M> {
+            impl<const M: u64> SubAssign<$t> for StaticModInt<M> {
                 fn sub_assign(&mut self, rhs: $t) {
                     *self = *self - rhs;
                 }
             }
 
-            impl<const M: u64> Mul<$t> for ModInt<M> {
+            impl<const M: u64> Mul<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn mul(self, rhs: $t) -> Self::Output {
@@ -237,21 +236,21 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<const M: u64> Mul<ModInt<M>> for $t {
-                type Output = ModInt<M>;
+            impl<const M: u64> Mul<StaticModInt<M>> for $t {
+                type Output = StaticModInt<M>;
 
-                fn mul(self, rhs: ModInt<M>) -> Self::Output {
+                fn mul(self, rhs: StaticModInt<M>) -> Self::Output {
                     rhs * self
                 }
             }
 
-            impl<const M: u64> MulAssign<$t> for ModInt<M> {
+            impl<const M: u64> MulAssign<$t> for StaticModInt<M> {
                 fn mul_assign(&mut self, rhs: $t) {
                     *self = *self * rhs;
                 }
             }
 
-            impl<const M: u64> Div<$t> for ModInt<M> {
+            impl<const M: u64> Div<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 #[allow(clippy::suspicious_arithmetic_impl)]
@@ -260,21 +259,21 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<const M: u64> Div<ModInt<M>> for $t {
-                type Output = ModInt<M>;
+            impl<const M: u64> Div<StaticModInt<M>> for $t {
+                type Output = StaticModInt<M>;
 
-                fn div(self, rhs: ModInt<M>) -> Self::Output {
+                fn div(self, rhs: StaticModInt<M>) -> Self::Output {
                     (rhs / self).inv()
                 }
             }
 
-            impl<const M: u64> DivAssign<$t> for ModInt<M> {
+            impl<const M: u64> DivAssign<$t> for StaticModInt<M> {
                 fn div_assign(&mut self, rhs: $t) {
                     *self = *self / rhs
                 }
             }
 
-            impl<const M: u64> Sum<$t> for ModInt<M> {
+            impl<const M: u64> Sum<$t> for StaticModInt<M> {
                 fn sum<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -283,7 +282,7 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<const M: u64> Product<$t> for ModInt<M> {
+            impl<const M: u64> Product<$t> for StaticModInt<M> {
                 fn product<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -292,11 +291,11 @@ macro_rules! impl_ops_for_unsigned_int {
                 }
             }
 
-            impl<const M: u64> Pow<$t> for ModInt<M> {
+            impl<const M: u64> Pow<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn pow(self, mut exp: $t) -> Self::Output {
-                    let mut res = ModInt::one();
+                    let mut res = StaticModInt::one();
                     let mut cur = self;
                     while exp != 0 {
                         if exp & 1 != 0 {
@@ -317,7 +316,7 @@ impl_ops_for_unsigned_int!(u8, u16, u32, u64, usize);
 macro_rules! impl_ops_for_signed_int {
     ($($t:ty),*) => {
         $(
-            impl<const M: u64> Add<$t> for ModInt<M> {
+            impl<const M: u64> Add<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn add(self, rhs: $t) -> Self::Output {
@@ -325,13 +324,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<const M: u64> AddAssign<$t> for ModInt<M> {
+            impl<const M: u64> AddAssign<$t> for StaticModInt<M> {
                 fn add_assign(&mut self, rhs: $t) {
                     *self = *self + rhs;
                 }
             }
 
-            impl<const M: u64> Sub<$t> for ModInt<M> {
+            impl<const M: u64> Sub<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn sub(self, rhs: $t) -> Self::Output {
@@ -339,13 +338,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<const M: u64> SubAssign<$t> for ModInt<M> {
+            impl<const M: u64> SubAssign<$t> for StaticModInt<M> {
                 fn sub_assign(&mut self, rhs: $t) {
                     *self = *self - rhs;
                 }
             }
 
-            impl<const M: u64> Mul<$t> for ModInt<M> {
+            impl<const M: u64> Mul<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 fn mul(self, rhs: $t) -> Self::Output {
@@ -353,13 +352,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<const M: u64> MulAssign<$t> for ModInt<M> {
+            impl<const M: u64> MulAssign<$t> for StaticModInt<M> {
                 fn mul_assign(&mut self, rhs: $t) {
                     *self = *self * rhs;
                 }
             }
 
-            impl<const M: u64> Div<$t> for ModInt<M> {
+            impl<const M: u64> Div<$t> for StaticModInt<M> {
                 type Output = Self;
 
                 #[allow(clippy::suspicious_arithmetic_impl)]
@@ -368,13 +367,13 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<const M: u64> DivAssign<$t> for ModInt<M> {
+            impl<const M: u64> DivAssign<$t> for StaticModInt<M> {
                 fn div_assign(&mut self, rhs: $t) {
                     *self = *self / rhs
                 }
             }
 
-            impl<const M: u64> Sum<$t> for ModInt<M> {
+            impl<const M: u64> Sum<$t> for StaticModInt<M> {
                 fn sum<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -383,7 +382,7 @@ macro_rules! impl_ops_for_signed_int {
                 }
             }
 
-            impl<const M: u64> Product<$t> for ModInt<M> {
+            impl<const M: u64> Product<$t> for StaticModInt<M> {
                 fn product<I>(iter: I) -> Self
                 where
                     I: Iterator<Item = $t>,
@@ -397,7 +396,7 @@ macro_rules! impl_ops_for_signed_int {
 
 impl_ops_for_signed_int!(i8, i16, i32, i64, isize);
 
-impl<const M: u64> Neg for ModInt<M> {
+impl<const M: u64> Neg for StaticModInt<M> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
@@ -405,7 +404,7 @@ impl<const M: u64> Neg for ModInt<M> {
     }
 }
 
-impl<const M: u64> Zero for ModInt<M> {
+impl<const M: u64> Zero for StaticModInt<M> {
     fn zero() -> Self {
         Self::new(0)
     }
@@ -415,7 +414,7 @@ impl<const M: u64> Zero for ModInt<M> {
     }
 }
 
-impl<const M: u64> One for ModInt<M> {
+impl<const M: u64> One for StaticModInt<M> {
     fn one() -> Self {
         Self::new(1)
     }
@@ -425,7 +424,7 @@ impl<const M: u64> One for ModInt<M> {
     }
 }
 
-impl<const M: u64> Inv for ModInt<M> {
+impl<const M: u64> Inv for StaticModInt<M> {
     type Output = Self;
 
     fn inv(self) -> Self::Output {

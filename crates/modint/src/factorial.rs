@@ -1,4 +1,4 @@
-use crate::ModInt;
+use crate::StaticModInt;
 use num_traits::{One, Zero};
 
 pub trait Factorial: Sized + Clone {
@@ -39,7 +39,7 @@ macro_rules! impl_factorial {
 
 impl_factorial!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
 
-impl<const M: u64> Factorial for ModInt<M> {
+impl<const M: u64> Factorial for StaticModInt<M> {
     fn permutation<T: Into<Self>>(self, k: T) -> Self {
         let n = self.get();
         let k = k.into().get();
