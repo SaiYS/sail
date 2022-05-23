@@ -100,7 +100,10 @@ fn dfs<W: Copy + Add<Output = W> + Zero>(
     if let Some(p) = prev {
         dist[cur] = dist[p] + w;
     }
-    for &(next, next_w) in graph.list[cur].iter().filter(|&&(x, _)| Some(x) != prev) {
+    for &(next, next_w) in graph.raw_graph[cur]
+        .iter()
+        .filter(|&&(x, _)| Some(x) != prev)
+    {
         dfs(
             graph,
             DfsRecord {

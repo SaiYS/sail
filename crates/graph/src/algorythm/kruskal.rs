@@ -6,7 +6,7 @@ use itertools::Itertools;
 /// Returns the edges of minimum spanning tree of a given weighted graph
 ///
 /// See https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
-pub fn kuruskal(n: usize, edges: &[(usize, usize, usize)]) -> Vec<(usize, usize, usize)> {
+pub fn kuruskal<W: Ord + Copy>(n: usize, edges: &[(usize, usize, W)]) -> Vec<(usize, usize, W)> {
     let mut uf = UnionFind::new(n);
     let mut mst_edges = Vec::new();
 

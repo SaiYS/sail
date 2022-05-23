@@ -1,6 +1,5 @@
-use std::collections::HashMap;
-
 use itertools::Itertools;
+use std::collections::HashMap;
 
 /// UnionFind (Disjoint Set Union)
 #[derive(Debug, Clone)]

@@ -24,7 +24,7 @@ impl<W: Copy + Add<Output = W> + Sub<Output = W> + Zero> LowestCommonAncestor<W>
         while let Some((cur, prev)) = stack.pop() {
             visited[cur] = true;
             parent[cur] = prev;
-            for &(next, w) in tree.list[cur].iter().filter(|&&(x, _)| !visited[x]) {
+            for &(next, w) in tree.raw_graph[cur].iter().filter(|&&(x, _)| !visited[x]) {
                 depth[next] = depth[cur] + 1;
                 dist[next] = dist[cur] + w;
                 stack.push((next, cur));

@@ -2,16 +2,13 @@ use itertools::{iproduct, Itertools};
 use num_traits::Unsigned;
 use std::{collections::VecDeque, ops::Add};
 
-pub mod bellman_ford;
-pub mod dijkstra;
-pub mod kruskal;
-pub mod lowest_common_ancestor;
+pub mod algorythm;
 pub mod union_find;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnweightedListGraph<const D: bool> {
     len: usize,
-    list: Vec<Vec<usize>>,
+    raw_graph: Vec<Vec<usize>>,
 }
 
 pub type DULGraph = UnweightedListGraph<true>;
@@ -21,7 +18,7 @@ impl<const D: bool> UnweightedListGraph<D> {
     pub fn new(len: usize) -> Self {
         Self {
             len,
-            list: vec![vec![]; len],
+            raw_graph: vec![vec![]; len],
         }
     }
 
@@ -35,10 +32,10 @@ impl<const D: bool> UnweightedListGraph<D> {
 
     pub fn add_edge(&mut self, from: usize, to: usize) {
         if D {
-            self.list[from].push(to);
+            self.raw_graph[from].push(to);
         } else {
-            self.list[from].push(to);
-            self.list[to].push(from);
+            self.raw_graph[from].push(to);
+            self.raw_graph[to].push(from);
         }
     }
 
@@ -59,7 +56,7 @@ impl<const D: bool> UnweightedListGraph<D> {
     }
 
     pub fn adjacencies(&self, from: usize) -> Vec<usize> {
-        self.list[from].iter().copied().collect_vec()
+        self.raw_graph[from].iter().copied().collect_vec()
     }
 
     pub fn distances(&self, start: usize) -> Vec<Option<usize>> {
@@ -69,7 +66,7 @@ impl<const D: bool> UnweightedListGraph<D> {
         q.push_back(start);
 
         while let Some(cur) = q.pop_front() {
-            for next in self.list[cur]
+            for next in self.raw_graph[cur]
                 .iter()
                 .copied()
                 .filter(|&x| dist[x].is_none())
@@ -94,7 +91,7 @@ fn uul_dist_test() {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnweightedMatrixGraph<const D: bool> {
     len: usize,
-    mat: Vec<Vec<bool>>,
+    raw_graph: Vec<Vec<bool>>,
 }
 
 pub type DUMGraph = UnweightedMatrixGraph<true>;
@@ -104,7 +101,7 @@ impl<const D: bool> UnweightedMatrixGraph<D> {
     pub fn new(len: usize) -> Self {
         Self {
             len,
-            mat: vec![vec![false; len]; len],
+            raw_graph: vec![vec![false; len]; len],
         }
     }
 
@@ -118,10 +115,10 @@ impl<const D: bool> UnweightedMatrixGraph<D> {
 
     pub fn add_edge(&mut self, from: usize, to: usize) {
         if D {
-            self.mat[from][to] = true;
+            self.raw_graph[from][to] = true;
         } else {
-            self.mat[from][to] = true;
-            self.mat[to][from] = true;
+            self.raw_graph[from][to] = true;
+            self.raw_graph[to][from] = true;
         }
     }
 
@@ -142,7 +139,7 @@ impl<const D: bool> UnweightedMatrixGraph<D> {
     }
 
     pub fn adjacencies(&self, from: usize) -> Vec<usize> {
-        self.mat[from].iter().positions(|&x| x).collect_vec()
+        self.raw_graph[from].iter().positions(|&x| x).collect_vec()
     }
 
     pub fn distances(&self, start: usize) -> Vec<Option<usize>> {
@@ -152,7 +149,7 @@ impl<const D: bool> UnweightedMatrixGraph<D> {
         q.push_back(start);
 
         while let Some(cur) = q.pop_front() {
-            for next in self.mat[cur]
+            for next in self.raw_graph[cur]
                 .iter()
                 .positions(|&x| x)
                 .filter(|&x| dist[x].is_none())
@@ -176,7 +173,7 @@ impl<const D: bool> UnweightedMatrixGraph<D> {
             .map(|i| {
                 (0..self.len())
                     .map(|j| {
-                        if self.mat[i][j] {
+                        if self.raw_graph[i][j] {
                             Some(1)
                         } else if i == j {
                             Some(0)
@@ -217,7 +214,7 @@ fn floyd_warshall_test() {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WeightedListGraph<const D: bool, W> {
     len: usize,
-    list: Vec<Vec<(usize, W)>>,
+    raw_graph: Vec<Vec<(usize, W)>>,
 }
 
 pub type DWLGraph<W> = WeightedListGraph<true, W>;
@@ -227,7 +224,7 @@ impl<const D: bool, W: Copy> WeightedListGraph<D, W> {
     pub fn new(len: usize) -> Self {
         Self {
             len,
-            list: vec![vec![]; len],
+            raw_graph: vec![vec![]; len],
         }
     }
 
@@ -241,10 +238,10 @@ impl<const D: bool, W: Copy> WeightedListGraph<D, W> {
 
     pub fn add_edge(&mut self, from: usize, to: usize, cost: W) {
         if D {
-            self.list[from].push((to, cost));
+            self.raw_graph[from].push((to, cost));
         } else {
-            self.list[from].push((to, cost));
-            self.list[to].push((from, cost));
+            self.raw_graph[from].push((to, cost));
+            self.raw_graph[to].push((from, cost));
         }
     }
 
@@ -265,7 +262,7 @@ impl<const D: bool, W: Copy> WeightedListGraph<D, W> {
     }
 
     pub fn adjacencies(&self, from: usize) -> Vec<(usize, W)> {
-        self.list[from].iter().copied().collect_vec()
+        self.raw_graph[from].iter().copied().collect_vec()
     }
 }
 
@@ -274,7 +271,7 @@ impl<const D: bool, W: Copy + Ord + Unsigned> WeightedListGraph<D, W> {
     ///
     /// See https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     pub fn dijkstra(&self, start: usize) -> Vec<Option<W>> {
-        crate::dijkstra::dijkstra(&self.list, start)
+        crate::algorythm::dijkstra::dijkstra(&self.raw_graph, start)
     }
 
     /// Dijkstra algorythm with path
@@ -285,7 +282,7 @@ impl<const D: bool, W: Copy + Ord + Unsigned> WeightedListGraph<D, W> {
     ///
     /// See https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     pub fn dijkstra_with_path_hints(&self, start: usize) -> (Vec<Option<W>>, Vec<Option<usize>>) {
-        crate::dijkstra::dijkstra_with_path_hint(&self.list, start)
+        crate::algorythm::dijkstra::dijkstra_with_path_hint(&self.raw_graph, start)
     }
 }
 
@@ -302,7 +299,7 @@ fn dijkstra_test() {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WeightedMatrixGraph<const D: bool, W> {
     len: usize,
-    mat: Vec<Vec<Option<W>>>,
+    raw_graph: Vec<Vec<Option<W>>>,
 }
 
 pub type DWMGraph<W> = WeightedMatrixGraph<true, W>;
@@ -312,7 +309,7 @@ impl<const D: bool, W: Copy> WeightedMatrixGraph<D, W> {
     pub fn new(len: usize) -> Self {
         Self {
             len,
-            mat: vec![vec![None; len]; len],
+            raw_graph: vec![vec![None; len]; len],
         }
     }
 
@@ -326,10 +323,10 @@ impl<const D: bool, W: Copy> WeightedMatrixGraph<D, W> {
 
     pub fn add_edge(&mut self, from: usize, to: usize, cost: W) {
         if D {
-            self.mat[from][to] = Some(cost);
+            self.raw_graph[from][to] = Some(cost);
         } else {
-            self.mat[from][to] = Some(cost);
-            self.mat[to][from] = Some(cost);
+            self.raw_graph[from][to] = Some(cost);
+            self.raw_graph[to][from] = Some(cost);
         }
     }
 
@@ -350,7 +347,7 @@ impl<const D: bool, W: Copy> WeightedMatrixGraph<D, W> {
     }
 
     pub fn adjacencies(&self, from: usize) -> Vec<usize> {
-        self.mat[from]
+        self.raw_graph[from]
             .iter()
             .positions(|&x| x.is_some())
             .collect_vec()
@@ -364,7 +361,7 @@ impl<const D: bool, W: Copy + Add<Output = W> + Ord> WeightedMatrixGraph<D, W> {
     ///
     /// See https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
     pub fn floyd_warshall(&self) -> Vec<Vec<Option<W>>> {
-        let mut dist = self.mat.clone();
+        let mut dist = self.raw_graph.clone();
 
         for (k, i, j) in iproduct!(0..self.len(), 0..self.len(), 0..self.len()) {
             if let (Some(a), Some(b)) = (dist[i][k], dist[k][j]) {

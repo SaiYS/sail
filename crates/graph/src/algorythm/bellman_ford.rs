@@ -1,11 +1,11 @@
-use num_traits::Num;
+use num_traits::Zero;
 
 #[derive(Debug, Clone)]
 pub struct BellmanFordError;
 
 type BellmanFordResult<T> = Result<T, BellmanFordError>;
 
-pub fn bellman_ford<W: Copy + Ord + Num>(
+pub fn bellman_ford<W: Copy + Ord + Zero>(
     n: usize,
     edges: &[(usize, usize, W)],
     start: usize,
@@ -34,7 +34,7 @@ pub fn bellman_ford<W: Copy + Ord + Num>(
 }
 
 #[allow(clippy::type_complexity)]
-pub fn bellman_ford_with_path_hint<W: Copy + Ord + Num>(
+pub fn bellman_ford_with_path_hint<W: Copy + Ord + Zero>(
     n: usize,
     edges: &[(usize, usize, W)],
     start: usize,

@@ -1,8 +1,8 @@
 use itertools::Itertools;
-use num_traits::Unsigned;
+use num_traits::Zero;
 use std::{cmp::Reverse, collections::BinaryHeap};
 
-pub fn dijkstra<W: Copy + Ord + Unsigned>(g: &[Vec<(usize, W)>], start: usize) -> Vec<Option<W>> {
+pub fn dijkstra<W: Copy + Ord + Zero>(g: &[Vec<(usize, W)>], start: usize) -> Vec<Option<W>> {
     let mut dist = vec![None; g.len()];
     dist[start] = Some(W::zero());
 
@@ -10,6 +10,9 @@ pub fn dijkstra<W: Copy + Ord + Unsigned>(g: &[Vec<(usize, W)>], start: usize) -
     heap.push((Reverse(Some(W::zero())), start));
 
     while let Some((Reverse(Some(d)), cur)) = heap.pop() {
+        if Some(d) != dist[cur] {
+            continue;
+        }
         for &(next, weight) in g[cur]
             .iter()
             .filter(|&&(x, w)| dist[x].is_none() || dist[x].unwrap() > d + w)
@@ -23,7 +26,7 @@ pub fn dijkstra<W: Copy + Ord + Unsigned>(g: &[Vec<(usize, W)>], start: usize) -
     dist
 }
 
-pub fn dijkstra_with_path_hint<W: Copy + Ord + Unsigned>(
+pub fn dijkstra_with_path_hint<W: Copy + Ord + Zero>(
     g: &[Vec<(usize, W)>],
     start: usize,
 ) -> (Vec<Option<W>>, Vec<Option<usize>>) {
@@ -36,6 +39,9 @@ pub fn dijkstra_with_path_hint<W: Copy + Ord + Unsigned>(
     let mut prev = vec![None; g.len()];
 
     while let Some((Reverse(Some(d)), cur)) = heap.pop() {
+        if Some(d) != dist[cur] {
+            continue;
+        }
         for &(next, weight) in g[cur]
             .iter()
             .filter(|&&(x, w)| dist[x].is_none() || dist[x].unwrap() > d + w)
