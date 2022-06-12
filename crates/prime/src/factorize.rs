@@ -30,43 +30,43 @@ pub trait Factorization: Sized {
 }
 
 macro_rules! impl_factorize_for_uint {
-($($t:ty),*) => {
-    $(
-        impl Factorization for $t {
-            fn factorize(&self) -> Result<PrimeFactors<Self>, FactorizationError> {
-                if self == &0 {
-                    Err(FactorizationError::Zero)
-                } else if self == &1 {
-                    Err(FactorizationError::One)
-                } else {
-                    let mut primt_factors = BTreeMap::new();
-                    let mut x = self.clone();
-                    let mut d = 2;
-                    loop {
-                        if d * d > x {
-                            break;
+    ($($t:ty),*) => {
+        $(
+            impl Factorization for $t {
+                fn factorize(&self) -> Result<PrimeFactors<Self>, FactorizationError> {
+                    if self == &0 {
+                        Err(FactorizationError::Zero)
+                    } else if self == &1 {
+                        Err(FactorizationError::One)
+                    } else {
+                        let mut primt_factors = BTreeMap::new();
+                        let mut x = self.clone();
+                        let mut d = 2;
+                        loop {
+                            if d * d > x {
+                                break;
+                            }
+                            let mut c = 0usize;
+                            while x % d == 0 {
+                                x /= d;
+                                c += 1;
+                            }
+                            if c > 0 {
+                                primt_factors.insert(d, c);
+                            }
+                            d += 1;
                         }
-                        let mut c = 0usize;
-                        while x % d == 0 {
-                            x /= d;
-                            c += 1;
-                        }
-                        if c > 0 {
-                            primt_factors.insert(d, c);
-                        }
-                        d += 1;
-                    }
 
-                    if x > 1 {
-                        primt_factors.insert(x, 1);
-                    }
+                        if x > 1 {
+                            primt_factors.insert(x, 1);
+                        }
 
-                    Ok(PrimeFactors(primt_factors))
+                        Ok(PrimeFactors(primt_factors))
+                    }
                 }
             }
-        }
-    )*
-};
+        )*
+    };
 }
 
 impl_factorize_for_uint!(usize, u8, u16, u32, u64, u128);

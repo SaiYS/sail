@@ -165,7 +165,7 @@ impl<M: Monoid> SegmentTree<M> {
     ///
     /// Complexity: O(1)
     /// This can be more efficient than calling `self.get_range(..)`
-    pub fn get_all(&self) -> M::I {
+    pub fn all(&self) -> M::I {
         self.buffer[0].clone()
     }
 

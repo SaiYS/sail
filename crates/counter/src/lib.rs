@@ -17,6 +17,7 @@ use std::{
 /// c["foo"] += 1;
 /// assert_eq!(c["foo"], 2);
 /// ```
+#[derive(Debug, Clone)]
 pub struct Counter<T>(HashMap<T, usize>);
 
 impl<T> Counter<T> {
