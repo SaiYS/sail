@@ -26,8 +26,8 @@ rolling_hash = { path = "crates/rolling_hash" }
 sample_generater = { path = "crates/sample_generater" }
 segment_tree = { path = "crates/segment_tree" }
 sparse_table = { path = "crates/sparse_table" }
-sqrt_decomposition = { path = "crates/sqrt_decomposition" }
-suffix_array = { path = "crates/suffix_array" }
+# sqrt_decomposition = { path = "crates/sqrt_decomposition" }
+# suffix_array = { path = "crates/suffix_array" }
 timer = { path = "crates/timer" }
 # util = { path = "crates/util" }
 

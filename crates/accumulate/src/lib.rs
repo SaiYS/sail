@@ -1,5 +1,8 @@
 use num_traits::Zero;
-use std::ops::{Add, Index, RangeBounds, Sub};
+use std::{
+    ops::{Add, Index, RangeBounds, Sub},
+    vec,
+};
 use util::expand_range_bound;
 
 pub mod imos;
@@ -11,15 +14,13 @@ pub struct Accumulation<T> {
 
 impl<T: Clone + Add + Zero> From<Vec<T>> for Accumulation<T> {
     fn from(v: Vec<T>) -> Self {
-        let len = v.len() + 1;
-        let mut buffer = vec![T::zero()];
-        v.into_iter().fold(T::zero(), |mut acc, x| {
-            acc = acc + x;
-            buffer.push(acc.clone());
-            acc
-        });
+        Self::new(&v)
+    }
+}
 
-        Self { len, buffer }
+impl<T: Clone + Add + Zero> From<&Vec<T>> for Accumulation<T> {
+    fn from(v: &Vec<T>) -> Self {
+        Self::new(&v)
     }
 }
 
@@ -45,7 +46,19 @@ impl<T> Index<usize> for Accumulation<T> {
     }
 }
 
-impl<T: Clone + Add<Output = T> + Sub<Output = T>> Accumulation<T> {
+impl<T: Clone + Add<Output = T> + Zero> Accumulation<T> {
+    pub fn new(v: &[T]) -> Self {
+        let len = v.len() + 1;
+        let mut buffer = vec![T::zero()];
+        v.into_iter().fold(T::zero(), |mut acc, x| {
+            acc = acc + x.clone();
+            buffer.push(acc.clone());
+            acc
+        });
+
+        Self { len, buffer }
+    }
+
     /// Returns the length of original array,
     ///
     /// Indiced 0, 1, .. , self.len() - 1, are availble
@@ -57,10 +70,13 @@ impl<T: Clone + Add<Output = T> + Sub<Output = T>> Accumulation<T> {
         self.len() == 0
     }
 
-    pub fn accumulation(&self) -> &[T] {
+    /// get the reference to raw accumulation buffer
+    pub fn raw(&self) -> &[T] {
         &self.buffer
     }
+}
 
+impl<T: Clone + Add<Output = T> + Sub<Output = T> + Zero> Accumulation<T> {
     /// Returns sum of values in `range`
     ///
     /// Complexity: `O(1)`

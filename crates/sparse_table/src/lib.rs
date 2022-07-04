@@ -1,4 +1,4 @@
-use algebraics::{abstruct::SemiGroup, property::Idempotent};
+use algebraics::{abstract_type::SemiGroup, property::Idempotent};
 use itertools::Itertools;
 use std::ops::RangeBounds;
 use util::expand_range_bound;

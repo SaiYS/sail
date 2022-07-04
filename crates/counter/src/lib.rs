@@ -18,7 +18,7 @@ use std::{
 /// assert_eq!(c["foo"], 2);
 /// ```
 #[derive(Debug, Clone)]
-pub struct Counter<T>(HashMap<T, usize>);
+pub struct Counter<T>(pub HashMap<T, usize>);
 
 impl<T> Counter<T> {
     pub fn new() -> Self {
@@ -35,6 +35,10 @@ impl<T> Counter<T> {
 
     pub fn iter(&self) -> std::collections::hash_map::Iter<T, usize> {
         self.0.iter()
+    }
+
+    pub fn clear(&mut self) {
+        self.0.clear()
     }
 }
 

@@ -2,7 +2,7 @@ use num_integer::Integer;
 use num_traits::{Bounded, One, Zero};
 
 use crate::{
-    abstruct::{AbelianGroup, Monoid},
+    abstract_type::{AbelianGroup, Monoid},
     property::{
         Associativity, Cancellativity, Commutativity, Idempotent, Identity, Invertibility,
         Operation,
@@ -285,7 +285,7 @@ macro_rules! impl_magma {
             }
         }
 
-        impl $crate::abstruct::Magma for $name {
+        impl $crate::abstract_type::Magma for $name {
             type I = $t;
 
             fn get(self) -> Self::I {
@@ -321,7 +321,7 @@ macro_rules! impl_semigroup {
 
         impl $crate::property::Associativity<$t> for $name {}
 
-        impl $crate::abstruct::SemiGroup for $name {
+        impl $crate::abstract_type::SemiGroup for $name {
             type I = $t;
 
             fn get(self) -> Self::I {
@@ -373,7 +373,7 @@ macro_rules! impl_monoid {
 
         impl $crate::property::Associativity<$t> for $name {}
 
-        impl $crate::abstruct::Monoid for $name {
+        impl $crate::abstract_type::Monoid for $name {
             type I = $t;
 
             fn get(self) -> $t {
@@ -435,7 +435,7 @@ macro_rules! impl_group {
 
         impl $crate::property::Cancellativity<$t> for $name {}
 
-        impl $crate::abstruct::Group for $name {
+        impl $crate::abstract_type::Group for $name {
             type I = $t;
 
             fn get(self) -> $t {
@@ -501,7 +501,7 @@ macro_rules! impl_abelian_group {
 
         impl $crate::property::Commutativity<$t> for $name {}
 
-        impl $crate::abstruct::AbelianGroup for $name {
+        impl $crate::abstract_type::AbelianGroup for $name {
             type I = $t;
 
             fn get(self) -> $t {

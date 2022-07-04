@@ -1,4 +1,4 @@
-pub use algebraics::abstruct::AbelianGroup;
+pub use algebraics::abstract_type::AbelianGroup;
 
 use algebraics::structure::Additive;
 use std::ops::RangeBounds;
@@ -91,7 +91,7 @@ fn lowest_bit(x: usize) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use crate::FenwickTree;
-    use algebraics::{abstruct::AbelianGroup, property::Operation, structure::Additive};
+    use algebraics::{abstract_type::AbelianGroup, property::Operation, structure::Additive};
     use rand::Rng;
 
     #[test]

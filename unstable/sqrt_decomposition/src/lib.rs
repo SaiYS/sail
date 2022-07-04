@@ -5,7 +5,7 @@ use std::{
 };
 
 pub use algebraics::{
-    abstruct::Monoid,
+    abstract_type::Monoid,
     structure::{Additive, Gcd, Lcm, Max, Min, Multiplicative},
 };
 
@@ -110,7 +110,7 @@ impl<M: Monoid> Decomposition<M> {
 #[cfg(test)]
 mod tests {
     use super::Decomposition;
-    use algebraics::{abstruct::Monoid, structure::Max};
+    use algebraics::{abstract_type::Monoid, structure::Max};
     use rand::{thread_rng, Rng};
     use std::{iter::repeat_with, mem::swap};
 

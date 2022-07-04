@@ -1,4 +1,4 @@
-use algebraics::abstruct::Monoid;
+use algebraics::abstract_type::Monoid;
 use itertools::Itertools;
 use std::{
     fmt::{Debug, Display},
@@ -188,7 +188,7 @@ impl<M: Monoid> SegmentTree<M> {
 #[cfg(test)]
 mod tests {
     use super::SegmentTree;
-    use algebraics::{abstruct::Monoid, structure::Min};
+    use algebraics::{abstract_type::Monoid, structure::Min};
     use itertools::Itertools;
     use rand::Rng;
 

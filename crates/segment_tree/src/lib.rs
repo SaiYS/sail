@@ -1,5 +1,5 @@
 pub use algebraics::{
-    abstruct::Monoid,
+    abstract_type::Monoid,
     structure::{Additive, Gcd, Lcm, Max, Min, Multiplicative},
 };
 
