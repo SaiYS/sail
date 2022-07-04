@@ -1,5 +1,32 @@
 use rand::Rng;
 
+fn miller_rabin<R: Rng>(n: u128, k: usize, rng: &mut R) -> bool {
+    if n == 2 {
+        true
+    } else if n == 0 || n == 1 || n & 1 == 0 {
+        false
+    } else {
+        let s = (n - 1).trailing_zeros();
+        let d = (n - 1) >> s;
+
+        for _ in 0..k {
+            let a = rng.gen_range(1..n);
+            let mut y = mod_pow(a as u128, d as u128, n as u128);
+            if y != 1 && y != n - 1 && {
+                (0..s).all(|_| {
+                    y *= y;
+                    y %= n;
+                    y != n - 1
+                })
+            } {
+                return false;
+            }
+        }
+
+        true
+    }
+}
+
 /// # Miller–Rabin algorythm
 ///
 /// Seehttps://en.wikipedia.org/wiki/Miller%e2%80%93Rabin_primality_test
@@ -20,31 +47,7 @@ macro_rules! impl_miller_rabin_for_uint {
         $(
             impl MillerRabin for $t {
                 fn is_prime<R: rand::Rng>(&self, k: usize, rng: &mut R) -> bool {
-                    let n = *self;
-                    if n == 2 {
-                        true
-                    } else if n == 0 || n == 1 || n & 1 == 0 {
-                        false
-                    } else {
-                        let s = (n - 1).trailing_zeros();
-                        let d = (n - 1) >> s;
-
-                        for _ in 0..k {
-                            let a = rng.gen_range(1..n);
-                            let mut y = mod_pow(a as u128, d as u128, n as u128) as $t;
-                            if y != 1 && y != n - 1 && {
-                                (0..s).all(|_| {
-                                    y *= y;
-                                    y %= n;
-                                    y != n - 1
-                                })
-                            } {
-                                return false;
-                            }
-                        }
-
-                        true
-                    }
+                    miller_rabin(*self as u128, k, rng)
                 }
             }
         )*

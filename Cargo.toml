@@ -13,17 +13,16 @@ members = ["crates/*"]
 accumulate = { path = "crates/accumulate" }
 algebraics = { path = "crates/algebraics" }
 bitset = { path = "crates/bitset" }
-cmp = { path = "crates/cmp" }
+compare = { path = "crates/compare" }
 counter = { path = "crates/counter" }
 fenwick_tree = { path = "crates/fenwick_tree" }
-fisher_yates = { path = "crates/fisher_yates" }
 graph = { path = "crates/graph" }
 index_compression = { path = "crates/index_compression" }
 io = { path = "crates/io" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
 rolling_hash = { path = "crates/rolling_hash" }
-sample_generater = { path = "crates/sample_generater" }
+# sample_generater = { path = "crates/sample_generater" }
 segment_tree = { path = "crates/segment_tree" }
 sparse_table = { path = "crates/sparse_table" }
 # sqrt_decomposition = { path = "crates/sqrt_decomposition" }

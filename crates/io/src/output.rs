@@ -56,10 +56,3 @@ macro_rules! trace {
         dbg!($($item),*)
     };
 }
-
-#[test]
-fn debug() {
-    let n = 3usize;
-    let a = vec![1usize, 2, 3];
-    trace!(n, a);
-}

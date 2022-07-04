@@ -7,7 +7,7 @@
 /// ```
 pub mod prelude {
     pub use crate::consts::*;
-    pub use cmp::{max, min, MaxAssign as _, MinAssign as _};
+    pub use compare::{max, min, MaxAssign as _, MinAssign as _};
     pub use counter::Counter;
     pub use index_compression::IndexCompression;
     pub use io::{
@@ -29,17 +29,16 @@ pub mod consts;
 pub use accumulate;
 pub use algebraics;
 pub use bitset;
-pub use cmp;
+pub use compare;
 pub use counter;
 pub use fenwick_tree;
-pub use fisher_yates;
 pub use graph;
 pub use index_compression;
 pub use io;
 pub use modint;
 pub use prime;
 pub use rolling_hash;
-pub use sample_generater;
+// pub use sample_generater;
 pub use segment_tree;
 pub use sparse_table;
 // pub use sqrt_decomposition;

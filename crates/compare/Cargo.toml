@@ -1,8 +1,7 @@
 [package]
-name = "fisher_yates"
+name = "compare"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
-rand = { version = "0.8.5", features = ["small_rng"] }
