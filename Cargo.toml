@@ -13,11 +13,8 @@ members = ["crates/*"]
 accumulate = { path = "crates/accumulate" }
 algebraics = { path = "crates/algebraics" }
 bitset = { path = "crates/bitset" }
-compare = { path = "crates/compare" }
-counter = { path = "crates/counter" }
 fenwick_tree = { path = "crates/fenwick_tree" }
 graph = { path = "crates/graph" }
-index_compression = { path = "crates/index_compression" }
 io = { path = "crates/io" }
 modint = { path = "crates/modint" }
 prime = { path = "crates/prime" }
@@ -29,6 +26,8 @@ sparse_table = { path = "crates/sparse_table" }
 # suffix_array = { path = "crates/suffix_array" }
 timer = { path = "crates/timer" }
 # util = { path = "crates/util" }
+
+itertools = "0.10.3"
 
 [dev-dependencies]
 # num = "0.2.1"

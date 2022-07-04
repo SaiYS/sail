@@ -7,9 +7,15 @@
 /// ```
 pub mod prelude {
     pub use crate::consts::*;
-    pub use compare::{max, min, MaxAssign as _, MinAssign as _};
-    pub use counter::Counter;
-    pub use index_compression::IndexCompression;
+    pub use crate::{
+        max, min,
+        snippet::{
+            compare::{MaxAssign, MinAssign},
+            counter::Counter,
+            distance::{EuclideanDistance, ManhattanDistance},
+            index_compression::IndexCompression,
+        },
+    };
     pub use io::{
         input::marker::Digits,
         input_interactive,
@@ -24,16 +30,14 @@ pub mod prelude {
 }
 
 pub mod consts;
+pub mod snippet;
 
 // re-exported crates
 pub use accumulate;
 pub use algebraics;
 pub use bitset;
-pub use compare;
-pub use counter;
 pub use fenwick_tree;
 pub use graph;
-pub use index_compression;
 pub use io;
 pub use modint;
 pub use prime;

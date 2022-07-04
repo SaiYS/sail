@@ -20,7 +20,7 @@ impl<T: Clone + Add + Zero> From<Vec<T>> for Accumulation<T> {
 
 impl<T: Clone + Add + Zero> From<&Vec<T>> for Accumulation<T> {
     fn from(v: &Vec<T>) -> Self {
-        Self::new(&v)
+        Self::new(v)
     }
 }
 
@@ -50,7 +50,7 @@ impl<T: Clone + Add<Output = T> + Zero> Accumulation<T> {
     pub fn new(v: &[T]) -> Self {
         let len = v.len() + 1;
         let mut buffer = vec![T::zero()];
-        v.into_iter().fold(T::zero(), |mut acc, x| {
+        v.iter().fold(T::zero(), |mut acc, x| {
             acc = acc + x.clone();
             buffer.push(acc.clone());
             acc

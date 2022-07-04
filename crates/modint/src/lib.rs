@@ -44,7 +44,7 @@ impl<const M: u64> StaticModInt<M> {
         } else if value >= 0 {
             value as u64
         } else {
-            M - (value.abs() as u64 % M)
+            M - (value.unsigned_abs() % M)
         };
 
         Self(value)
