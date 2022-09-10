@@ -8,5 +8,6 @@ pub use algebraics::{
 pub mod segment_tree;
 pub use segment_tree::SegmentTree;
 
-pub type RangeMinQ<T> = SegmentTree<Min<T>>;
-pub type RangeSumQ<T> = SegmentTree<Additive<T>>;
+pub type RangeMin<T> = SegmentTree<Min<T>>;
+pub type RangeMax<T> = SegmentTree<Max<T>>;
+pub type RangeSum<T> = SegmentTree<Additive<T>>;

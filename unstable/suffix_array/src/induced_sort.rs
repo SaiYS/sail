@@ -1,6 +1,6 @@
 use super::{SuffixSort, LS};
-use fisher_yates::Shufflable;
 use itertools::Itertools;
+use rand::{prelude::SliceRandom, thread_rng};
 
 #[derive(Debug, Clone)]
 pub enum InducedSort {}
@@ -66,7 +66,10 @@ fn sa_is(s: &[u8]) -> Vec<usize> {
 
     let rep = (0..n).filter(|&x| ty[x].is_lms()).collect_vec();
     let m = rep.len();
-    let sa = induced_sort(n, s, &ty, rep.clone().shuffle());
+    let mut repc = rep.clone();
+    repc.shuffle(&mut thread_rng());
+
+    let sa = induced_sort(n, s, &ty, repc);
 
     let mut cur = 0;
     let mut t = vec![None; n];

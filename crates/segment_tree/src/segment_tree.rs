@@ -230,3 +230,120 @@ mod tests {
         }
     }
 }
+
+#[allow(dead_code)]
+mod another {
+    use std::{cell::RefCell, rc::Rc};
+
+    #[derive(Debug)]
+    pub struct SegmentTree<T, F> {
+        tree: Option<Rc<RefCell<SegmentTreeNode<T>>>>,
+        op: F,
+        neutral: T,
+    }
+
+    impl<T: Copy, F: Fn(T, T) -> T> SegmentTree<T, F> {
+        fn new(v: &[T], op: F, neutral: T) -> Self {
+            Self {
+                tree: SegmentTreeNode::new_inner(v, (0, v.len()), &op),
+                op,
+                neutral,
+            }
+        }
+
+        fn get(&self, range: (usize, usize)) -> T {
+            self.tree.as_ref().map_or(self.neutral, |tree| {
+                tree.borrow().get_inner(range, &self.op, self.neutral)
+            })
+        }
+
+        fn update(&mut self, i: usize, to: T) {
+            if let Some(tree) = self.tree.as_mut() {
+                tree.borrow_mut().update(i, to, &self.op, self.neutral);
+            }
+        }
+    }
+
+    #[derive(Debug)]
+    pub struct SegmentTreeNode<T> {
+        value: T,
+        range: (usize, usize),
+        left: Option<Rc<RefCell<SegmentTreeNode<T>>>>,
+        right: Option<Rc<RefCell<SegmentTreeNode<T>>>>,
+    }
+
+    impl<T: Copy> SegmentTreeNode<T> {
+        fn new_inner<F: Fn(T, T) -> T>(
+            v: &[T],
+            range: (usize, usize),
+            op: &F,
+        ) -> Option<Rc<RefCell<Self>>> {
+            let l = v.len();
+
+            if l == 0 {
+                None
+            } else if l == 1 {
+                Some(Rc::new(RefCell::new(Self {
+                    value: v[0],
+                    range,
+                    left: None,
+                    right: None,
+                })))
+            } else {
+                let t = l / 2;
+                let left = Self::new_inner(&v[..t], (range.0, range.0 + t), op);
+                let right = Self::new_inner(&v[t..], (range.0 + t, range.1), op);
+
+                let value = match (&left, &right) {
+                    (None, None) => todo!(),
+                    (None, Some(r)) => r.borrow().value,
+                    (Some(l), None) => l.borrow().value,
+                    (Some(l), Some(r)) => op(l.borrow().value, r.borrow().value),
+                };
+
+                Some(Rc::new(RefCell::new(Self {
+                    value,
+                    range,
+                    left,
+                    right,
+                })))
+            }
+        }
+
+        fn get_inner<F: Fn(T, T) -> T>(&self, range: (usize, usize), op: &F, neutral: T) -> T {
+            if range.1 <= self.range.0 || self.range.1 <= range.0 {
+                neutral
+            } else if range.0 <= self.range.0 && self.range.1 <= range.1 {
+                self.value
+            } else {
+                op(
+                    self.left
+                        .as_ref()
+                        .map_or(neutral, |left| left.borrow().get_inner(range, op, neutral)),
+                    self.right.as_ref().map_or(neutral, |right| {
+                        right.borrow().get_inner(range, op, neutral)
+                    }),
+                )
+            }
+        }
+
+        fn update<F: Fn(T, T) -> T>(&mut self, i: usize, to: T, op: &F, neutral: T) {
+            if self.range.0 == i && self.range.1 == i + 1 {
+                self.value = to;
+            } else if i < self.range.0 || self.range.1 <= i {
+                // do nothing
+            } else if self.range.0 <= i && i < self.range.1 {
+                self.value = op(
+                    self.left.as_mut().map_or(neutral, |left| {
+                        (*left.borrow_mut()).update(i, to, op, neutral);
+                        left.borrow().value
+                    }),
+                    self.right.as_mut().map_or(neutral, |right| {
+                        right.borrow_mut().update(i, to, op, neutral);
+                        right.borrow().value
+                    }),
+                );
+            }
+        }
+    }
+}

@@ -5,8 +5,8 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-algebraics = { path = "../algebraics" }
-util = { path = "../util" }
+algebraics = { path = "../../crates/algebraics" }
+util = { path = "../../crates/util" }
 itertools = "0.10.3"
 
 [dev-dependencies]

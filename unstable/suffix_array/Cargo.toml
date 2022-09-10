@@ -6,4 +6,4 @@ license = "MIT"
 
 [dependencies]
 itertools = "0.10.3"
-fisher_yates = { path = "../fisher_yates" }
+rand = "0.8.5"

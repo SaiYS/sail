@@ -10,7 +10,7 @@ pub struct LowestCommonAncestor<W> {
     root: usize,
     ancestor: Vec<Vec<usize>>,
     depth: Vec<usize>,
-    dist: Vec<W>,
+    pub dist: Vec<W>,
 }
 
 impl<W: Copy + Add<Output = W> + Sub<Output = W> + Zero> LowestCommonAncestor<W> {

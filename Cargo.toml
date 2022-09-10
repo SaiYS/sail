@@ -7,7 +7,7 @@ repository = "https://github.com/SaiYS/sail"
 publish = false
 
 [workspace]
-members = ["crates/*"]
+members = ["crates/*", "unstable/*"]
 
 [dependencies]
 accumulate = { path = "crates/accumulate" }
